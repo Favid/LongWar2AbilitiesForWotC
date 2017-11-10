@@ -11,6 +11,7 @@
   <ItemGroup>
     <Folder Include="Config\" />
     <Folder Include="Localization\" />
+    <Folder Include="Content" />
     <Folder Include="Src\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\Classes\" />
@@ -23,6 +24,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComLW_SoldierSkills.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\UILibrary_LW_PerkPack.upk">
       <SubType>Content</SubType>
     </Content>
     <Content Include="ReadMe.txt" />
