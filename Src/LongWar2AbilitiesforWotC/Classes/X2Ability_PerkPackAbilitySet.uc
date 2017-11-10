@@ -131,7 +131,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(CloseCombatSpecialistAttack()); //Additional Ability
 	Templates.AddItem(AddCloseandPersonalAbility());
 	Templates.AddItem(AddDamnGoodGroundAbility());
-	//Templates.AddItem(AddExecutionerAbility());
+	Templates.AddItem(AddExecutionerAbility());
 	//Templates.AddItem(AddResilienceAbility());
 	//Templates.AddItem(AddTacticalSenseAbility());
 	//Templates.AddItem(AddAggressionAbility());
@@ -509,5 +509,29 @@ static function X2AbilityTemplate AddDamnGoodGroundAbility()
 	Template.AddTargetEffect (AimandDefModifiers);
 	Template.bCrossClassEligible = true;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	return Template;		
+}
+
+static function X2AbilityTemplate AddExecutionerAbility()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_Executioner				AimandCritModifiers;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'Executioner');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityExecutioner";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	AimandCritModifiers = new class 'X2Effect_Executioner';
+	AimandCritModifiers.BuildPersistentEffect (1, true, false);
+	AimandCritModifiers.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (AimandCritModifiers);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
 	return Template;		
 }
