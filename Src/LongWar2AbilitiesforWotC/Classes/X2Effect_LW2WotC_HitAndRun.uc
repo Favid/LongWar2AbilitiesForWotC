@@ -4,7 +4,7 @@
 //  PURPOSE: Hit and Run effect to grant free action
 //---------------------------------------------------------------------------------------
 
-class X2Effect_HitandRun extends X2Effect_Persistent config (LW_SoldierSkills);
+class X2Effect_LW2WotC_HitandRun extends X2Effect_Persistent config (LW_SoldierSkills);
 
 var bool HITANDRUN_FULLACTION;
 var config array<name> HNR_ABILITYNAMES;
@@ -19,7 +19,7 @@ function RegisterForEvents(XComGameState_Effect EffectGameState)
 	EventMgr = `XEVENTMGR;
 	EffectObj = EffectGameState;
 	UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(EffectGameState.ApplyEffectParameters.SourceStateObjectRef.ObjectID));
-	EventMgr.RegisterForEvent(EffectObj, 'HitandRun', EffectGameState.TriggerAbilityFlyover, ELD_OnStateSubmitted, , UnitState);
+	EventMgr.RegisterForEvent(EffectObj, 'LW2WotC_HitandRun', EffectGameState.TriggerAbilityFlyover, ELD_OnStateSubmitted, , UnitState);
 }
 
 function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStateContext_Ability AbilityContext, XComGameState_Ability kAbility, XComGameState_Unit SourceUnit, XComGameState_Item AffectWeapon, XComGameState NewGameState, const array<name> PreCostActionPoints, const array<name> PreCostReservePoints)
@@ -38,7 +38,7 @@ function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStat
 	if (PreCostActionPoints.Find('RunAndGun') != -1)
 		return false;
 
-	SourceUnit.GetUnitValue ('HitandRunUses', HnRUsesThisTurn);
+	SourceUnit.GetUnitValue ('LW2WotC_HitandRunUses', HnRUsesThisTurn);
 	iUsesThisTurn = int(HnRUsesThisTurn.fValue);
 
 	if (iUsesThisTurn >= default.HNR_USES_PER_TURN)
@@ -63,7 +63,7 @@ function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStat
 							AbilityState = XComGameState_Ability(History.GetGameStateForObjectID(EffectState.ApplyEffectParameters.AbilityStateObjectRef.ObjectID));
 							if (AbilityState != none)
 							{
-								SourceUnit.SetUnitFloatValue ('HitandRunUses', iUsesThisTurn + 1.0, eCleanup_BeginTurn);
+								SourceUnit.SetUnitFloatValue ('LW2WotC_HitandRunUses', iUsesThisTurn + 1.0, eCleanup_BeginTurn);
 								if (!HITANDRUN_FULLACTION)
 								{
 									SourceUnit.ActionPoints.AddItem(class'X2CharacterTemplateManager'.default.MoveActionPoint);
@@ -72,7 +72,7 @@ function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStat
 								{
 									SourceUnit.ActionPoints.AddItem(class'X2CharacterTemplateManager'.default.StandardActionPoint);
 								}
-								`XEVENTMGR.TriggerEvent('HitandRun', AbilityState, SourceUnit, NewGameState);
+								`XEVENTMGR.TriggerEvent('LW2WotC_HitandRun', AbilityState, SourceUnit, NewGameState);
 							}
 						}
 					}

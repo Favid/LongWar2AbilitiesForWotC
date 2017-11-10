@@ -1,4 +1,4 @@
-class X2Effect_PrimaryHitBonusDamage extends X2Effect_Persistent;
+class X2Effect_LW2WotC_PrimaryHitBonusDamage extends X2Effect_Persistent;
 
 var int BonusDmg;
 var bool includepistols;
