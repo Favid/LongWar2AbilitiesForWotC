@@ -61,6 +61,15 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'RESILIENCE_CRITDEF_BONUS':
 			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.RESILIENCE_CRITDEF_BONUS);
 			return true;
+		case 'TACTICAL_SENSE_DEF_BONUS_PER_ENEMY':
+			OutString = string(class'X2Effect_LW2WotC_TacticalSense'.default.TACTICAL_SENSE_DEF_BONUS_PER_ENEMY);
+			return true;
+		case 'TACTICAL_SENSE_MAX_DEF_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_TacticalSense'.default.TACTICAL_SENSE_MAX_DEF_BONUS);
+			return true;
+		case 'TS_SQUADSIGHT_ENEMIES_APPLY':
+			OutString = getSquadsightString(class'X2Effect_LW2WotC_TacticalSense'.default.TS_SQUADSIGHT_ENEMIES_APPLY);
+			return true;
 		default: 
 			return false;
 	}
@@ -114,4 +123,16 @@ private static function string getOneMinusFloatValueString(float modifier)
 private static function string getInversedValueString(int value)
 {
 	return string(-1 * value);
+}
+
+private static function string getSquadsightString(bool squadsightValid)
+{
+    if(squadsightValid)
+    {
+        return "Units visible at squadsight ranges do confer bonus.";
+    }
+    else
+    {
+        return "Units visible at squadsight ranges do not confer bonus.";
+    }
 }

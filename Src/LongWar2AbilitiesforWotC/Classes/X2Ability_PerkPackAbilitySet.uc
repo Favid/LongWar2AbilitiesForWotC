@@ -561,4 +561,28 @@ static function X2AbilityTemplate AddResilienceAbility()
 	return Template;		
 }
 
+static function X2AbilityTemplate AddTacticalSenseAbility()
+{
+	local X2AbilityTemplate				Template;
+	local X2Effect_LW2WotC_TacticalSense		MyDefModifier;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_TacticalSense');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityTacticalSense";	
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.bIsPassive = true;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	MyDefModifier = new class 'X2Effect_LW2WotC_TacticalSense';
+	MyDefModifier.BuildPersistentEffect (1, true, false);
+	MyDefModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (MyDefModifier);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;	
+}
+
 
