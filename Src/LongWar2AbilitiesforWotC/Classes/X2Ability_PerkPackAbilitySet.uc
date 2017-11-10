@@ -133,8 +133,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddDamnGoodGroundAbility());
 	Templates.AddItem(AddExecutionerAbility());
 	Templates.AddItem(AddResilienceAbility());
-	//Templates.AddItem(AddTacticalSenseAbility());
-	//Templates.AddItem(AddAggressionAbility());
+	Templates.AddItem(AddTacticalSenseAbility());
+	Templates.AddItem(AddAggressionAbility());
 	//Templates.AddItem(AddBringEmOnAbility());
 	//Templates.AddItem(AddHardTargetAbility());
 	//Templates.AddItem(AddInfighterAbility());
@@ -579,6 +579,30 @@ static function X2AbilityTemplate AddTacticalSenseAbility()
 	MyDefModifier.BuildPersistentEffect (1, true, false);
 	MyDefModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
 	Template.AddTargetEffect (MyDefModifier);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;	
+}
+
+static function X2AbilityTemplate AddAggressionAbility()
+{
+	local X2AbilityTemplate				Template;
+	local X2Effect_LW2WotC_Aggression			MyCritModifier;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'Aggression');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityAggression";	
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	MyCritModifier = new class 'X2Effect_LW2WotC_Aggression';
+	MyCritModifier.BuildPersistentEffect (1, true, false);
+	MyCritModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (MyCritModifier);
 	Template.bCrossClassEligible = true;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 

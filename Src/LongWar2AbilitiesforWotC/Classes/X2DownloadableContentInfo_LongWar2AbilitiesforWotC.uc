@@ -70,6 +70,15 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'TS_SQUADSIGHT_ENEMIES_APPLY':
 			OutString = getSquadsightString(class'X2Effect_LW2WotC_TacticalSense'.default.TS_SQUADSIGHT_ENEMIES_APPLY);
 			return true;
+		case 'AGGRESSION_CRIT_BONUS_PER_ENEMY':
+			OutString = string(class'X2Effect_LW2WotC_Aggression'.default.AGGRESSION_CRIT_BONUS_PER_ENEMY);
+			return true;
+		case 'AGGRESSION_MAX_CRIT_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_Aggression'.default.AGGRESSION_MAX_CRIT_BONUS);
+			return true;
+		case 'AGG_SQUADSIGHT_ENEMIES_APPLY':
+			OutString = getSquadsightString(class'X2Effect_LW2WotC_Aggression'.default.AGG_SQUADSIGHT_ENEMIES_APPLY);
+			return true;
 		default: 
 			return false;
 	}

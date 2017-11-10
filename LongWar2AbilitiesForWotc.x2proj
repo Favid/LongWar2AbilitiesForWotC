@@ -42,6 +42,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2DownloadableContentInfo_LongWar2AbilitiesforWotC.uc" />
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Aggression.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_AreaSuppression.uc">
       <SubType>Content</SubType>
     </Content>
