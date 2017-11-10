@@ -79,6 +79,15 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'AGG_SQUADSIGHT_ENEMIES_APPLY':
 			OutString = getSquadsightString(class'X2Effect_LW2WotC_Aggression'.default.AGG_SQUADSIGHT_ENEMIES_APPLY);
 			return true;
+		case 'BEO_BONUS_CRIT_DAMAGE_PER_ENEMY':
+			OutString = string(class'X2Effect_LW2WotC_BringEmOn'.default.BEO_BONUS_CRIT_DAMAGE_PER_ENEMY * 2);
+			return true;
+		case 'BEO_MAX_BONUS_CRIT_DAMAGE':
+			OutString = string(class'X2Effect_LW2WotC_BringEmOn'.default.BEO_MAX_BONUS_CRIT_DAMAGE);
+			return true;
+		case 'BEO_SQUADSIGHT_ENEMIES_APPLY':
+			OutString = getSquadsightString(class'X2Effect_LW2WotC_BringEmOn'.default.BEO_SQUADSIGHT_ENEMIES_APPLY);
+			return true;
 		default: 
 			return false;
 	}

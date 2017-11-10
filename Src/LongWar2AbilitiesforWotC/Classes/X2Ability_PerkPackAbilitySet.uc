@@ -135,7 +135,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddResilienceAbility());
 	Templates.AddItem(AddTacticalSenseAbility());
 	Templates.AddItem(AddAggressionAbility());
-	//Templates.AddItem(AddBringEmOnAbility());
+	Templates.AddItem(AddBringEmOnAbility());
 	//Templates.AddItem(AddHardTargetAbility());
 	//Templates.AddItem(AddInfighterAbility());
 	//Templates.AddItem(AddDepthPerceptionAbility());
@@ -607,6 +607,30 @@ static function X2AbilityTemplate AddAggressionAbility()
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
 	return Template;	
+}
+
+static function X2AbilityTemplate AddBringEmOnAbility()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_LW2WotC_BringEmOn		            DamageEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_BringEmOn');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityBringEmOn";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	DamageEffect = new class'X2Effect_LW2WotC_BringEmOn';
+	DamageEffect.BuildPersistentEffect(1, true, false, false);
+	DamageEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect(DamageEffect);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  No visualization
+	return Template;
 }
 
 
