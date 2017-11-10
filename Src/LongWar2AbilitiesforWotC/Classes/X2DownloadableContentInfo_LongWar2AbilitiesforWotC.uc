@@ -23,3 +23,95 @@ static event OnLoadedSavedGame()
 /// </summary>
 static event InstallNewCampaign(XComGameState StartState)
 {}
+
+static function bool AbilityTagExpandHandler(string InString, out string OutString)
+{
+	local name Type;
+
+	Type = name(InString);
+	switch(Type)
+	{
+		case 'CENTERMASS_DAMAGE':
+			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.CENTERMASS_DAMAGE);
+			return true;
+		case 'LETHAL_DAMAGE':
+			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.LETHAL_DAMAGE);
+			return true;
+		case 'HNR_USES_PER_TURN':
+			OutString = getNumRefundsString(class'X2Effect_LW2WotC_HitandRun'.default.HNR_USES_PER_TURN);
+			return true;
+		case 'CCS_RANGE':
+			OutString = getStringBasedOnValue(class'X2AbilityTarget_LW2WotC_Single_CCS'.default.CCS_RANGE, "tile", "tiles");
+			return true;
+		case 'CCS_AMMO_PER_SHOT':
+			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.CCS_AMMO_PER_SHOT);
+			return true;
+		case 'DGG_AIM_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_DamnGoodGround'.default.DGG_AIM_BONUS);
+			return true;
+		case 'DGG_DEF_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_DamnGoodGround'.default.DGG_DEF_BONUS);
+			return true;
+		case 'EXECUTIONER_AIM_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_Executioner'.default.EXECUTIONER_AIM_BONUS);
+			return true;
+		case 'EXECUTIONER_CRIT_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_Executioner'.default.EXECUTIONER_CRIT_BONUS);
+			return true;
+		case 'RESILIENCE_CRITDEF_BONUS':
+			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.RESILIENCE_CRITDEF_BONUS);
+			return true;
+		default: 
+			return false;
+	}
+}
+
+private static function string getStringBasedOnValue(int value, string single, string plural)
+{
+	if(value > 1)
+	{
+		return string(value) @ plural;
+	}
+
+	return string(value) @ single;
+}
+
+private static function string getEndTurnString(bool value)
+{
+	if(value)
+	{
+		return "Ends the user's turn when used.";
+	}
+
+	return "Does not end the user's turn when used as a first action.";
+}
+
+private static function string getNumRefundsString(int maxRefunds)
+{
+	if(maxRefunds == 0)
+	{
+		return "Can activate an unlimited number of times per turn.";
+	}
+	else if(maxRefunds == 1)
+	{
+		return "Can activate 1 time per turn.";
+	}
+	
+	return "Can activate" @ string(maxRefunds) @ "times per turn.";
+}
+
+private static function string getOneMinusFloatValueString(float modifier)
+{
+	local float result;
+	local string returnString;
+
+	result = 1 - modifier;
+	returnString = string(int(result * 100)) $ "%";
+
+	return returnString;
+}
+
+private static function string getInversedValueString(int value)
+{
+	return string(-1 * value);
+}
