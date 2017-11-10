@@ -321,7 +321,7 @@ static function X2AbilityTemplate AddCloseCombatSpecialistAbility()
 	local X2AbilityTemplate                 Template;
 
 	Template = PurePassive('LW2WotC_CloseCombatSpecialist', "img:///UILibrary_LW_PerkPack.LW_AbilityCloseCombatSpecialist", false, 'eAbilitySource_Perk');
-	Template.AdditionalAbilities.AddItem('CloseCombatSpecialistAttack');
+	Template.AdditionalAbilities.AddItem('LW2WotC_CloseCombatSpecialistAttack');
 	return Template;
 }
 
@@ -453,7 +453,7 @@ static function EventListenerReturn CloseCombatSpecialistConcealmentListener(Obj
 	if (AbilityContext != None && AbilityContext.InputContext.SourceObject != ConcealmentBrokenUnit.ConcealmentBrokenByUnitRef)
 		return ELR_NoInterrupt;
 
-	CloseCombatSpecialistRef = ConcealmentBrokenUnit.FindAbility('CloseCombatSpecialistAttack');
+	CloseCombatSpecialistRef = ConcealmentBrokenUnit.FindAbility('LW2WotC_CloseCombatSpecialistAttack');
 	if (CloseCombatSpecialistRef.ObjectID == 0)
 		return ELR_NoInterrupt;
 
