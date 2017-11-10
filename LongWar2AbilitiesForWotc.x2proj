@@ -44,6 +44,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_CloseandPersonal.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_DamnGoodGround.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_HitAndRun.uc">
       <SubType>Content</SubType>
     </Content>
