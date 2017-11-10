@@ -132,7 +132,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddCloseandPersonalAbility());
 	Templates.AddItem(AddDamnGoodGroundAbility());
 	Templates.AddItem(AddExecutionerAbility());
-	//Templates.AddItem(AddResilienceAbility());
+	Templates.AddItem(AddResilienceAbility());
 	//Templates.AddItem(AddTacticalSenseAbility());
 	//Templates.AddItem(AddAggressionAbility());
 	//Templates.AddItem(AddBringEmOnAbility());
@@ -535,3 +535,30 @@ static function X2AbilityTemplate AddExecutionerAbility()
 
 	return Template;		
 }
+
+static function X2AbilityTemplate AddResilienceAbility()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_Resilience				MyCritModifier;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'Resilience');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityResilience";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	MyCritModifier = new class 'X2Effect_Resilience';
+	MyCritModifier.CritDef_Bonus = default.RESILIENCE_CRITDEF_BONUS;
+	MyCritModifier.BuildPersistentEffect (1, true, false, true);
+	MyCritModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (MyCritModifier);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;		
+}
+
+

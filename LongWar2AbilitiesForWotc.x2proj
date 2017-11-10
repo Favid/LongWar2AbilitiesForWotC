@@ -56,6 +56,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_PrimaryHitBonusDamage.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_Resilience.uc">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
 </Project>
