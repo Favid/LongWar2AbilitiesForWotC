@@ -213,7 +213,7 @@ static function X2AbilityTemplate AddCenterMassAbility()
 	local X2AbilityTemplate						Template;
 	local X2Effect_PrimaryHitBonusDamage        DamageEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'CenterMass');
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_CenterMass');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityCenterMass";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -242,7 +242,7 @@ static function X2AbilityTemplate AddLethalAbility()
 	local X2AbilityTemplate						Template;
 	local X2Effect_PrimaryHitBonusDamage        DamageEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'Lethal');
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_Lethal');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityKinetic";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -271,7 +271,7 @@ static function X2AbilityTemplate AddHitandRunAbility()
 	local X2AbilityTemplate					Template;
 	local X2Effect_HitandRun				HitandRunEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'HitandRun');
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_HitandRun');
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
 	Template.Hostility = eHostility_Neutral;
@@ -296,7 +296,7 @@ static function X2AbilityTemplate AddHitandSlitherAbility()
 	local X2AbilityTemplate					Template;
 	local X2Effect_HitandRun				HitandRunEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'HitandSlither');
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_HitandSlither');
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
 	Template.Hostility = eHostility_Neutral;
@@ -320,7 +320,7 @@ static function X2AbilityTemplate AddCloseCombatSpecialistAbility()
 {
 	local X2AbilityTemplate                 Template;
 
-	Template = PurePassive('CloseCombatSpecialist', "img:///UILibrary_LW_PerkPack.LW_AbilityCloseCombatSpecialist", false, 'eAbilitySource_Perk');
+	Template = PurePassive('LW2WotC_CloseCombatSpecialist', "img:///UILibrary_LW_PerkPack.LW_AbilityCloseCombatSpecialist", false, 'eAbilitySource_Perk');
 	Template.AdditionalAbilities.AddItem('CloseCombatSpecialistAttack');
 	return Template;
 }
@@ -340,7 +340,7 @@ static function X2AbilityTemplate CloseCombatSpecialistAttack()
 	local X2AbilityTarget_Single_CCS					SingleTarget;
 	//local X2AbilityCooldown								Cooldown;	
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'CloseCombatSpecialistAttack');
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_CloseCombatSpecialistAttack');
 
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
@@ -470,7 +470,7 @@ static function X2AbilityTemplate AddCloseandPersonalAbility()
 	local X2AbilityTemplate						Template;
 	local X2Effect_CloseandPersonal				CritModifier;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'CloseandPersonal');
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_CloseandPersonal');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityCloseandPersonal";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -494,7 +494,7 @@ static function X2AbilityTemplate AddDamnGoodGroundAbility()
 	local X2AbilityTemplate					Template;
 	local X2Effect_DamnGoodGround			AimandDefModifiers;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'DamnGoodGround');
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_DamnGoodGround');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityDamnGoodGround";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -517,7 +517,7 @@ static function X2AbilityTemplate AddExecutionerAbility()
 	local X2AbilityTemplate					Template;
 	local X2Effect_Executioner				AimandCritModifiers;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'Executioner');
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Executioner');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityExecutioner";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -541,7 +541,7 @@ static function X2AbilityTemplate AddResilienceAbility()
 	local X2AbilityTemplate					Template;
 	local X2Effect_Resilience				MyCritModifier;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'Resilience');
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Resilience');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityResilience";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
