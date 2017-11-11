@@ -138,7 +138,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddBringEmOnAbility());
 	Templates.AddItem(AddHardTargetAbility());
 	Templates.AddItem(AddInfighterAbility());
-	//Templates.AddItem(AddDepthPerceptionAbility());
+	Templates.AddItem(AddDepthPerceptionAbility());
 	//Templates.AddItem(AddWilltoSurviveAbility()); 
 	//Templates.AddItem(AddLightEmUpAbility());
 	//Templates.AddItem(AddCloseEncountersAbility());
@@ -679,6 +679,29 @@ static function X2AbilityTemplate AddInfighterAbility()
 	Template.bCrossClassEligible = true;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	//  No visualization
+	return Template;
+}
+
+static function X2AbilityTemplate AddDepthPerceptionAbility()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_LW2WotC_DepthPerception				AttackBonus;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_DepthPerception');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityDepthPerception";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	//Template.bIsPassive = true;
+	AttackBonus = new class 'X2Effect_LW2WotC_DepthPerception';
+	AttackBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	AttackBonus.BuildPersistentEffect(1, true, false);
+	Template.AddTargetEffect(AttackBonus);
+	Template.bCrossClassEligible = false;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	return Template;
 }
 

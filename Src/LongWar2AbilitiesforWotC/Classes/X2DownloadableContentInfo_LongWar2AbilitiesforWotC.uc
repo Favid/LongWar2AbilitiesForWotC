@@ -103,6 +103,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'INFIGHTER_MAX_TILES':
 			OutString = getStringBasedOnValue(class'X2Effect_LW2WotC_Infighter'.default.INFIGHTER_MAX_TILES, "tile", "tiles");
 			return true;
+		case 'DP_AIM_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_DepthPerception'.default.DP_AIM_BONUS);
+			return true;
+		case 'DP_ANTIDODGE_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_DepthPerception'.default.DP_ANTIDODGE_BONUS);
+			return true;
 		default: 
 			return false;
 	}
