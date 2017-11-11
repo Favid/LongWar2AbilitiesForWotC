@@ -155,6 +155,18 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'CE_USES_PER_TURN':
 			OutString = getNumRefundsString(class'X2Effect_LW2WotC_CloseEncounters'.default.CE_USES_PER_TURN);
 			return true;
+		case 'LONEWOLF_AIM_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_LoneWolf'.default.LONEWOLF_AIM_BONUS);
+			return true;
+		case 'LONEWOLF_DEF_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_LoneWolf'.default.LONEWOLF_DEF_BONUS);
+			return true;
+		case 'LONEWOLF_MIN_DIST_TILES':
+			OutString = string(class'X2Effect_LW2WotC_LoneWolf'.default.LONEWOLF_MIN_DIST_TILES);
+			return true;
+		case 'LONEWOLF_CRIT_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_LoneWolf'.default.LONEWOLF_CRIT_BONUS);
+			return true;
 		default: 
 			return false;
 	}

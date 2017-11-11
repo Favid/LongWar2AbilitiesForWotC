@@ -142,7 +142,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddWilltoSurviveAbility()); 
 	Templates.AddItem(AddLightEmUpAbility());
 	Templates.AddItem(AddCloseEncountersAbility());
-	//Templates.AddItem(AddLoneWolfAbility());
+	Templates.AddItem(AddLoneWolfAbility());
 	//Templates.AddItem(AddLowProfileAbility());
 	//Templates.AddItem(AddDoubleTapAbility());
 	//Templates.AddItem(DoubleTap2ndShot()); //Additional Ability
@@ -768,6 +768,30 @@ static function X2AbilityTemplate AddCloseEncountersAbility()
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	// Visualization handled in Effect
 	return Template;
+}
+
+static function X2AbilityTemplate AddLoneWolfAbility()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_LW2WotC_LoneWolf					AimandDefModifiers;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_LoneWolf');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityLoneWolf";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	AimandDefModifiers = new class 'X2Effect_LW2WotC_LoneWolf';
+	AimandDefModifiers.BuildPersistentEffect (1, true, false);
+	AimandDefModifiers.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (AimandDefModifiers);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;	
+	//no visualization
+	return Template;		
 }
 
 
