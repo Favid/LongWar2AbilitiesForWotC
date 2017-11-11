@@ -140,7 +140,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddInfighterAbility());
 	Templates.AddItem(AddDepthPerceptionAbility());
 	Templates.AddItem(AddWilltoSurviveAbility()); 
-	//Templates.AddItem(AddLightEmUpAbility());
+	Templates.AddItem(AddLightEmUpAbility());
 	//Templates.AddItem(AddCloseEncountersAbility());
 	//Templates.AddItem(AddLoneWolfAbility());
 	//Templates.AddItem(AddLowProfileAbility());
@@ -734,6 +734,15 @@ static function X2AbilityTemplate AddWilltoSurviveAbility()
 	Template.bCrossClassEligible = true;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	//  No visualization
+	return Template;
+}
+
+static function X2AbilityTemplate AddLightEmUpAbility()
+{
+	local X2AbilityTemplate			Template;
+
+	Template = PurePassive('LW2WotC_LightEmUp', "img:///UILibrary_LW_PerkPack.LW_AbilityLightEmUp");
+
 	return Template;
 }
 

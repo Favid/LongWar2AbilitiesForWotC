@@ -19,6 +19,37 @@ static event OnLoadedSavedGame()
 {}
 
 /// <summary>
+/// Called after the Templates have been created (but before they are validated) while this DLC / Mod is installed.
+/// </summary>
+static event OnPostTemplatesCreated()
+{
+	PatchAbilitiesForLightEmUp();
+}
+
+private static function PatchAbilitiesForLightEmUp()
+{
+    local X2AbilityTemplateManager TemplateManager;
+	local X2AbilityTemplate AbilityTemplate;
+    local X2AbilityCost_ActionPoints ActionPointCost;
+    local int i;
+
+    TemplateManager = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
+    AbilityTemplate = TemplateManager.FindAbilityTemplate('StandardShot');
+    if (AbilityTemplate != none)
+    {
+        for (i = 0; i < AbilityTemplate.AbilityCosts.Length; i++)
+	    {
+		    ActionPointCost = X2AbilityCost_ActionPoints(AbilityTemplate.AbilityCosts[i]);
+		    if (ActionPointCost != none)
+		    {
+                ActionPointCost.DoNotConsumeAllSoldierAbilities.AddItem('LW2WotC_LightEmUp');
+			    break;
+		    }
+	    }
+    }
+}
+
+/// <summary>
 /// Called when the player starts a new campaign while this DLC / Mod is installed
 /// </summary>
 static event InstallNewCampaign(XComGameState StartState)
