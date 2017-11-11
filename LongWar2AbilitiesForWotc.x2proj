@@ -26,6 +26,9 @@
     <Content Include="Config\XComLW_SoldierSkills.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Content\LW_Perk_CloseEncounters.upk">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Content\UILibrary_LW_PerkPack.upk">
       <SubType>Content</SubType>
     </Content>
@@ -52,6 +55,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_CloseandPersonal.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_CloseEncounters.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_DamnGoodGround.uc">

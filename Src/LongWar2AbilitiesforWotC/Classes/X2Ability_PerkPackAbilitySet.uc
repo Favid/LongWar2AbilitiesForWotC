@@ -141,7 +141,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddDepthPerceptionAbility());
 	Templates.AddItem(AddWilltoSurviveAbility()); 
 	Templates.AddItem(AddLightEmUpAbility());
-	//Templates.AddItem(AddCloseEncountersAbility());
+	Templates.AddItem(AddCloseEncountersAbility());
 	//Templates.AddItem(AddLoneWolfAbility());
 	//Templates.AddItem(AddLowProfileAbility());
 	//Templates.AddItem(AddDoubleTapAbility());
@@ -743,6 +743,30 @@ static function X2AbilityTemplate AddLightEmUpAbility()
 
 	Template = PurePassive('LW2WotC_LightEmUp', "img:///UILibrary_LW_PerkPack.LW_AbilityLightEmUp");
 
+	return Template;
+}
+
+static function X2AbilityTemplate AddCloseEncountersAbility()
+{
+	local X2AbilityTemplate							Template;
+	local X2Effect_LW2WotC_CloseEncounters					ActionEffect;
+	
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_CloseEncounters');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityCloseEncounters";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	//Template.bIsPassive = true;  // needs to be off to allow perks
+	ActionEffect = new class 'X2Effect_LW2WotC_CloseEncounters';
+	ActionEffect.SetDisplayInfo (ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	ActionEffect.BuildPersistentEffect(1, true, false);
+	Template.AddTargetEffect(ActionEffect);
+	Template.bCrossClassEligible = false;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	// Visualization handled in Effect
 	return Template;
 }
 

@@ -149,6 +149,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'W2S_LOW_COVER_ARMOR_BONUS':
 			OutString = string(class'X2Effect_LW2WotC_WilltoSurvive'.default.W2S_LOW_COVER_ARMOR_BONUS);
 			return true;
+		case 'CE_MAX_TILES':
+			OutString = getStringBasedOnValue(class'X2Effect_LW2WotC_CloseEncounters'.default.CE_MAX_TILES, "tile", "tiles");
+			return true;
+		case 'CE_USES_PER_TURN':
+			OutString = getNumRefundsString(class'X2Effect_LW2WotC_CloseEncounters'.default.CE_USES_PER_TURN);
+			return true;
 		default: 
 			return false;
 	}
