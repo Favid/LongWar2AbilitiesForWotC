@@ -139,7 +139,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddHardTargetAbility());
 	Templates.AddItem(AddInfighterAbility());
 	Templates.AddItem(AddDepthPerceptionAbility());
-	//Templates.AddItem(AddWilltoSurviveAbility()); 
+	Templates.AddItem(AddWilltoSurviveAbility()); 
 	//Templates.AddItem(AddLightEmUpAbility());
 	//Templates.AddItem(AddCloseEncountersAbility());
 	//Templates.AddItem(AddLoneWolfAbility());
@@ -702,6 +702,38 @@ static function X2AbilityTemplate AddDepthPerceptionAbility()
 	Template.AddTargetEffect(AttackBonus);
 	Template.bCrossClassEligible = false;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	return Template;
+}
+
+static function X2AbilityTemplate AddWilltoSurviveAbility()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_LW2WotC_WilltoSurvive				ArmorBonus;
+	local X2Effect_PersistentStatChange			WillBonus;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_WilltoSurvive');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityWilltoSurvive";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	ArmorBonus = new class 'X2Effect_LW2WotC_WilltoSurvive';
+	ArmorBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	ArmorBonus.BuildPersistentEffect(1, true, false);
+	Template.AddTargetEffect(ArmorBonus);
+
+	WillBonus = new class'X2Effect_PersistentStatChange';
+	WillBonus.AddPersistentStatChange(eStat_Will, float(default.WILLTOSURVIVE_WILLBONUS));
+	WillBonus.BuildPersistentEffect (1, true, false, false, 7);
+	Template.AddTargetEffect(WillBonus);
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.WillLabel, eStat_Will, default.WILLTOSURVIVE_WILLBONUS);
+
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  No visualization
 	return Template;
 }
 

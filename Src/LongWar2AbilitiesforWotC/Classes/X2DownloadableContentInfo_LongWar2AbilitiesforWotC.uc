@@ -109,6 +109,15 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'DP_ANTIDODGE_BONUS':
 			OutString = string(class'X2Effect_LW2WotC_DepthPerception'.default.DP_ANTIDODGE_BONUS);
 			return true;
+		case 'WILLTOSURVIVE_WILLBONUS':
+			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.WILLTOSURVIVE_WILLBONUS);
+			return true;
+		case 'W2S_HIGH_COVER_ARMOR_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_WilltoSurvive'.default.W2S_HIGH_COVER_ARMOR_BONUS);
+			return true;
+		case 'W2S_LOW_COVER_ARMOR_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_WilltoSurvive'.default.W2S_LOW_COVER_ARMOR_BONUS);
+			return true;
 		default: 
 			return false;
 	}
