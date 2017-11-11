@@ -88,3 +88,9 @@ function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStat
 	}
 	return false;
 }
+
+defaultproperties
+{
+    DuplicateResponse=eDupe_Ignore
+    EffectName="LW2WotC_CloseEncounters"
+}
