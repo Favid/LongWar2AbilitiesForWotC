@@ -80,13 +80,22 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 			OutString = getSquadsightString(class'X2Effect_LW2WotC_Aggression'.default.AGG_SQUADSIGHT_ENEMIES_APPLY);
 			return true;
 		case 'BEO_BONUS_CRIT_DAMAGE_PER_ENEMY':
-			OutString = string(class'X2Effect_LW2WotC_BringEmOn'.default.BEO_BONUS_CRIT_DAMAGE_PER_ENEMY * 2);
+			OutString = string(clamp(class'X2Effect_LW2WotC_BringEmOn'.default.BEO_BONUS_CRIT_DAMAGE_PER_ENEMY * 2, 0, class'X2Effect_LW2WotC_BringEmOn'.default.BEO_MAX_BONUS_CRIT_DAMAGE));
 			return true;
 		case 'BEO_MAX_BONUS_CRIT_DAMAGE':
 			OutString = string(class'X2Effect_LW2WotC_BringEmOn'.default.BEO_MAX_BONUS_CRIT_DAMAGE);
 			return true;
 		case 'BEO_SQUADSIGHT_ENEMIES_APPLY':
 			OutString = getSquadsightString(class'X2Effect_LW2WotC_BringEmOn'.default.BEO_SQUADSIGHT_ENEMIES_APPLY);
+			return true;
+		case 'HT_DODGE_BONUS_PER_ENEMY':
+			OutString = string(class'X2Effect_LW2WotC_HardTarget'.default.HT_DODGE_BONUS_PER_ENEMY);
+			return true;
+		case 'HT_MAX_DODGE_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_HardTarget'.default.HT_MAX_DODGE_BONUS);
+			return true;
+		case 'HT_SQUADSIGHT_ENEMIES_APPLY':
+			OutString = getSquadsightString(class'X2Effect_LW2WotC_HardTarget'.default.HT_SQUADSIGHT_ENEMIES_APPLY);
 			return true;
 		default: 
 			return false;

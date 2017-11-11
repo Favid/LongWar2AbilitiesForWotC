@@ -60,6 +60,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Executioner.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_HardTarget.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_HitAndRun.uc">
       <SubType>Content</SubType>
     </Content>

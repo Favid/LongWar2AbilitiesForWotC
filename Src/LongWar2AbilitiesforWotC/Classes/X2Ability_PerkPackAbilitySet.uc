@@ -136,7 +136,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddTacticalSenseAbility());
 	Templates.AddItem(AddAggressionAbility());
 	Templates.AddItem(AddBringEmOnAbility());
-	//Templates.AddItem(AddHardTargetAbility());
+	Templates.AddItem(AddHardTargetAbility());
 	//Templates.AddItem(AddInfighterAbility());
 	//Templates.AddItem(AddDepthPerceptionAbility());
 	//Templates.AddItem(AddWilltoSurviveAbility()); 
@@ -630,6 +630,31 @@ static function X2AbilityTemplate AddBringEmOnAbility()
 	Template.bCrossClassEligible = true;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	//  No visualization
+	return Template;
+}
+
+static function X2AbilityTemplate AddHardTargetAbility()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_LW2WotC_HardTarget					DodgeBonus;
+		
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_HardTarget');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityHardTarget";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	DodgeBonus = new class 'X2Effect_LW2WotC_HardTarget';
+	DodgeBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	DodgeBonus.BuildPersistentEffect(1, true, false);
+	Template.AddTargetEffect(DodgeBonus);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  No visualization
+
 	return Template;
 }
 
