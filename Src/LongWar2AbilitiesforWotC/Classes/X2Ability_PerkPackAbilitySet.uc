@@ -590,7 +590,7 @@ static function X2AbilityTemplate AddAggressionAbility()
 	local X2AbilityTemplate				Template;
 	local X2Effect_LW2WotC_Aggression			MyCritModifier;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'Aggression');
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Aggression');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityAggression";	
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
