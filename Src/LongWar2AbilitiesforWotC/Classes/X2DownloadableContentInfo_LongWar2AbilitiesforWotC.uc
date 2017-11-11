@@ -97,6 +97,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'HT_SQUADSIGHT_ENEMIES_APPLY':
 			OutString = getSquadsightString(class'X2Effect_LW2WotC_HardTarget'.default.HT_SQUADSIGHT_ENEMIES_APPLY);
 			return true;
+		case 'INFIGHTER_DODGE_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_Infighter'.default.INFIGHTER_DODGE_BONUS);
+			return true;
+		case 'INFIGHTER_MAX_TILES':
+			OutString = getStringBasedOnValue(class'X2Effect_LW2WotC_Infighter'.default.INFIGHTER_MAX_TILES, "tile", "tiles");
+			return true;
 		default: 
 			return false;
 	}
