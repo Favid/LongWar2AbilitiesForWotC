@@ -143,7 +143,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddLightEmUpAbility());
 	Templates.AddItem(AddCloseEncountersAbility());
 	Templates.AddItem(AddLoneWolfAbility());
-	//Templates.AddItem(AddLowProfileAbility());
+	Templates.AddItem(AddLowProfileAbility());
 	//Templates.AddItem(AddDoubleTapAbility());
 	//Templates.AddItem(DoubleTap2ndShot()); //Additional Ability
 	//Templates.AddItem(AddTraverseFireAbility());
@@ -792,6 +792,30 @@ static function X2AbilityTemplate AddLoneWolfAbility()
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;	
 	//no visualization
 	return Template;		
+}
+
+static function X2AbilityTemplate AddLowProfileAbility()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_LW2WotC_LowProfile			DefModifier;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_LowProfile');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityLowProfile";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	DefModifier = new class 'X2Effect_LW2WotC_LowProfile';
+	DefModifier.BuildPersistentEffect (1, true, false);
+	DefModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (DefModifier);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;	
+	//no visualization
+	return Template;
 }
 
 
