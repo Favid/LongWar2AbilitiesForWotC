@@ -159,7 +159,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddCommissarAbility());
 	//Templates.AddItem(AddGunslingerAbility());
 	//Templates.AddItem(GunslingerShot()); //Additional Ability
-	//Templates.AddItem(AddHyperReactivePupilsAbility());
+	Templates.AddItem(AddHyperReactivePupilsAbility());
 	//Templates.AddItem(AddSteadyWeaponAbility());
 	//Templates.AddItem(AddLockedOnAbility());
 	//Templates.AddItem(AddSentinel_LWAbility());
@@ -815,6 +815,30 @@ static function X2AbilityTemplate AddLowProfileAbility()
 	Template.bCrossClassEligible = true;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;	
 	//no visualization
+	return Template;
+}
+
+static function X2AbilityTemplate AddHyperReactivePupilsAbility()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_HyperReactivePupils		HyperReactivePupilsEffect;
+	
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_HyperReactivePupils');	
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityHyperreactivePupils";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.bDisplayInUITacticalText = false;
+	Template.Hostility = eHostility_Neutral;
+	Template.bIsPassive = true;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);		
+	HyperReactivePupilsEffect = new class'X2Effect_LW2WotC_HyperReactivePupils';
+	HyperReactivePupilsEffect.BuildPersistentEffect(1, true, false,, eGameRule_TacticalGameStart);
+	HyperReactivePupilsEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect(HyperReactivePupilsEffect);
+	Template.bCrossClassEligible = false;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	return Template;
 }
 

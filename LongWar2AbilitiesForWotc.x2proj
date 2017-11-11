@@ -75,6 +75,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_HitAndRun.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_HyperReactivePupils.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Infighter.uc">
       <SubType>Content</SubType>
     </Content>
@@ -94,6 +97,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_WilltoSurvive.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_LastShotDetails.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

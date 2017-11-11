@@ -167,6 +167,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'LONEWOLF_CRIT_BONUS':
 			OutString = string(class'X2Effect_LW2WotC_LoneWolf'.default.LONEWOLF_CRIT_BONUS);
 			return true;
+		case 'HYPERREACTIVE_PUPILS_AIM_BONUS':
+			OutString = string(class'X2Effect_LW2WotC_HyperReactivePupils'.default.HYPERREACTIVE_PUPILS_AIM_BONUS);
+			return true;
 		default: 
 			return false;
 	}
