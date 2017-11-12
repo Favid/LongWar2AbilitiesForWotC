@@ -111,3 +111,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+PublishedFileId.ID
+Src/LongWar2AbilitiesforWotC/Classes/X2Ability_PerkPackAbilitySet.uc
