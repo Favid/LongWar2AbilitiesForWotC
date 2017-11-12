@@ -96,10 +96,16 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Resilience.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Sentinel.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_TacticalSense.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_WilltoSurvive.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_EffectCounter.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_LastShotDetails.uc">

@@ -162,7 +162,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddHyperReactivePupilsAbility());
 	//Templates.AddItem(AddSteadyWeaponAbility());
 	Templates.AddItem(AddLockedOnAbility());
-	//Templates.AddItem(AddSentinel_LWAbility());
+	Templates.AddItem(AddSentinel_LWAbility());
 	//Templates.AddItem(AddRapidReactionAbility());
 	//Templates.AddItem(AddLightningReflexes_LWAbility());
 	//Templates.AddItem(AddCutthroatAbility());
@@ -863,6 +863,30 @@ static function X2AbilityTemplate AddLockedOnAbility()
 	Template.AddTargetEffect(LockedOnEffect);
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
+	return Template;
+}
+
+static function X2AbilityTemplate AddSentinel_LWAbility()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_Sentinel				PersistentEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Sentinel');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilitySentinel";
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	PersistentEffect = new class'X2Effect_LW2WotC_Sentinel';
+	PersistentEffect.BuildPersistentEffect(1, true, false);
+	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,, Template.AbilitySourceName);
+	Template.AddTargetEffect(PersistentEffect);
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.bCrossClassEligible = false;
 	return Template;
 }
 
