@@ -4,7 +4,7 @@
 //  PURPOSE: Custom Single Target class to limit range of CCS reaction fire
 //--------------------------------------------------------------------------------------- 
 
-class X2AbilityTarget_Single_CCS extends X2AbilityTarget_Single config (LW_SoldierSkills);
+class X2AbilityTarget_LW2WotC_Single_CCS extends X2AbilityTarget_Single config (LW_SoldierSkills);
 
 var config int CCS_RANGE;
 var config bool CCS_PROC_ON_OWN_TURN;

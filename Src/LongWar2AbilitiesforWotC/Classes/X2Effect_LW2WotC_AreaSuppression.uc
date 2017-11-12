@@ -3,7 +3,7 @@
 //  AUTHOR:  Amineri (Pavonis Interactive)
 //  PURPOSE: Implements AoE Damage immunities for Bastion, based on Solace ability
 //---------------------------------------------------------------------------------------
-class X2Effect_AreaSuppression extends X2Effect_Suppression config(LW_SoldierSkills);
+class X2Effect_LW2WotC_AreaSuppression extends X2Effect_Suppression config(LW_SoldierSkills);
 
 //`include(..\..\XComGame\Mods\LW_Overhaul\Src\LW_PerkPack_Integrated\LW_PerkPack.uci)
 
@@ -173,5 +173,5 @@ static function bool ShouldRemoveAreaSuppression(XComGameState_Unit SourceUnit, 
 
 DefaultProperties
 {
-	EffectName="AreaSuppression"
+	EffectName="LW2WotC_AreaSuppression"
 }

@@ -4,7 +4,7 @@
 //  PURPOSE: Sets up aim and defense bonuses for DG
 //--------------------------------------------------------------------------------------- 
 
-class X2Effect_DamnGoodGround extends X2Effect_Persistent config (LW_SoldierSkills);
+class X2Effect_LW2WotC_DamnGoodGround extends X2Effect_Persistent config (LW_SoldierSkills);
 
 var config int DGG_AIM_BONUS;
 var config int DGG_DEF_BONUS;
@@ -49,7 +49,7 @@ function GetToHitAsTargetModifiers(XComGameState_Effect EffectState, XComGameSta
 defaultproperties
 {
     DuplicateResponse=eDupe_Ignore
-    EffectName="DamnGoodGround"
+    EffectName="LW2WotC_DamnGoodGround"
 }
 
 

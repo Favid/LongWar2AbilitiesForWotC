@@ -131,19 +131,19 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(CloseCombatSpecialistAttack()); //Additional Ability
 	Templates.AddItem(AddCloseandPersonalAbility());
 	Templates.AddItem(AddDamnGoodGroundAbility());
-	//Templates.AddItem(AddExecutionerAbility());
-	//Templates.AddItem(AddResilienceAbility());
-	//Templates.AddItem(AddTacticalSenseAbility());
-	//Templates.AddItem(AddAggressionAbility());
-	//Templates.AddItem(AddBringEmOnAbility());
-	//Templates.AddItem(AddHardTargetAbility());
-	//Templates.AddItem(AddInfighterAbility());
-	//Templates.AddItem(AddDepthPerceptionAbility());
-	//Templates.AddItem(AddWilltoSurviveAbility()); 
-	//Templates.AddItem(AddLightEmUpAbility());
-	//Templates.AddItem(AddCloseEncountersAbility());
-	//Templates.AddItem(AddLoneWolfAbility());
-	//Templates.AddItem(AddLowProfileAbility());
+	Templates.AddItem(AddExecutionerAbility());
+	Templates.AddItem(AddResilienceAbility());
+	Templates.AddItem(AddTacticalSenseAbility());
+	Templates.AddItem(AddAggressionAbility());
+	Templates.AddItem(AddBringEmOnAbility());
+	Templates.AddItem(AddHardTargetAbility());
+	Templates.AddItem(AddInfighterAbility());
+	Templates.AddItem(AddDepthPerceptionAbility());
+	Templates.AddItem(AddWilltoSurviveAbility()); 
+	Templates.AddItem(AddLightEmUpAbility());
+	Templates.AddItem(AddCloseEncountersAbility());
+	Templates.AddItem(AddLoneWolfAbility());
+	Templates.AddItem(AddLowProfileAbility());
 	//Templates.AddItem(AddDoubleTapAbility());
 	//Templates.AddItem(DoubleTap2ndShot()); //Additional Ability
 	//Templates.AddItem(AddTraverseFireAbility());
@@ -159,7 +159,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddCommissarAbility());
 	//Templates.AddItem(AddGunslingerAbility());
 	//Templates.AddItem(GunslingerShot()); //Additional Ability
-	//Templates.AddItem(AddHyperReactivePupilsAbility());
+	Templates.AddItem(AddHyperReactivePupilsAbility());
 	//Templates.AddItem(AddSteadyWeaponAbility());
 	//Templates.AddItem(AddLockedOnAbility());
 	//Templates.AddItem(AddSentinel_LWAbility());
@@ -211,9 +211,9 @@ static function array<X2DataTemplate> CreateTemplates()
 static function X2AbilityTemplate AddCenterMassAbility()
 {
 	local X2AbilityTemplate						Template;
-	local X2Effect_PrimaryHitBonusDamage        DamageEffect;
+	local X2Effect_LW2WotC_PrimaryHitBonusDamage        DamageEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'CenterMass');
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_CenterMass');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityCenterMass";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -222,7 +222,7 @@ static function X2AbilityTemplate AddCenterMassAbility()
 	Template.AbilityTargetStyle = default.SelfTarget;
 	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
 	Template.bIsPassive = true;
-	DamageEffect = new class'X2Effect_PrimaryHitBonusDamage';
+	DamageEffect = new class'X2Effect_LW2WotC_PrimaryHitBonusDamage';
 	DamageEffect.BonusDmg = default.CENTERMASS_DAMAGE;
 	DamageEffect.includepistols = true;
 	DamageEffect.includesos = true;
@@ -240,9 +240,9 @@ static function X2AbilityTemplate AddCenterMassAbility()
 static function X2AbilityTemplate AddLethalAbility()
 {
 	local X2AbilityTemplate						Template;
-	local X2Effect_PrimaryHitBonusDamage        DamageEffect;
+	local X2Effect_LW2WotC_PrimaryHitBonusDamage        DamageEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'Lethal');
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_Lethal');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityKinetic";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -251,7 +251,7 @@ static function X2AbilityTemplate AddLethalAbility()
 	Template.AbilityTargetStyle = default.SelfTarget;
 	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
 	Template.bIsPassive = true;
-	DamageEffect = new class'X2Effect_PrimaryHitBonusDamage';
+	DamageEffect = new class'X2Effect_LW2WotC_PrimaryHitBonusDamage';
 	DamageEffect.BonusDmg = default.LETHAL_DAMAGE;
 	DamageEffect.includepistols = false;
 	DamageEffect.includesos = false;
@@ -269,9 +269,9 @@ static function X2AbilityTemplate AddLethalAbility()
 static function X2AbilityTemplate AddHitandRunAbility()
 {
 	local X2AbilityTemplate					Template;
-	local X2Effect_HitandRun				HitandRunEffect;
+	local X2Effect_LW2WotC_HitandRun				HitandRunEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'HitandRun');
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_HitandRun');
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
 	Template.Hostility = eHostility_Neutral;
@@ -279,7 +279,7 @@ static function X2AbilityTemplate AddHitandRunAbility()
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTargetStyle = default.SelfTarget;
 	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	HitandRunEffect = new class'X2Effect_HitandRun';
+	HitandRunEffect = new class'X2Effect_LW2WotC_HitandRun';
 	HitandRunEffect.BuildPersistentEffect(1, true, false, false);
 	HitandRunEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage,,,Template.AbilitySourceName);
 	HitandRunEffect.DuplicateResponse = eDupe_Ignore;
@@ -287,16 +287,16 @@ static function X2AbilityTemplate AddHitandRunAbility()
 	Template.AddTargetEffect(HitandRunEffect);
 	Template.bCrossClassEligible = false;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	//  NOTE: Visualization handled in X2Effect_HitandRun
+	//  NOTE: Visualization handled in X2Effect_LW2WotC_HitandRun
 	return Template;
 }
 
 static function X2AbilityTemplate AddHitandSlitherAbility()
 {
 	local X2AbilityTemplate					Template;
-	local X2Effect_HitandRun				HitandRunEffect;
+	local X2Effect_LW2WotC_HitandRun				HitandRunEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'HitandSlither');
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_HitandSlither');
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
 	Template.Hostility = eHostility_Neutral;
@@ -304,7 +304,7 @@ static function X2AbilityTemplate AddHitandSlitherAbility()
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTargetStyle = default.SelfTarget;
 	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	HitandRunEffect = new class'X2Effect_HitandRun';
+	HitandRunEffect = new class'X2Effect_LW2WotC_HitandRun';
 	HitandRunEffect.BuildPersistentEffect(1, true, false, false);
 	HitandRunEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage,,,Template.AbilitySourceName);
 	HitandRunEffect.DuplicateResponse = eDupe_Ignore;
@@ -312,7 +312,7 @@ static function X2AbilityTemplate AddHitandSlitherAbility()
 	Template.AddTargetEffect(HitandRunEffect);
 	Template.bCrossClassEligible = false;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	//  NOTE: Visualization handled in X2Effect_HitandRun
+	//  NOTE: Visualization handled in X2Effect_LW2WotC_HitandRun
 	return Template;
 }
 
@@ -320,8 +320,8 @@ static function X2AbilityTemplate AddCloseCombatSpecialistAbility()
 {
 	local X2AbilityTemplate                 Template;
 
-	Template = PurePassive('CloseCombatSpecialist', "img:///UILibrary_LW_PerkPack.LW_AbilityCloseCombatSpecialist", false, 'eAbilitySource_Perk');
-	Template.AdditionalAbilities.AddItem('CloseCombatSpecialistAttack');
+	Template = PurePassive('LW2WotC_CloseCombatSpecialist', "img:///UILibrary_LW_PerkPack.LW_AbilityCloseCombatSpecialist", false, 'eAbilitySource_Perk');
+	Template.AdditionalAbilities.AddItem('LW2WotC_CloseCombatSpecialistAttack');
 	return Template;
 }
 
@@ -337,10 +337,10 @@ static function X2AbilityTemplate CloseCombatSpecialistAttack()
 	local X2Condition_UnitEffects						SuppressedCondition;
 	local X2Condition_Visibility						TargetVisibilityCondition;
 	local X2AbilityCost_Ammo							AmmoCost;
-	local X2AbilityTarget_Single_CCS					SingleTarget;
+	local X2AbilityTarget_LW2WotC_Single_CCS					SingleTarget;
 	//local X2AbilityCooldown								Cooldown;	
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'CloseCombatSpecialistAttack');
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_CloseCombatSpecialistAttack');
 
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
@@ -403,10 +403,10 @@ static function X2AbilityTemplate CloseCombatSpecialistAttack()
 
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
-	SingleTarget = new class 'X2AbilityTarget_Single_CCS';
+	SingleTarget = new class 'X2AbilityTarget_LW2WotC_Single_CCS';
 	//SingleTarget.OnlyIncludeTargetsInsideWeaponRange = true;
 	Template.AbilityTargetStyle = SingleTarget;
 
@@ -453,7 +453,7 @@ static function EventListenerReturn CloseCombatSpecialistConcealmentListener(Obj
 	if (AbilityContext != None && AbilityContext.InputContext.SourceObject != ConcealmentBrokenUnit.ConcealmentBrokenByUnitRef)
 		return ELR_NoInterrupt;
 
-	CloseCombatSpecialistRef = ConcealmentBrokenUnit.FindAbility('CloseCombatSpecialistAttack');
+	CloseCombatSpecialistRef = ConcealmentBrokenUnit.FindAbility('LW2WotC_CloseCombatSpecialistAttack');
 	if (CloseCombatSpecialistRef.ObjectID == 0)
 		return ELR_NoInterrupt;
 
@@ -468,9 +468,9 @@ static function EventListenerReturn CloseCombatSpecialistConcealmentListener(Obj
 static function X2AbilityTemplate AddCloseandPersonalAbility()
 {
 	local X2AbilityTemplate						Template;
-	local X2Effect_CloseandPersonal				CritModifier;
+	local X2Effect_LW2WotC_CloseandPersonal				CritModifier;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'CloseandPersonal');
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_CloseandPersonal');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityCloseandPersonal";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -479,7 +479,7 @@ static function X2AbilityTemplate AddCloseandPersonalAbility()
 	Template.AbilityTargetStyle = default.SelfTarget;
 	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
 	Template.bIsPassive = true;
-	CritModifier = new class 'X2Effect_CloseandPersonal';
+	CritModifier = new class 'X2Effect_LW2WotC_CloseandPersonal';
 	CritModifier.BuildPersistentEffect (1, true, false);
 	CritModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
 	Template.AddTargetEffect (CritModifier);
@@ -492,9 +492,9 @@ static function X2AbilityTemplate AddCloseandPersonalAbility()
 static function X2AbilityTemplate AddDamnGoodGroundAbility()
 {
 	local X2AbilityTemplate					Template;
-	local X2Effect_DamnGoodGround			AimandDefModifiers;
+	local X2Effect_LW2WotC_DamnGoodGround			AimandDefModifiers;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'DamnGoodGround');
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_DamnGoodGround');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityDamnGoodGround";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -503,7 +503,7 @@ static function X2AbilityTemplate AddDamnGoodGroundAbility()
 	Template.AbilityTargetStyle = default.SelfTarget;
 	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
 	Template.bIsPassive = true;
-	AimandDefModifiers = new class 'X2Effect_DamnGoodGround';
+	AimandDefModifiers = new class 'X2Effect_LW2WotC_DamnGoodGround';
 	AimandDefModifiers.BuildPersistentEffect (1, true, true);
 	AimandDefModifiers.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
 	Template.AddTargetEffect (AimandDefModifiers);
@@ -511,3 +511,335 @@ static function X2AbilityTemplate AddDamnGoodGroundAbility()
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	return Template;		
 }
+
+static function X2AbilityTemplate AddExecutionerAbility()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_LW2WotC_Executioner				AimandCritModifiers;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Executioner');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityExecutioner";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	AimandCritModifiers = new class 'X2Effect_LW2WotC_Executioner';
+	AimandCritModifiers.BuildPersistentEffect (1, true, false);
+	AimandCritModifiers.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (AimandCritModifiers);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;		
+}
+
+static function X2AbilityTemplate AddResilienceAbility()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_LW2WotC_Resilience				MyCritModifier;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Resilience');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityResilience";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	MyCritModifier = new class 'X2Effect_LW2WotC_Resilience';
+	MyCritModifier.CritDef_Bonus = default.RESILIENCE_CRITDEF_BONUS;
+	MyCritModifier.BuildPersistentEffect (1, true, false, true);
+	MyCritModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (MyCritModifier);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;		
+}
+
+static function X2AbilityTemplate AddTacticalSenseAbility()
+{
+	local X2AbilityTemplate				Template;
+	local X2Effect_LW2WotC_TacticalSense		MyDefModifier;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_TacticalSense');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityTacticalSense";	
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.bIsPassive = true;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	MyDefModifier = new class 'X2Effect_LW2WotC_TacticalSense';
+	MyDefModifier.BuildPersistentEffect (1, true, false);
+	MyDefModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (MyDefModifier);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;	
+}
+
+static function X2AbilityTemplate AddAggressionAbility()
+{
+	local X2AbilityTemplate				Template;
+	local X2Effect_LW2WotC_Aggression			MyCritModifier;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Aggression');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityAggression";	
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	MyCritModifier = new class 'X2Effect_LW2WotC_Aggression';
+	MyCritModifier.BuildPersistentEffect (1, true, false);
+	MyCritModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (MyCritModifier);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;	
+}
+
+static function X2AbilityTemplate AddBringEmOnAbility()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_LW2WotC_BringEmOn		            DamageEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_BringEmOn');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityBringEmOn";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	DamageEffect = new class'X2Effect_LW2WotC_BringEmOn';
+	DamageEffect.BuildPersistentEffect(1, true, false, false);
+	DamageEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect(DamageEffect);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  No visualization
+	return Template;
+}
+
+static function X2AbilityTemplate AddHardTargetAbility()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_LW2WotC_HardTarget					DodgeBonus;
+		
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_HardTarget');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityHardTarget";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	DodgeBonus = new class 'X2Effect_LW2WotC_HardTarget';
+	DodgeBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	DodgeBonus.BuildPersistentEffect(1, true, false);
+	Template.AddTargetEffect(DodgeBonus);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  No visualization
+
+	return Template;
+}
+
+static function X2AbilityTemplate AddInfighterAbility()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_LW2WotC_Infighter					DodgeBonus;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_Infighter');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityInfighter";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	DodgeBonus = new class 'X2Effect_LW2WotC_Infighter';
+	DodgeBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	DodgeBonus.BuildPersistentEffect(1, true, false);
+	Template.AddTargetEffect(DodgeBonus);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  No visualization
+	return Template;
+}
+
+static function X2AbilityTemplate AddDepthPerceptionAbility()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_LW2WotC_DepthPerception				AttackBonus;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_DepthPerception');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityDepthPerception";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	//Template.bIsPassive = true;
+	AttackBonus = new class 'X2Effect_LW2WotC_DepthPerception';
+	AttackBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	AttackBonus.BuildPersistentEffect(1, true, false);
+	Template.AddTargetEffect(AttackBonus);
+	Template.bCrossClassEligible = false;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	return Template;
+}
+
+static function X2AbilityTemplate AddWilltoSurviveAbility()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_LW2WotC_WilltoSurvive				ArmorBonus;
+	local X2Effect_PersistentStatChange			WillBonus;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_WilltoSurvive');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityWilltoSurvive";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	ArmorBonus = new class 'X2Effect_LW2WotC_WilltoSurvive';
+	ArmorBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	ArmorBonus.BuildPersistentEffect(1, true, false);
+	Template.AddTargetEffect(ArmorBonus);
+
+	WillBonus = new class'X2Effect_PersistentStatChange';
+	WillBonus.AddPersistentStatChange(eStat_Will, float(default.WILLTOSURVIVE_WILLBONUS));
+	WillBonus.BuildPersistentEffect (1, true, false, false, 7);
+	Template.AddTargetEffect(WillBonus);
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.WillLabel, eStat_Will, default.WILLTOSURVIVE_WILLBONUS);
+
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  No visualization
+	return Template;
+}
+
+static function X2AbilityTemplate AddLightEmUpAbility()
+{
+	local X2AbilityTemplate			Template;
+
+	Template = PurePassive('LW2WotC_LightEmUp', "img:///UILibrary_LW_PerkPack.LW_AbilityLightEmUp");
+
+	return Template;
+}
+
+static function X2AbilityTemplate AddCloseEncountersAbility()
+{
+	local X2AbilityTemplate							Template;
+	local X2Effect_LW2WotC_CloseEncounters					ActionEffect;
+	
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_CloseEncounters');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityCloseEncounters";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	//Template.bIsPassive = true;  // needs to be off to allow perks
+	ActionEffect = new class 'X2Effect_LW2WotC_CloseEncounters';
+	ActionEffect.SetDisplayInfo (ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	ActionEffect.BuildPersistentEffect(1, true, false);
+	Template.AddTargetEffect(ActionEffect);
+	Template.bCrossClassEligible = false;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	// Visualization handled in Effect
+	return Template;
+}
+
+static function X2AbilityTemplate AddLoneWolfAbility()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_LW2WotC_LoneWolf					AimandDefModifiers;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_LoneWolf');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityLoneWolf";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	AimandDefModifiers = new class 'X2Effect_LW2WotC_LoneWolf';
+	AimandDefModifiers.BuildPersistentEffect (1, true, false);
+	AimandDefModifiers.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (AimandDefModifiers);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;	
+	//no visualization
+	return Template;		
+}
+
+static function X2AbilityTemplate AddLowProfileAbility()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_LW2WotC_LowProfile			DefModifier;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_LowProfile');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityLowProfile";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	DefModifier = new class 'X2Effect_LW2WotC_LowProfile';
+	DefModifier.BuildPersistentEffect (1, true, false);
+	DefModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (DefModifier);
+	Template.bCrossClassEligible = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;	
+	//no visualization
+	return Template;
+}
+
+static function X2AbilityTemplate AddHyperReactivePupilsAbility()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_HyperReactivePupils		HyperReactivePupilsEffect;
+	
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_HyperReactivePupils');	
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityHyperreactivePupils";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.bDisplayInUITacticalText = false;
+	Template.Hostility = eHostility_Neutral;
+	Template.bIsPassive = true;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);		
+	HyperReactivePupilsEffect = new class'X2Effect_LW2WotC_HyperReactivePupils';
+	HyperReactivePupilsEffect.BuildPersistentEffect(1, true, false,, eGameRule_TacticalGameStart);
+	HyperReactivePupilsEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect(HyperReactivePupilsEffect);
+	Template.bCrossClassEligible = false;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	return Template;
+}
+
+
