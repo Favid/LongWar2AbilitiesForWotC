@@ -179,6 +179,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'SENTINEL_LW_USES_PER_TURN':
 			OutString = string(class'X2Effect_LW2WotC_Sentinel'.default.SENTINEL_LW_USES_PER_TURN + 1);
 			return true;
+		case 'RAPID_REACTION_USES_PER_TURN':
+			OutString = string(class'X2Effect_LW2WotC_RapidReaction'.default.RAPID_REACTION_USES_PER_TURN + 1);
+			return true;
 		default: 
 			return false;
 	}

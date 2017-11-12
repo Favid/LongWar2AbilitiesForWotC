@@ -163,7 +163,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddSteadyWeaponAbility());
 	Templates.AddItem(AddLockedOnAbility());
 	Templates.AddItem(AddSentinel_LWAbility());
-	//Templates.AddItem(AddRapidReactionAbility());
+	Templates.AddItem(AddRapidReactionAbility());
 	//Templates.AddItem(AddLightningReflexes_LWAbility());
 	//Templates.AddItem(AddCutthroatAbility());
 	//Templates.AddItem(AddRunAndGun_LWAbility());
@@ -882,6 +882,29 @@ static function X2AbilityTemplate AddSentinel_LWAbility()
 	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
 	Template.bIsPassive = true;
 	PersistentEffect = new class'X2Effect_LW2WotC_Sentinel';
+	PersistentEffect.BuildPersistentEffect(1, true, false);
+	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,, Template.AbilitySourceName);
+	Template.AddTargetEffect(PersistentEffect);
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.bCrossClassEligible = false;
+	return Template;
+}
+
+static function X2AbilityTemplate AddRapidReactionAbility()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_RapidReaction			PersistentEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_RapidReaction');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityRapidReaction3";
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	PersistentEffect = new class'X2Effect_LW2WotC_RapidReaction';
 	PersistentEffect.BuildPersistentEffect(1, true, false);
 	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,, Template.AbilitySourceName);
 	Template.AddTargetEffect(PersistentEffect);
