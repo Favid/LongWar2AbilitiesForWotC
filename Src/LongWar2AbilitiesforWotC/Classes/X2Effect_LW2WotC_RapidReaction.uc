@@ -34,17 +34,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 		return;
 	}
 
-	if (UnitState.GetTeam() == eTeam_XCom)
-	{
-		EventMgr.RegisterForEvent(ListenerObj, 'XComTurnBegun', RapidReactionEffectState.ResetUses, ELD_OnStateSubmitted);
-	}
-	else
-	{
-		if (UnitState.GetTeam() == eTeam_Alien)
-		{
-			EventMgr.RegisterForEvent(ListenerObj, 'AlienTurnBegun', RapidReactionEffectState.ResetUses, ELD_OnStateSubmitted);
-		}
-	}
+    EventMgr.RegisterForEvent(ListenerObj, 'PlayerTurnBegun', RapidReactionEffectState.ResetUses, ELD_OnStateSubmitted);
 	EventMgr.RegisterForEvent(EffectObj, 'RapidReactionTriggered', NewEffectState.TriggerAbilityFlyover, ELD_OnStateSubmitted, , UnitState);
 }
 

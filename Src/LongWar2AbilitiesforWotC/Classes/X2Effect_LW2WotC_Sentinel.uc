@@ -9,11 +9,11 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	local X2EventManager						EventMgr;
 	local Object								ListenerObj, EffectObj;
 	local XComGameState_Unit					UnitState;
-
+    
 	EventMgr = `XEVENTMGR;
 	EffectObj = NewEffectState;
 	UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(NewEffectState.ApplyEffectParameters.SourceStateObjectRef.ObjectID));
-
+    
 	if (GetSentinel_LWCounter(NewEffectState) == none)
 	{
 		Sentinel_LWEffectState = XComGameState_Effect_EffectCounter(NewGameState.CreateStateObject(class'XComGameState_Effect_EffectCounter'));
@@ -28,18 +28,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 		return;
 	}
 
-	if (UnitState.GetTeam() == eTeam_XCom)
-	{
-		EventMgr.RegisterForEvent(ListenerObj, 'XComTurnBegun', Sentinel_LWEffectState.ResetUses, ELD_OnStateSubmitted);
-	}
-	else
-	{
-		if (UnitState.GetTeam() == eTeam_Alien)
-		{
-			EventMgr.RegisterForEvent(ListenerObj, 'AlienTurnBegun', Sentinel_LWEffectState.ResetUses, ELD_OnStateSubmitted);
-		}
-	}
-	
+    EventMgr.RegisterForEvent(ListenerObj, 'PlayerTurnBegun', Sentinel_LWEffectState.ResetUses, ELD_OnStateSubmitted);
 	EventMgr.RegisterForEvent(EffectObj, 'LW2WotC_Sentinel_Triggered', NewEffectState.TriggerAbilityFlyover, ELD_OnStateSubmitted, , UnitState);
 }
 
@@ -63,7 +52,10 @@ simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParame
 static function XComGameState_Effect_EffectCounter GetSentinel_LWCounter(XComGameState_Effect Effect)
 {
 	if (Effect != none) 
+    {
 		return XComGameState_Effect_EffectCounter(Effect.FindComponentObject(class'XComGameState_Effect_EffectCounter'));
+    }
+
 	return none;
 }
 
@@ -74,7 +66,7 @@ function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStat
 	local XComGameState_Effect_EffectCounter	CurrentSentinelCounter, UpdatedSentinelCounter;
 	local XComGameState_Unit					TargetUnit;
 	local name ValueName;
-
+    
 	CurrentSentinelCounter = GetSentinel_LWCounter(EffectState);
 	If (CurrentSentinelCounter != none)	 
 	{
@@ -91,7 +83,6 @@ function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStat
 			TargetUnit = XComGameState_Unit(NewGameState.GetGameStateForObjectID(AbilityContext.InputContext.PrimaryTarget.ObjectID));
 			ValueName = name("OverwatchShot" $ TargetUnit.ObjectID);
 			SourceUnit.SetUnitFloatValue (ValueName, 1.0, eCleanup_BeginTurn);
-			//`LOG ("RR Code setting" @ ValueName);
 			SourceUnit.ReserveActionPoints = PreCostReservePoints;
 			UpdatedSentinelCounter = XComGameState_Effect_EffectCounter(NewGameState.CreateStateObject(class'XComGameState_Effect_EffectCounter', CurrentSentinelCounter.ObjectID));
 			UpdatedSentinelCounter.uses += 1;
