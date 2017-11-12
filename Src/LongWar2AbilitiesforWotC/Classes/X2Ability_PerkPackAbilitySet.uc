@@ -161,7 +161,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(GunslingerShot()); //Additional Ability
 	Templates.AddItem(AddHyperReactivePupilsAbility());
 	//Templates.AddItem(AddSteadyWeaponAbility());
-	//Templates.AddItem(AddLockedOnAbility());
+	Templates.AddItem(AddLockedOnAbility());
 	//Templates.AddItem(AddSentinel_LWAbility());
 	//Templates.AddItem(AddRapidReactionAbility());
 	//Templates.AddItem(AddLightningReflexes_LWAbility());
@@ -839,6 +839,30 @@ static function X2AbilityTemplate AddHyperReactivePupilsAbility()
 	Template.AddTargetEffect(HyperReactivePupilsEffect);
 	Template.bCrossClassEligible = false;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	return Template;
+}
+
+static function X2AbilityTemplate AddLockedOnAbility()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_LockedOn					LockedOnEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_LockedOn');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityLockedOn";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	Template.bCrossClassEligible = true;
+	LockedOnEffect = new class'X2Effect_LW2WotC_LockedOn';
+	LockedOnEffect.BuildPersistentEffect(1, true, false,, eGameRule_TacticalGameStart);
+	LockedOnEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect(LockedOnEffect);
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
 	return Template;
 }
 
