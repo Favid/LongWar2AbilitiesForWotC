@@ -41,7 +41,10 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityTarget_LW2WotC_Single_CCS.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Ability_PerkPackAbilitySet.uc">
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Ability_LW2WotC_ActivatedAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Ability_LW2WotC_PassiveAbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2DownloadableContentInfo_LongWar2AbilitiesforWotC.uc" />

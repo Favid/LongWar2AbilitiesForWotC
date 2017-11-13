@@ -63,10 +63,10 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 	switch(Type)
 	{
 		case 'CENTERMASS_DAMAGE':
-			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.CENTERMASS_DAMAGE);
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.CENTERMASS_DAMAGE);
 			return true;
 		case 'LETHAL_DAMAGE':
-			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.LETHAL_DAMAGE);
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.LETHAL_DAMAGE);
 			return true;
 		case 'HNR_USES_PER_TURN':
 			OutString = getNumRefundsString(class'X2Effect_LW2WotC_HitandRun'.default.HNR_USES_PER_TURN);
@@ -75,7 +75,7 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 			OutString = getStringBasedOnValue(class'X2AbilityTarget_LW2WotC_Single_CCS'.default.CCS_RANGE, "tile", "tiles");
 			return true;
 		case 'CCS_AMMO_PER_SHOT':
-			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.CCS_AMMO_PER_SHOT);
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.CCS_AMMO_PER_SHOT);
 			return true;
 		case 'DGG_AIM_BONUS':
 			OutString = string(class'X2Effect_LW2WotC_DamnGoodGround'.default.DGG_AIM_BONUS);
@@ -90,7 +90,7 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 			OutString = string(class'X2Effect_LW2WotC_Executioner'.default.EXECUTIONER_CRIT_BONUS);
 			return true;
 		case 'RESILIENCE_CRITDEF_BONUS':
-			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.RESILIENCE_CRITDEF_BONUS);
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.RESILIENCE_CRITDEF_BONUS);
 			return true;
 		case 'TACTICAL_SENSE_DEF_BONUS_PER_ENEMY':
 			OutString = string(class'X2Effect_LW2WotC_TacticalSense'.default.TACTICAL_SENSE_DEF_BONUS_PER_ENEMY);
@@ -141,7 +141,7 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 			OutString = string(class'X2Effect_LW2WotC_DepthPerception'.default.DP_ANTIDODGE_BONUS);
 			return true;
 		case 'WILLTOSURVIVE_WILLBONUS':
-			OutString = string(class'X2Ability_PerkPackAbilitySet'.default.WILLTOSURVIVE_WILLBONUS);
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.WILLTOSURVIVE_WILLBONUS);
 			return true;
 		case 'W2S_HIGH_COVER_ARMOR_BONUS':
 			OutString = string(class'X2Effect_LW2WotC_WilltoSurvive'.default.W2S_HIGH_COVER_ARMOR_BONUS);
