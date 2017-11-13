@@ -1,70 +1,19 @@
 //---------------------------------------------------------------------------------------
-//  FILE:    X2Ability_PerkPackAbilitySet
-//  AUTHOR:  Amineri / John Lumpkin (Pavonis Interactive)
-//  PURPOSE: Defines general use ability templates
+//  FILE:    X2Ability_LW2WotC_PassiveAbilitySet
+//  PURPOSE: Defines ability templates for passive abilities
 //--------------------------------------------------------------------------------------- 
 
-class X2Ability_PerkPackAbilitySet extends X2Ability config (LW_SoldierSkills);
+class X2Ability_LW2WotC_PassiveAbilitySet extends X2Ability config (LW_SoldierSkills);
 
 var config int CENTERMASS_DAMAGE;
 var config int LETHAL_DAMAGE;
-var config int DOUBLE_TAP_1ST_SHOT_AIM;
-var config int DOUBLE_TAP_2ND_SHOT_AIM;
-var config int DOUBLE_TAP_COOLDOWN;
-var config int DOUBLE_TAP_MIN_ACTION_REQ;
 var config int RESILIENCE_CRITDEF_BONUS;
-var config int WALK_FIRE_AIM_BONUS;
-var config int WALK_FIRE_CRIT_MALUS;
-var config int WALK_FIRE_COOLDOWN;
-var config int WALK_FIRE_AMMO_COST;
-var config int WALK_FIRE_MIN_ACTION_REQ;
-var config int PRECISION_SHOT_COOLDOWN;
-var config int PRECISION_SHOT_AMMO_COST;
-var config int PRECISION_SHOT_CRIT_BONUS;
-var config int CYCLIC_FIRE_COOLDOWN;
-var config int CYCLIC_FIRE_AIM_MALUS;
-var config int CYCLIC_FIRE_MIN_ACTION_REQ;
-var config int CYCLIC_FIRE_SHOTS;
-var config int CYCLIC_FIRE_AMMO;
-var config int STREET_SWEEPER_AMMO_COST;
-var config int STREET_SWEEPER_COOLDOWN;
-var config int STREET_SWEEPER_TILE_WIDTH;
-var config int STREET_SWEEPER_MIN_ACTION_REQ;
-var config float STREET_SWEEPER_CONE_LENGTH;
-var config int SLUG_SHOT_COOLDOWN;
-var config int SLUG_SHOT_AMMO_COST;
-var config int SLUG_SHOT_MIN_ACTION_REQ;
-var config int SLUG_SHOT_PIERCE;
 var config int GRAZING_FIRE_SUCCESS_CHANCE;
-var config int CLUTCH_SHOT_MIN_ACTION_REQ;
-var config int CLUTCH_SHOT_AMMO_COST;
-var config int CLUTCH_SHOT_CHARGES;
-var config int GUNSLINGER_COOLDOWN;
-var config int GUNSLINGER_TILES_RANGE;
-var config int STEADY_WEAPON_AIM_BONUS;
-var config int AREA_SUPPRESSION_AMMO_COST;
-var config int AREA_SUPPRESSION_MAX_SHOTS;
-var config int AREA_SUPPRESSION_SHOT_AMMO_COST;
-var config float AREA_SUPPRESSION_RADIUS;
-var config int SUPPRESSION_LW_SHOT_AIM_BONUS;
-var config int AREA_SUPPRESSION_LW_SHOT_AIM_BONUS;
-var config array<name> SUPPRESSION_LW_INVALID_WEAPON_CATEGORIES;
 var config float DANGER_ZONE_BONUS_RADIUS;
-var config int INTERFERENCE_CV_CHARGES;
-var config int INTERFERENCE_MG_CHARGES;
-var config int INTERFERENCE_BM_CHARGES;
-var config int INTERFERENCE_ACTION_POINTS;
 var config int DAMAGE_CONTROL_DURATION; 
 var config int DAMAGE_CONTROL_ABLATIVE_HP;
 var config int DAMAGE_CONTROL_BONUS_ARMOR;
 var config float COVERT_DETECTION_RANGE_REDUCTION;
-var config float GHOSTWALKER_DETECTION_RANGE_REDUCTION;
-var config int GHOSTWALKER_DURATION;
-var config int GHOSTWALKER_COOLDOWN;
-var config int KUBIKURI_COOLDOWN;
-var config int KUBIKURI_AMMO_COST;
-var config int KUBIKURI_MIN_ACTION_REQ;
-var config float KUBIKURI_MAX_HP_PCT;
 var config float COMBAT_RUSH_RADIUS;
 var config int COMBAT_RUSH_COOLDOWN;
 var config int COMBAT_RUSH_AIM_BONUS;
@@ -74,48 +23,18 @@ var config int COMBAT_RUSH_DEFENSE_BONUS;
 var config int COMBAT_RUSH_DODGE_BONUS;
 var config int COMBAT_RUSH_DURATION;
 var config int HEAVY_FRAGS_DAMAGE;
-var config int IRON_CURTAIN_MIN_ACTION_REQ;
-var config int IRON_CURTAIN_COOLDOWN;
-var config int IRON_CURTAIN_ACTION_POINTS;
-var config int IRON_CURTAIN_AMMO_COST;
-var config int IRON_CURTAIN_TILE_WIDTH;
-var config int IRON_CURTAIN_MOB_DAMAGE_DURATION;
-var config int IRON_CURTAIN_MOBILITY_DAMAGE;
-var config int ABSORPTION_FIELDS_COOLDOWN;
-var config int ABSORPTION_FIELDS_ACTION_POINTS;
-var config int ABSORPTION_FIELDS_DURATION;
-var config int BODY_SHIELD_DEF_BONUS;
-var config int BODY_SHIELD_ENEMY_CRIT_MALUS;
-var config int BODY_SHIELD_COOLDOWN;
-var config int BODY_SHIELD_DURATION;
 var config int IRON_SKIN_MELEE_DAMAGE_REDUCTION;
-var config int MIND_MERGE_MIN_ACTION_POINTS;
-var config int MIND_MERGE_DURATION;
-var config int MIND_MERGE_COOLDOWN;
-var config int SOUL_MERGE_COOLDOWN_REDUCTION;
-var config float MIND_MERGE_WILL_DIVISOR;
-var config float MIND_MERGE_SHIELDHP_DIVISOR;
-var config float SOUL_MERGE_WILL_DIVISOR;
-var config float SOUL_MERGE_SHIELDHP_DIVISOR;
-var config float MIND_MERGE_AMP_MG_WILL_BONUS;
-var config float MIND_MERGE_AMP_MG_SHIELDHP_BONUS;
-var config float MIND_MERGE_AMP_BM_WILL_BONUS;
-var config float MIND_MERGE_AMP_BM_SHIELDHP_BONUS;
-var config float MIND_MERGE_CRIT_DIVISOR;
-var config float SOUL_MERGE_CRIT_DIVISOR;
-var config float MIND_MERGE_AMP_MG_CRIT_BONUS;
-var config float SOUL_MERGE_AMP_BM_CRIT_BONUS;
 var config float FORMIDABLE_EXPLOSIVES_DR;
 var config int FORMIDABLE_ARMOR_MITIGATION;
 var config int FORMIDABLE_ABLATIVE_HP;
 var config int WILLTOSURVIVE_WILLBONUS;
 var config int CUTTHROAT_BONUS_CRIT_CHANCE;
 var config int CUTTHROAT_BONUS_CRIT_DAMAGE;
-var config int MAX_ABLATIVE_FROM_SOULSTEAL;
 var config int CCS_AMMO_PER_SHOT;
 var config int COVERING_FIRE_OFFENSE_MALUS;
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
+
 var config bool NO_STANDARD_ATTACKS_WHEN_ON_FIRE;
 var config bool NO_MELEE_ATTACKS_WHEN_ON_FIRE;
 
@@ -144,67 +63,49 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddCloseEncountersAbility());
 	Templates.AddItem(AddLoneWolfAbility());
 	Templates.AddItem(AddLowProfileAbility());
-	//Templates.AddItem(AddDoubleTapAbility());
-	//Templates.AddItem(DoubleTap2ndShot()); //Additional Ability
 	//Templates.AddItem(AddTraverseFireAbility());
-	//Templates.AddItem(AddWalkFireAbility());
-	//Templates.AddItem(WalkFireDamage()); //Additional Ability
-	//Templates.AddItem(AddPrecisionShotAbility());
-	//Templates.AddItem(PrecisionShotCritDamage()); //Additional Ability
-	//Templates.AddItem(AddCyclicFireAbility());
-	//Templates.AddItem(AddStreetSweeperAbility());
-	//Templates.AddItem(AddSlugShotAbility());
-	//Templates.AddItem(SlugShotRangeEffect()); //Additional Ability
-	//Templates.AddItem(AddClutchShotAbility());
-	//Templates.AddItem(AddCommissarAbility());
-	//Templates.AddItem(AddGunslingerAbility());
-	//Templates.AddItem(GunslingerShot()); //Additional Ability
 	Templates.AddItem(AddHyperReactivePupilsAbility());
-	//Templates.AddItem(AddSteadyWeaponAbility());
-	//Templates.AddItem(AddLockedOnAbility());
-	//Templates.AddItem(AddSentinel_LWAbility());
-	//Templates.AddItem(AddRapidReactionAbility());
+	Templates.AddItem(AddLockedOnAbility());
+	Templates.AddItem(AddSentinel_LWAbility());
+	Templates.AddItem(AddRapidReactionAbility());
 	//Templates.AddItem(AddLightningReflexes_LWAbility());
 	//Templates.AddItem(AddCutthroatAbility());
-	//Templates.AddItem(AddRunAndGun_LWAbility());
 	//Templates.AddItem(AddKillerInstinctAbility());
 	//Templates.AddItem(AddExtraConditioningAbility());
-	//Templates.AddItem(AddSuppressionAbility_LW());
-	//Templates.AddItem(SuppressionShot_LW()); //Additional Ability
-	//Templates.AddItem(AddAreaSuppressionAbility());
-	//Templates.AddItem(AreaSuppressionShot_LW()); //Additional Ability
 	//Templates.AddItem(AddLockdownAbility());
 	//Templates.AddItem(AddDangerZoneAbility());
 	//Templates.AddItem(LockdownBonuses()); //Additional Ability
 	//Templates.AddItem(PurePassive('Mayhem', "img:///UILibrary_LW_PerkPack.LW_AbilityMayhem", false, 'eAbilitySource_Perk'));
 	//Templates.AddItem(MayhemBonuses()); // AdditionalAbility;
-	//Templates.AddItem(AddInterferenceAbility());
 	//Templates.AddItem(AddDamageControlAbility());
 	//Templates.AddItem(AddDamageControlAbilityPassive()); //Additional Ability
 	//Templates.AddItem(AddEvasiveAbility());
 	//Templates.AddItem(RemoveEvasive()); // Additional Ability
-	//Templates.AddItem(AddCovertAbility()); 
 	//Templates.AddItem(AddGhostwalkerAbility()); 
-	//Templates.AddItem(AddKubikuriAbility());
-	//Templates.AddItem(KubikiriDamage());
 	//Templates.AddItem(AddCombatAwarenessAbility());
 	//Templates.AddItem(AddCombatRushAbility());
 	//Templates.AddItem(BroadcastCombatRush()); //Additional Ability
 	//Templates.AddItem(AddGrazingFireAbility());
 	//Templates.AddItem(AddHeavyFragsAbility());
-	//Templates.AddItem(AddIronCurtainAbility());
-	//Templates.AddItem(IronCurtainShot()); //Additional Ability
-	//Templates.AddItem(AddSlash_LWAbility());
-	//Templates.AddItem(AddAbsorptionFieldsAbility());
-	//Templates.AddItem(AddBodyShieldAbility());
 	//Templates.AddItem(AddEmergencyLifeSupportAbility());
 	//Templates.AddItem(AddSmartMacrophagesAbility());
 	//Templates.AddItem(AddIronSkinAbility());
-	//Templates.AddItem(AddMindMergeAbility());
-	//Templates.AddItem(AddSoulMergeAbility());
 	//Templates.AddItem(AddShadowstrike_LWAbility());
 	//Templates.AddItem(AddFormidableAbility());
 	//Templates.AddItem(AddSoulStealTriggered2());
+	//Templates.AddItem(AddTrojan());
+	//Templates.AddItem(AddTrojanVirus());
+	//Templates.AddItem(AddFlashbanger());
+	//Templates.AddItem(AddSmokeGrenade());
+	//Templates.AddItem(AddSavior());
+	//Templates.AddItem(AddDenseSmoke());
+	//Templates.AddItem(AddBastion());
+	//Templates.AddItem(AddBastionPassive());
+	//Templates.AddItem(AddBastionCleanse());
+	//Templates.AddItem(AddFullKit());
+	//Templates.AddItem(AddStingGrenades());
+	//Templates.AddItem(AddFieldSurgeon());
+
 	return Templates;
 }
 
@@ -839,6 +740,77 @@ static function X2AbilityTemplate AddHyperReactivePupilsAbility()
 	Template.AddTargetEffect(HyperReactivePupilsEffect);
 	Template.bCrossClassEligible = false;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	return Template;
+}
+
+static function X2AbilityTemplate AddLockedOnAbility()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_LockedOn					LockedOnEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_LockedOn');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityLockedOn";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	Template.bCrossClassEligible = true;
+	LockedOnEffect = new class'X2Effect_LW2WotC_LockedOn';
+	LockedOnEffect.BuildPersistentEffect(1, true, false,, eGameRule_TacticalGameStart);
+	LockedOnEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect(LockedOnEffect);
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	return Template;
+}
+
+static function X2AbilityTemplate AddSentinel_LWAbility()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_Sentinel				PersistentEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Sentinel');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilitySentinel";
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	PersistentEffect = new class'X2Effect_LW2WotC_Sentinel';
+	PersistentEffect.BuildPersistentEffect(1, true, false);
+	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,, Template.AbilitySourceName);
+	Template.AddTargetEffect(PersistentEffect);
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.bCrossClassEligible = false;
+	return Template;
+}
+
+static function X2AbilityTemplate AddRapidReactionAbility()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_RapidReaction			PersistentEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_RapidReaction');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityRapidReaction3";
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	PersistentEffect = new class'X2Effect_LW2WotC_RapidReaction';
+	PersistentEffect.BuildPersistentEffect(1, true, false);
+	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,, Template.AbilitySourceName);
+	Template.AddTargetEffect(PersistentEffect);
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.bCrossClassEligible = false;
 	return Template;
 }
 

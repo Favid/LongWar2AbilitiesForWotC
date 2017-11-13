@@ -41,7 +41,10 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityTarget_LW2WotC_Single_CCS.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Ability_PerkPackAbilitySet.uc">
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Ability_LW2WotC_ActivatedAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Ability_LW2WotC_PassiveAbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2DownloadableContentInfo_LongWar2AbilitiesforWotC.uc" />
@@ -81,6 +84,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Infighter.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_LockedOn.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_LoneWolf.uc">
       <SubType>Content</SubType>
     </Content>
@@ -90,13 +96,22 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_PrimaryHitBonusDamage.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_RapidReaction.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Resilience.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Sentinel.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_TacticalSense.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_WilltoSurvive.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_EffectCounter.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_LastShotDetails.uc">
