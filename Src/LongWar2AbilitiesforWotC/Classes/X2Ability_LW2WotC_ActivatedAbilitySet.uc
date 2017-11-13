@@ -86,6 +86,14 @@ var config float SOUL_MERGE_CRIT_DIVISOR;
 var config float MIND_MERGE_AMP_MG_CRIT_BONUS;
 var config float SOUL_MERGE_AMP_BM_CRIT_BONUS;
 var config int MAX_ABLATIVE_FROM_SOULSTEAL;
+var config int STREET_SWEEPER2_MIN_ACTION_REQ;
+var config int STREET_SWEEPER2_AMMO_COST;
+var config int STREET_SWEEPER2_COOLDOWN;
+var config int STREET_SWEEPER2_CONE_LENGTH;
+var config int STREET_SWEEPER2_TILE_WIDTH;
+var config float STREET_SWEEPER2_UNARMORED_DAMAGE_MULTIPLIER;
+var config int STREET_SWEEPER2_UNARMORED_DAMAGE_BONUS;
+var config int NUM_AIRDROP_CHARGES;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -98,7 +106,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddPrecisionShotAbility());
 	//Templates.AddItem(PrecisionShotCritDamage()); //Additional Ability
 	//Templates.AddItem(AddCyclicFireAbility());
-	//Templates.AddItem(AddStreetSweeperAbility());
+	//Templates.AddItem(AddTrenchGunAbility());
 	//Templates.AddItem(AddSlugShotAbility());
 	//Templates.AddItem(SlugShotRangeEffect()); //Additional Ability
 	//Templates.AddItem(AddClutchShotAbility());
@@ -122,6 +130,15 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddBodyShieldAbility());
 	//Templates.AddItem(AddMindMergeAbility());
 	//Templates.AddItem(AddSoulMergeAbility());
+	//Templates.AddItem(AddSnapShot());
+	//Templates.AddItem(SnapShotOverwatch());
+	//Templates.AddItem(AddSnapShotAimModifierAbility());
+	//Templates.AddItem(AddRapidDeployment());
+	//Templates.AddItem(AddAirdrop());
+	//Templates.AddItem(AddSwordSlice_LWAbility());
+	//Templates.AddItem(AddFleche());
+	//Templates.AddItem(AddStreetSweeperAbility());
+	//Templates.AddItem(AddStreetSweeperBonusDamageAbility());
 
 	return Templates;
 }

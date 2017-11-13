@@ -93,6 +93,19 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddShadowstrike_LWAbility());
 	//Templates.AddItem(AddFormidableAbility());
 	//Templates.AddItem(AddSoulStealTriggered2());
+	//Templates.AddItem(AddTrojan());
+	//Templates.AddItem(AddTrojanVirus());
+	//Templates.AddItem(AddFlashbanger());
+	//Templates.AddItem(AddSmokeGrenade());
+	//Templates.AddItem(AddSavior());
+	//Templates.AddItem(AddDenseSmoke());
+	//Templates.AddItem(AddBastion());
+	//Templates.AddItem(AddBastionPassive());
+	//Templates.AddItem(AddBastionCleanse());
+	//Templates.AddItem(AddFullKit());
+	//Templates.AddItem(AddStingGrenades());
+	//Templates.AddItem(AddFieldSurgeon());
+
 	return Templates;
 }
 
