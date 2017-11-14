@@ -3,7 +3,7 @@
 //  PURPOSE: Defines ability templates for passive abilities
 //--------------------------------------------------------------------------------------- 
 
-class X2Ability_LW2WotC_PassiveAbilitySet extends X2Ability config (LW_SoldierSkills);
+class X2Ability_LW2WotC_PassiveAbilitySet extends XMBAbility config (LW_SoldierSkills);
 
 var config int CENTERMASS_DAMAGE;
 var config int LETHAL_DAMAGE;
@@ -105,6 +105,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddFullKit());
 	//Templates.AddItem(AddStingGrenades());
 	//Templates.AddItem(AddFieldSurgeon());
+
+    Templates.AddItem(TraverseFire());
 
 	return Templates;
 }
@@ -814,4 +816,44 @@ static function X2AbilityTemplate AddRapidReactionAbility()
 	return Template;
 }
 
+// Perk name:		Traverse Fire
+// Perk effect:		After taking a standard shot with your primary weapon with your first action, you may take an additional non-movement action.
+// Localized text:	"After taking a standard shot with your primary weapon with your first action, you may take an additional non-movement action."
+// Config:			(AbilityName="LW2WotC_TraverseFire")
+static function X2AbilityTemplate TraverseFire()
+{
+	local X2Effect_GrantActionPoints Effect;
+	local X2AbilityTemplate Template;
+	local XMBCondition_AbilityCost CostCondition;
+	local XMBCondition_AbilityName NameCondition;
 
+	// Add a single non-movement action point to the unit
+	Effect = new class'X2Effect_GrantActionPoints';
+	Effect.NumActionPoints = 1;
+	Effect.PointType = class'X2CharacterTemplateManager'.default.RunAndGunActionPoint;
+
+	// Create a triggered ability that will activate whenever the unit uses an ability that meets the condition
+	Template = SelfTargetTrigger('LW2WotC_TraverseFire', "img:///UILibrary_PerkIcons.UIPerk_command", false, Effect, 'AbilityActivated');
+
+	// Trigger abilities don't appear as passives. Add a passive ability icon.
+	AddIconPassive(Template);
+
+	// Require that the activated ability costs 1 action point but actually spent at least 2
+	CostCondition = new class'XMBCondition_AbilityCost';
+	CostCondition.bRequireMaximumCost = true;
+	CostCondition.MaximumCost = 1;
+	CostCondition.bRequireMinimumPointsSpent = true;
+	CostCondition.MinimumPointsSpent = 2;
+	AddTriggerTargetCondition(Template, CostCondition);
+    
+	// The bonus only applies to standard shots
+	NameCondition = new class'XMBCondition_AbilityName';
+	NameCondition.IncludeAbilityNames.AddItem('StandardShot');
+	NameCondition.IncludeAbilityNames.AddItem('SniperStandardFire');
+	AddTriggerTargetCondition(Template, NameCondition);
+
+	// Show a flyover when Traverse Fire is activated
+	Template.bShowActivation = true;
+
+	return Template;
+}
