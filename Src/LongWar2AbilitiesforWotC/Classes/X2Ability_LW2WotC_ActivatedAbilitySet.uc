@@ -3,7 +3,7 @@
 //  PURPOSE: Defines ability templates for activated abilities
 //--------------------------------------------------------------------------------------- 
 
-class X2Ability_LW2WotC_ActivatedAbilitySet extends X2Ability config (LW_SoldierSkills);
+class X2Ability_LW2WotC_ActivatedAbilitySet extends XMBAbility config (LW_SoldierSkills);
 
 var config int DOUBLE_TAP_1ST_SHOT_AIM;
 var config int DOUBLE_TAP_2ND_SHOT_AIM;
@@ -13,7 +13,7 @@ var config int WALK_FIRE_AIM_BONUS;
 var config int WALK_FIRE_CRIT_MALUS;
 var config int WALK_FIRE_COOLDOWN;
 var config int WALK_FIRE_AMMO_COST;
-var config int WALK_FIRE_MIN_ACTION_REQ;
+var config int WALK_FIRE_DAMAGE_PERCENT_MALUS;
 var config int PRECISION_SHOT_COOLDOWN;
 var config int PRECISION_SHOT_AMMO_COST;
 var config int PRECISION_SHOT_CRIT_BONUS;
@@ -101,8 +101,7 @@ static function array<X2DataTemplate> CreateTemplates()
 
 	//Templates.AddItem(AddDoubleTapAbility());
 	//Templates.AddItem(DoubleTap2ndShot()); //Additional Ability
-	//Templates.AddItem(AddWalkFireAbility());
-	//Templates.AddItem(WalkFireDamage()); //Additional Ability
+	Templates.AddItem(WalkFire());
 	//Templates.AddItem(AddPrecisionShotAbility());
 	//Templates.AddItem(PrecisionShotCritDamage()); //Additional Ability
 	//Templates.AddItem(AddCyclicFireAbility());
@@ -141,4 +140,72 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddStreetSweeperBonusDamageAbility());
 
 	return Templates;
+}
+
+// Perk name:		Walk Fire
+// Perk effect:		Take a highly accurate shot with +30 bonus to hit but for half damage and -30 crit. Uses 2 ammo.
+// Localized text:	"Take a highly accurate shot with +<Ability:WALK_FIRE_AIM_BONUS> bonus to hit but for half damage and -<Ability:WALK_FIRE_CRIT_MALUS> crit. Uses <Ability:WALK_FIRE_AMMO_COST> ammo."
+// Config:			(AbilityName="LW2WotC_WalkFire", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate WalkFire()
+{
+	local X2AbilityTemplate Template;
+	local X2Condition_UnitInventory	NoShotgunsCondition;
+    local X2Condition_UnitInventory NoSniperRiflesCondition;
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_WalkFire', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", true, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.WALK_FIRE_AMMO_COST);
+
+	// Add a cooldown.
+	AddCooldown(Template, default.WALK_FIRE_COOLDOWN);
+
+	// Add a secondary ability to provide bonuses on the shot
+	AddSecondaryAbility(Template, WalkFireBonuses());
+
+    // Do not allow this ability to be used with Shotguns
+    NoShotgunsCondition = new class'X2Condition_UnitInventory';
+	NoShotgunsCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	NoShotgunsCondition.ExcludeWeaponCategory = 'shotgun';
+	Template.AbilityShooterConditions.AddItem(NoShotgunsCondition);
+
+    // Do not allow this ability to be used with Sniper Rifles
+	NoSniperRiflesCondition = new class'X2Condition_UnitInventory';
+	NoSniperRiflesCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	NoSniperRiflesCondition.ExcludeWeaponCategory = 'sniper_rifle';
+	Template.AbilityShooterConditions.AddItem(NoSniperRiflesCondition);
+
+	return Template;
+}
+
+// This is part of the Power Shot effect, above
+static function X2AbilityTemplate WalkFireBonuses()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_ConditionalBonus Effect;
+	local XMBCondition_AbilityName Condition;
+
+	// Create a conditional bonus effect
+	Effect = new class'XMBEffect_ConditionalBonus';
+	Effect.EffectName = 'LW2WotC_WalkFire_Bonuses';
+    
+	// The bonus increases hit chance
+	Effect.AddToHitModifier(default.WALK_FIRE_AIM_BONUS, eHit_Success);
+
+	// The bonus reduces Crit chance
+	Effect.AddToHitModifier(-1 * default.WALK_FIRE_CRIT_MALUS, eHit_Crit);
+
+	// The bonus reduces damage by a percentage
+	Effect.AddPercentDamageModifier(-1 * default.WALK_FIRE_DAMAGE_PERCENT_MALUS);
+
+	// The bonus only applies to the Walk Fire ability
+	Condition = new class'XMBCondition_AbilityName';
+	Condition.IncludeAbilityNames.AddItem('LW2WotC_WalkFire');
+	Effect.AbilityTargetConditions.AddItem(Condition);
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_WalkFire_Bonuses', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, Effect);
+
+	// The Power Shot ability will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
+
+	return Template;
 }

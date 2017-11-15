@@ -188,6 +188,21 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'CUTTHROAT_BONUS_CRIT_DAMAGE':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.CUTTHROAT_BONUS_CRIT_DAMAGE);
 			return true;
+		case 'WALK_FIRE_AIM_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_AIM_BONUS);
+			return true;
+		case 'WALK_FIRE_CRIT_MALUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_CRIT_MALUS);
+			return true;
+		case 'WALK_FIRE_AMMO_COST':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_AMMO_COST);
+			return true;
+		case 'WALK_FIRE_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_COOLDOWN);
+			return true;
+		case 'WALK_FIRE_DAMAGE_PERCENT_MALUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_DAMAGE_PERCENT_MALUS);
+			return true;
 		default: 
 			return false;
 	}

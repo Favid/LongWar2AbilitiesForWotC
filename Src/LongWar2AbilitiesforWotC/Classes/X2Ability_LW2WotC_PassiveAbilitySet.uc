@@ -69,7 +69,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddSentinel_LWAbility());
 	Templates.AddItem(AddRapidReactionAbility());
 	//Templates.AddItem(AddLightningReflexes_LWAbility());
-	//Templates.AddItem(AddCutthroatAbility());
 	//Templates.AddItem(AddKillerInstinctAbility());
 	//Templates.AddItem(AddExtraConditioningAbility());
 	//Templates.AddItem(AddLockdownAbility());
