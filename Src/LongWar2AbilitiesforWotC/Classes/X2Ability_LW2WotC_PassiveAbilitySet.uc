@@ -30,6 +30,7 @@ var config int FORMIDABLE_ABLATIVE_HP;
 var config int WILLTOSURVIVE_WILLBONUS;
 var config int CUTTHROAT_BONUS_CRIT_CHANCE;
 var config int CUTTHROAT_BONUS_CRIT_DAMAGE;
+var config int CUTTHROAT_BONUS_ARMOR_PIERCE;
 var config int CCS_AMMO_PER_SHOT;
 var config int COVERING_FIRE_OFFENSE_MALUS;
 var localized string LocCoveringFire;
@@ -63,7 +64,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddCloseEncountersAbility());
 	Templates.AddItem(AddLoneWolfAbility());
 	Templates.AddItem(AddLowProfileAbility());
-	//Templates.AddItem(AddTraverseFireAbility());
 	Templates.AddItem(AddHyperReactivePupilsAbility());
 	Templates.AddItem(AddLockedOnAbility());
 	Templates.AddItem(AddSentinel_LWAbility());
@@ -107,6 +107,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddFieldSurgeon());
 
     Templates.AddItem(TraverseFire());
+    Templates.AddItem(Cutthroat());
 
 	return Templates;
 }
@@ -833,7 +834,7 @@ static function X2AbilityTemplate TraverseFire()
 	Effect.PointType = class'X2CharacterTemplateManager'.default.RunAndGunActionPoint;
 
 	// Create a triggered ability that will activate whenever the unit uses an ability that meets the condition
-	Template = SelfTargetTrigger('LW2WotC_TraverseFire', "img:///UILibrary_PerkIcons.UIPerk_command", false, Effect, 'AbilityActivated');
+	Template = SelfTargetTrigger('LW2WotC_TraverseFire', "img:///UILibrary_LW_PerkPack.LW_AbilityTraverseFire", false, Effect, 'AbilityActivated');
 
 	// Trigger abilities don't appear as passives. Add a passive ability icon.
 	AddIconPassive(Template);
@@ -856,4 +857,40 @@ static function X2AbilityTemplate TraverseFire()
 	Template.bShowActivation = true;
 
 	return Template;
+}
+
+// Perk name:		Cutthroat
+// Perk effect:		Your melee attacks against biological enemies ignore their armor, have increased critical chance, and do additional critical damage.
+// Localized text:	"Your melee attacks against biological enemies ignore their armor, have a +<Ability:CUTTHROAT_BONUS_CRIT_CHANCE/> critical chance, and do +<Ability:CUTTHROAT_BONUS_CRIT_DAMAGE/> critical damage."
+// Config:			(AbilityName="LW2WotC_Cutthroat")
+static function X2AbilityTemplate Cutthroat()
+{
+	local XMBEffect_ConditionalBonus Effect;
+	local XMBCondition_AbilityProperty MeleeCondition;
+	local X2Condition_UnitProperty OrganicCondition;
+
+	// Create a conditional bonus
+	Effect = new class'XMBEffect_ConditionalBonus';
+
+    // The bonus adds critical hit chance
+	Effect.AddToHitModifier(default.CUTTHROAT_BONUS_CRIT_CHANCE, eHit_Crit);
+
+	// The bonus adds damage to critical hits
+	Effect.AddDamageModifier(default.CUTTHROAT_BONUS_CRIT_DAMAGE, eHit_Crit);
+
+    // The bonus ignores armor
+    Effect.AddArmorPiercingModifier(default.CUTTHROAT_BONUS_ARMOR_PIERCE);
+    
+	// Only melee attacks
+	MeleeCondition = new class'XMBCondition_AbilityProperty';
+	MeleeCondition.bRequireMelee = true;
+	Effect.AbilityTargetConditions.AddItem(MeleeCondition);
+	
+	// Only against organics
+	OrganicCondition = new class'X2Condition_UnitProperty';
+	OrganicCondition.ExcludeRobotic = true;
+	Effect.AbilityTargetConditions.AddItem(OrganicCondition);
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_Cutthroat', "img:///UILibrary_LW_PerkPack.LW_AbilityCutthroat", true, Effect);
 }

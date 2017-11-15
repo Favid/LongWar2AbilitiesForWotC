@@ -182,6 +182,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'RAPID_REACTION_USES_PER_TURN':
 			OutString = string(class'X2Effect_LW2WotC_RapidReaction'.default.RAPID_REACTION_USES_PER_TURN + 1);
 			return true;
+		case 'CUTTHROAT_BONUS_CRIT_CHANCE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.CUTTHROAT_BONUS_CRIT_CHANCE);
+			return true;
+		case 'CUTTHROAT_BONUS_CRIT_DAMAGE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.CUTTHROAT_BONUS_CRIT_DAMAGE);
+			return true;
 		default: 
 			return false;
 	}
