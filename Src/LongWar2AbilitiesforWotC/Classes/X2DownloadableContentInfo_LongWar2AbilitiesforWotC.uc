@@ -203,6 +203,18 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'WALK_FIRE_DAMAGE_PERCENT_MALUS':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_DAMAGE_PERCENT_MALUS);
 			return true;
+		case 'PRECISION_SHOT_AMMO_COST':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.PRECISION_SHOT_AMMO_COST);
+			return true;
+		case 'PRECISION_SHOT_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.PRECISION_SHOT_COOLDOWN);
+			return true;
+		case 'PRECISION_SHOT_CRIT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.PRECISION_SHOT_CRIT_BONUS);
+			return true;
+		case 'PRECISION_SHOT_CRIT_DAMAGE_PERCENT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.PRECISION_SHOT_CRIT_DAMAGE_PERCENT_BONUS);
+			return true;
 		default: 
 			return false;
 	}

@@ -17,6 +17,7 @@ var config int WALK_FIRE_DAMAGE_PERCENT_MALUS;
 var config int PRECISION_SHOT_COOLDOWN;
 var config int PRECISION_SHOT_AMMO_COST;
 var config int PRECISION_SHOT_CRIT_BONUS;
+var config int PRECISION_SHOT_CRIT_DAMAGE_PERCENT_BONUS;
 var config int CYCLIC_FIRE_COOLDOWN;
 var config int CYCLIC_FIRE_AIM_MALUS;
 var config int CYCLIC_FIRE_MIN_ACTION_REQ;
@@ -102,8 +103,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddDoubleTapAbility());
 	//Templates.AddItem(DoubleTap2ndShot()); //Additional Ability
 	Templates.AddItem(WalkFire());
-	//Templates.AddItem(AddPrecisionShotAbility());
-	//Templates.AddItem(PrecisionShotCritDamage()); //Additional Ability
+	Templates.AddItem(PrecisionShot());
 	//Templates.AddItem(AddCyclicFireAbility());
 	//Templates.AddItem(AddTrenchGunAbility());
 	//Templates.AddItem(AddSlugShotAbility());
@@ -176,7 +176,7 @@ static function X2AbilityTemplate WalkFire()
 	return Template;
 }
 
-// This is part of the Power Shot effect, above
+// This is part of the Walk Fire effect, above
 static function X2AbilityTemplate WalkFireBonuses()
 {
 	local X2AbilityTemplate Template;
@@ -204,7 +204,58 @@ static function X2AbilityTemplate WalkFireBonuses()
 	// Create the template using a helper function
 	Template = Passive('LW2WotC_WalkFire_Bonuses', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, Effect);
 
-	// The Power Shot ability will show up as an active ability, so hide the icon for the passive damage effect
+	// Walk Fire will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Perk name:		Precision Shot
+// Perk effect:		Take a special shot with a bonus to critical chance and critical damage. Cooldown-based.
+// Localized text:	"Take a special shot with +<Ability:PRECISION_SHOT_CRIT_BONUS> bonus to critical chance and <Ability:PRECISION_SHOT_CRIT_DAMAGE_PERCENT_BONUS>% bonus critical damage. <Ability:PRECISION_SHOT_COOLDOWN> turn cooldown. Uses <Ability:PRECISION_SHOT_AMMO_COST> ammo."
+// Config:			(AbilityName="LW2WotC_PrecisionShot", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate PrecisionShot()
+{
+	local X2AbilityTemplate Template;
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_PrecisionShot', "img:///UILibrary_LW_PerkPack.LW_AbilityPrecisionShot", true, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.PRECISION_SHOT_AMMO_COST);
+
+	// Add a cooldown.
+	AddCooldown(Template, default.PRECISION_SHOT_COOLDOWN);
+
+	// Add a secondary ability to provide bonuses on the shot
+	AddSecondaryAbility(Template, PrecisionShotBonuses());
+
+	return Template;
+}
+
+// This is part of the Precision Shot effect, above
+static function X2AbilityTemplate PrecisionShotBonuses()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_ConditionalBonus Effect;
+	local XMBCondition_AbilityName Condition;
+
+	// Create a conditional bonus effect
+	Effect = new class'XMBEffect_ConditionalBonus';
+	Effect.EffectName = 'LW2WotC_PrecisionShot_Bonuses';
+    
+	// The bonus increases crit chance
+	Effect.AddToHitModifier(default.PRECISION_SHOT_CRIT_BONUS, eHit_Crit);
+
+	// The bonus increases crit damage by a percentage
+	Effect.AddPercentDamageModifier(default.PRECISION_SHOT_CRIT_DAMAGE_PERCENT_BONUS, eHit_Crit);
+
+	// The bonus only applies to the Precision Shot ability
+	Condition = new class'XMBCondition_AbilityName';
+	Condition.IncludeAbilityNames.AddItem('LW2WotC_PrecisionShot');
+	Effect.AbilityTargetConditions.AddItem(Condition);
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_PrecisionShot_Bonuses', "img:///UILibrary_LW_PerkPack.LW_Ability_PrecisionShot", false, Effect);
+
+	// Precision Shot will show up as an active ability, so hide the icon for the passive damage effect
 	HidePerkIcon(Template);
 
 	return Template;
