@@ -215,6 +215,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'PRECISION_SHOT_CRIT_DAMAGE_PERCENT_BONUS':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.PRECISION_SHOT_CRIT_DAMAGE_PERCENT_BONUS);
 			return true;
+		case 'COVERT_DETECTION_RANGE_REDUCTION':
+			OutString = string(int(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COVERT_DETECTION_RANGE_REDUCTION * 100));
+			return true;
 		default: 
 			return false;
 	}

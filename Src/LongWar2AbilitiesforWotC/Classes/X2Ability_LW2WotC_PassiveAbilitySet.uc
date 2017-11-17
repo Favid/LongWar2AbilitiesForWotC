@@ -107,6 +107,7 @@ static function array<X2DataTemplate> CreateTemplates()
 
     Templates.AddItem(TraverseFire());
     Templates.AddItem(Cutthroat());
+	Templates.AddItem(Covert());
 
 	return Templates;
 }
@@ -892,4 +893,18 @@ static function X2AbilityTemplate Cutthroat()
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_Cutthroat', "img:///UILibrary_LW_PerkPack.LW_AbilityCutthroat", true, Effect);
+}
+
+// Perk name:		Covert
+// Perk effect:		Enemies have reduced detection range against you.
+// Localized text:	"Enemies have <Ability:COVERT_DETECTION_RANGE_REDUCTION>% smaller detection range against you."
+// Config:			(AbilityName="LW2WotC_Covert")
+static function X2AbilityTemplate Covert()
+{
+	local X2Effect_PersistentStatChange Effect;
+
+	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.AddPersistentStatChange(eStat_DetectionModifier, default.COVERT_DETECTION_RANGE_REDUCTION);
+
+	return Passive('LW2WotC_Covert', "img:///UILibrary_LW_PerkPack.LW_AbilityCovert", true, Effect);
 }
