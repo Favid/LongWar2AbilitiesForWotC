@@ -97,6 +97,7 @@ var config int STREET_SWEEPER2_UNARMORED_DAMAGE_BONUS;
 var config int NUM_AIRDROP_CHARGES;
 var config int RAPID_DEPLOYMENT_COOLDOWN;
 var config float FLECHE_BONUS_DAMAGE_PER_TILES;
+var config bool NO_MELEE_ATTACKS_WHEN_ON_FIRE;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -138,6 +139,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddSwordSlice_LWAbility());
 	//Templates.AddItem(AddFleche());
 	Templates.AddItem(Fleche());
+	Templates.AddItem(Slash());
 	//Templates.AddItem(AddStreetSweeperAbility());
 	//Templates.AddItem(AddStreetSweeperBonusDamageAbility());
 
@@ -386,6 +388,89 @@ static function X2AbilityTemplate FlecheBonuses()
 
 	// Fleche will show up as an active ability, so hide the icon for the passive damage effect
 	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Perk name:		Slash
+// Perk effect:		Attack an adjacent target with your sword. Uses one action.
+// Localized text:	"Attack an adjacent target with your sword. Uses one action."
+// Config:			(AbilityName="LW2WotC_Slash", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Slash()
+{
+	local X2AbilityTemplate                 Template;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2AbilityToHitCalc_StandardMelee  StandardMelee;
+	local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
+	local array<name>                       SkipExclusions;
+	local X2Condition_UnitProperty			AdjacencyCondition;	
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Slash');
+
+	// Standard melee attack setup
+	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_swordSlash";
+	Template.bHideOnClassUnlock = false;
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY;
+	Template.AbilityConfirmSound = "TacticalUI_SwordConfirm";
+	Template.bCrossClassEligible = false;
+	Template.bDisplayInUITooltip = true;
+    Template.bDisplayInUITacticalText = true;
+    Template.DisplayTargetHitChance = true;
+	Template.bShowActivation = true;
+	Template.bSkipFireAction = false;
+
+	// Costs one action and doesn't end turn
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	ActionPointCost.bConsumeAllPoints = false;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+	
+	// Targetted melee attack against a single target
+	StandardMelee = new class'X2AbilityToHitCalc_StandardMelee';
+	Template.AbilityToHitCalc = StandardMelee;
+    Template.AbilityTargetStyle = default.SimpleSingleMeleeTarget;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+	// Target must be alive and adjacent
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+	Template.AbilityTargetConditions.AddItem(default.MeleeVisibilityCondition);
+	AdjacencyCondition = new class'X2Condition_UnitProperty';
+	AdjacencyCondition.RequireWithinRange = true;
+	AdjacencyCondition.WithinRange = 144; //1.5 tiles in Unreal units, allows attacks on the diag
+	Template.AbilityTargetConditions.AddItem(AdjacencyCondition);
+
+	// Shooter Conditions
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	
+	if (!default.NO_MELEE_ATTACKS_WHEN_ON_FIRE)
+	{
+		SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
+	}
+
+	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName); //okay when disoriented
+	Template.AddShooterEffectExclusions(SkipExclusions);
+	
+	// Damage Effect
+	WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
+	Template.AddTargetEffect(WeaponDamageEffect);
+	Template.bAllowBonusWeaponEffects = true;
+	
+	// VGamepliz matters
+	Template.SourceMissSpeech = 'SwordMiss';
+	Template.bSkipMoveStop = true;
+
+	// Typical melee visualizations
+	Template.CinescriptCameraType = "Ranger_Reaper";
+    Template.BuildNewGameStateFn = TypicalMoveEndAbility_BuildGameState;
+	Template.BuildInterruptGameStateFn = TypicalMoveEndAbility_BuildInterruptGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	// Some WotC specific stuff
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.MeleeLostSpawnIncreasePerUse;
 
 	return Template;
 }
