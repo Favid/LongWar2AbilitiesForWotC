@@ -865,7 +865,7 @@ static function X2AbilityTemplate TraverseFire()
 static function X2AbilityTemplate Cutthroat()
 {
 	local XMBEffect_ConditionalBonus Effect;
-	local XMBCondition_AbilityProperty MeleeCondition;
+	local XMBCondition_AbilityProperty MeleeOnlyCondition;
 	local X2Condition_UnitProperty OrganicCondition;
 
 	// Create a conditional bonus
@@ -881,9 +881,9 @@ static function X2AbilityTemplate Cutthroat()
     Effect.AddArmorPiercingModifier(default.CUTTHROAT_BONUS_ARMOR_PIERCE);
     
 	// Only melee attacks
-	MeleeCondition = new class'XMBCondition_AbilityProperty';
-	MeleeCondition.bRequireMelee = true;
-	Effect.AbilityTargetConditions.AddItem(MeleeCondition);
+	MeleeOnlyCondition = new class'XMBCondition_AbilityProperty';
+	MeleeOnlyCondition.bRequireMelee = true;
+	Effect.AbilityTargetConditions.AddItem(MeleeOnlyCondition);
 	
 	// Only against organics
 	OrganicCondition = new class'X2Condition_UnitProperty';

@@ -230,6 +230,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'DAMAGE_CONTROL_BONUS_ARMOR':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.DAMAGE_CONTROL_BONUS_ARMOR);
 			return true;
+		case 'RAPID_DEPLOYMENT_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.RAPID_DEPLOYMENT_COOLDOWN);
+			return true;
 		default: 
 			return false;
 	}

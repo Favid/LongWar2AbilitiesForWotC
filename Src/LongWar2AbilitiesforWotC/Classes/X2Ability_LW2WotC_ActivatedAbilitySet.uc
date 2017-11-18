@@ -95,6 +95,7 @@ var config int STREET_SWEEPER2_TILE_WIDTH;
 var config float STREET_SWEEPER2_UNARMORED_DAMAGE_MULTIPLIER;
 var config int STREET_SWEEPER2_UNARMORED_DAMAGE_BONUS;
 var config int NUM_AIRDROP_CHARGES;
+var config int RAPID_DEPLOYMENT_COOLDOWN;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -131,7 +132,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddSnapShot());
 	//Templates.AddItem(SnapShotOverwatch());
 	//Templates.AddItem(AddSnapShotAimModifierAbility());
-	//Templates.AddItem(AddRapidDeployment());
+	Templates.AddItem(RapidDeployment());
 	//Templates.AddItem(AddAirdrop());
 	//Templates.AddItem(AddSwordSlice_LWAbility());
 	//Templates.AddItem(AddFleche());
@@ -314,6 +315,39 @@ static function X2AbilityTemplate SlugShotBonuses()
 
 	// Slug Shot will show up as an active ability, so hide the icon for the passive damage effect
 	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Perk name:		Rapid Deployment
+// Perk effect:		Activate this ability before throwing or launching a support grenade, and the throw will not cost an action. Cooldown-based.
+// Localized text:	"Activate this ability before throwing or launching a support grenade, and the throw will not cost an action. <Ability:RAPID_DEPLOYMENT_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_RapidDeployment")
+static function X2AbilityTemplate RapidDeployment()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_AbilityCostRefund Effect;
+	local X2Condition_LW2WotC_SupportGrenade Condition;
+
+	// Create effect that will refund actions points
+	Effect = new class'XMBEffect_AbilityCostRefund';
+	Effect.TriggeredEvent = 'LW2WotC_RapidDeployment';
+	Effect.bShowFlyOver = true;
+	Effect.CountValueName = 'LW2WotC_RapidDeployment_Uses';
+	Effect.MaxRefundsPerTurn = 1;
+	Effect.bFreeCost = true;
+	Effect.BuildPersistentEffect(1, false, true, false, eGameRule_PlayerTurnEnd);
+
+	// Action points are only refunded if using a support grenade (or battlescanner)
+	Condition = new class'X2Condition_LW2WotC_SupportGrenade';
+	Effect.AbilityTargetConditions.AddItem(Condition);
+
+	// Show a flyover over the target unit when the effect is added
+	Effect.VisualizationFn = EffectFlyOver_Visualization;
+
+	// Create activated ability that adds the refund effect
+	Template = SelfTargetActivated('LW2WotC_RapidDeployment', "img:///UILibrary_LW_PerkPack.LW_AbilityRapidDeployment", true, Effect,, eCost_Free);
+	AddCooldown(Template, default.RAPID_DEPLOYMENT_COOLDOWN);
 
 	return Template;
 }
