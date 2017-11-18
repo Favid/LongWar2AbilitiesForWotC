@@ -98,6 +98,9 @@ var config float FLECHE_BONUS_DAMAGE_PER_TILES;
 var config bool NO_MELEE_ATTACKS_WHEN_ON_FIRE;
 var config int FORTIFY_DEFENSE;
 var config int FORTIFY_COOLDOWN;
+var config int RUN_AND_GUN_COOLDOWN;
+var config int EXTRA_CONDITIONING_COOLDOWN_REDUCTION;
+var config float KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -142,6 +145,9 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Slash());
 	Templates.AddItem(StreetSweeper());
 	Templates.AddItem(Fortify());
+	Templates.AddItem(RunAndGun());
+	Templates.AddItem(ExtraConditioning());
+	Templates.AddItem(KillerInstinct());
 
 	Templates.AddItem(ShootAnyone());
 
@@ -728,7 +734,7 @@ static function X2AbilityTemplate LW2WotC_StreetSweeperBonus()
 }
 
 // Perk name:		Fortify
-// Perk effect:		Activate to grant bonus defense until the beginning of the next turn. Does not cost an action. Cooldown-based."
+// Perk effect:		Activate to grant bonus defense until the beginning of the next turn. Does not cost an action. Cooldown-based.
 // Localized text:	"Activate to grant +<ABILITY:FORTIFY_DEFENSE_LW/> defense until the beginning of the next turn. Does not cost an action. Has a <ABILITY:FORTIFY_COOLDOWN_LW/>-turn cooldown."
 // Config:			(AbilityName="LW2WotC_Fortify")
 static function X2AbilityTemplate Fortify()
@@ -754,5 +760,53 @@ static function X2AbilityTemplate Fortify()
 	Template.AddShooterEffectExclusions();
 
 	return Template;
+}
+
+// Perk name:		Run And Gun
+// Perk effect:		Take an action after dashing. Differs from Vanilla version by offering support for Killer Instinct and Extra Conditioning
+// Localized text:	"Take an action after dashing."
+// Config:			(AbilityName="LW2WotC_RunAndGun")
+static function X2AbilityTemplate RunAndGun()
+{
+	local X2AbilityTemplate                 Template;
+	local X2AbilityCooldown_LW2WotC_RunAndGun Cooldown;
+	local X2Effect_LW2WotC_KillerInstinct CritDamageEffect;
+
+	// Start with a copy of the vanilla Ranger's Run and Gun ability
+	Template = class'X2Ability_RangerAbilitySet'.static.RunAndGunAbility('LW2WotC_RunAndGun');
+
+	// Replace exising cooldown with one that will check for Extra Conditioning
+	Cooldown = new class'X2AbilityCooldown_LW2WotC_RunAndGun';
+	Cooldown.BaseCooldown = default.RUN_AND_GUN_COOLDOWN;
+	Cooldown.ExtraConditioningCooldownReduction = default.EXTRA_CONDITIONING_COOLDOWN_REDUCTION;
+	Template.AbilityCooldown = Cooldown;
+
+	// Add a bonus damage effect that will check for Killer Instinct
+	CritDamageEffect = new class'X2Effect_LW2WotC_KillerInstinct';
+	CritDamageEffect.BuildPersistentEffect(1,false,false,false,eGameRule_PlayerTurnEnd);
+	CritDamageEffect.CritDamageBonusPercent = default.KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT;
+	Template.AddTargetEffect(CritDamageEffect);
+
+	return Template;
+}
+
+// Perk name:		Extra Conditioning
+// Perk effect:		Run and Gun cooldown is reduced.
+// Localized text:	"Run and Gun cooldown is reduced by <Ability:EXTRA_CONDITIONING_COOLDOWN_REDUCTION> turn."
+// Config:			(AbilityName="LW2WotC_ExtraConditioning")
+static function X2AbilityTemplate ExtraConditioning()
+{
+	// This ability is a passive with no effects. Run and Gun will simply check if the soldier has it and reduce cooldown if it's found
+	return Passive('LW2WotC_ExtraConditioning', "img:///UILibrary_PerkIcons.UIPerk_stickandmove", false, none);
+}
+
+// Perk name:		Killer Instinct
+// Perk effect:		Activating Run & Gun grants bonus critical damage for the rest of the turn.
+// Localized text:	"Activating Run & Gun grants +<Ability:KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT>% critical damage for the rest of the turn."
+// Config:			(AbilityName="LW2WotC_KillInstinct")
+static function X2AbilityTemplate KillerInstinct()
+{
+	// This ability is a passive with no effects. Run and Gun will simply check if the soldier has it and increase crit damage if it's found
+	return Passive('LW2WotC_KillerInstinct', "img:///UILibrary_LW_PerkPack.LW_AbilityKillerInstinct", false, none);
 }
 

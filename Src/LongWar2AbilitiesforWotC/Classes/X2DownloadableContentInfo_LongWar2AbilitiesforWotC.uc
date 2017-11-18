@@ -254,6 +254,15 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'STREET_SWEEPER_UNARMORED_DAMAGE_BONUS':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.STREET_SWEEPER_UNARMORED_DAMAGE_BONUS);
 			return true;
+		case 'RUN_AND_GUN_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.RUN_AND_GUN_COOLDOWN);
+			return true;
+		case 'EXTRA_CONDITIONING_COOLDOWN_REDUCTION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.EXTRA_CONDITIONING_COOLDOWN_REDUCTION);
+			return true;
+		case 'KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT':
+			OutString = string(int(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT));
+			return true;
 		default: 
 			return false;
 	}
