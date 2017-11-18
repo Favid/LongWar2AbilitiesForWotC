@@ -86,13 +86,12 @@ var config float SOUL_MERGE_CRIT_DIVISOR;
 var config float MIND_MERGE_AMP_MG_CRIT_BONUS;
 var config float SOUL_MERGE_AMP_BM_CRIT_BONUS;
 var config int MAX_ABLATIVE_FROM_SOULSTEAL;
-var config int STREET_SWEEPER2_MIN_ACTION_REQ;
-var config int STREET_SWEEPER2_AMMO_COST;
-var config int STREET_SWEEPER2_COOLDOWN;
-var config int STREET_SWEEPER2_CONE_LENGTH;
-var config int STREET_SWEEPER2_TILE_WIDTH;
-var config float STREET_SWEEPER2_UNARMORED_DAMAGE_MULTIPLIER;
-var config int STREET_SWEEPER2_UNARMORED_DAMAGE_BONUS;
+var config int STREET_SWEEPER_AMMO_COST;
+var config int STREET_SWEEPER_COOLDOWN;
+var config int STREET_SWEEPER_CONE_LENGTH;
+var config int STREET_SWEEPER_TILE_WIDTH;
+var config float STREET_SWEEPER_UNARMORED_DAMAGE_MULTIPLIER;
+var config int STREET_SWEEPER_UNARMORED_DAMAGE_BONUS;
 var config int NUM_AIRDROP_CHARGES;
 var config int RAPID_DEPLOYMENT_COOLDOWN;
 var config float FLECHE_BONUS_DAMAGE_PER_TILES;
@@ -141,8 +140,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddFleche());
 	Templates.AddItem(Fleche());
 	Templates.AddItem(Slash());
-	//Templates.AddItem(AddStreetSweeperAbility());
-	//Templates.AddItem(AddStreetSweeperBonusDamageAbility());
+	Templates.AddItem(StreetSweeper());
 	Templates.AddItem(Fortify());
 
 	Templates.AddItem(ShootAnyone());
@@ -595,6 +593,137 @@ static function X2AbilityTemplate TrenchGun()
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+	return Template;
+}
+
+// Perk name:		Street Sweeper
+// Perk effect:		"Cone-based shotgun attack that does bonus damage to unarmored targets. Blocked by heavy cover."
+// Localized text:	"Cone-based shotgun attack that does bonus damage to unarmored targets. Blocked by heavy cover."
+// Config:			(AbilityName="LW2WotC_StreetSweeper", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate StreetSweeper()
+{
+	local X2AbilityTemplate					Template;	
+	local X2AbilityCost_Ammo                AmmoCost;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2AbilityTarget_Cursor            CursorTarget;
+	local X2AbilityMultiTarget_Cone         ConeMultiTarget;
+	local X2Condition_UnitProperty          UnitPropertyCondition;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local X2AbilityCooldown                 Cooldown;
+	local X2Condition_UnitInventory			InventoryCondition;
+	local X2Effect_Shredder					WeaponDamageEffect;
+	local X2Condition_UnitEffects			SuppressedCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_StreetSweeper');
+
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.IconImage = "img:///UILibrary_LW_Overhaul.LW_AbilityStreetSweeper2";
+	Template.ActivationSpeech = 'Reaper';
+	Template.CinescriptCameraType = "StandardGunFiring";
+	Template.bCrossClassEligible = false;
+	Template.Hostility = eHostility_Offensive;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.TargetingMethod = class'X2TargetingMethod_Cone';
+	Template.bDisplayInUITooltip = true;
+	Template.bDisplayInUITacticalText = true;
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AbilityTargetConditions.AddItem(default.LivingTargetUnitOnlyProperty);
+
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
+	Template.bAllowAmmoEffects = true;
+
+	ActionPointCost = new class 'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	ActionPointCost.bConsumeAllPoints = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	AmmoCost = new class'X2AbilityCost_Ammo';	
+	AmmoCost.iAmmo = default.STREET_SWEEPER_AMMO_COST;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = default.STREET_SWEEPER_COOLDOWN;
+	Template.AbilityCooldown = Cooldown;
+
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeFriendlyToSource = false;
+	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
+	
+	SuppressedCondition = new class'X2Condition_UnitEffects';
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+
+	InventoryCondition = new class'X2Condition_UnitInventory';
+	InventoryCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	InventoryCondition.RequireWeaponCategory = 'shotgun';
+	Template.AbilityShooterConditions.AddItem(InventoryCondition);
+
+	Template.AddShooterEffectExclusions();
+
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bMultiTargetOnly = false; 
+	StandardAim.bGuaranteedHit = false;
+	StandardAim.bOnlyMultiHitWithSuccess = false;
+	StandardAim.bAllowCrit = true;
+	Template.AbilityToHitCalc = StandardAim;
+	Template.bOverrideAim = false;
+
+	CursorTarget = new class'X2AbilityTarget_Cursor';
+	Template.AbilityTargetStyle = CursorTarget;	
+
+	WeaponDamageEffect = new class'X2Effect_Shredder';
+	Template.AddMultiTargetEffect(WeaponDamageEffect);
+	Template.bFragileDamageOnly = true;
+	Template.bCheckCollision = true;
+
+	ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+	ConeMultiTarget.bExcludeSelfAsTargetIfWithinRadius = true;
+	ConeMultiTarget.ConeEndDiameter = default.STREET_SWEEPER_TILE_WIDTH * class'XComWorldData'.const.WORLD_StepSize;
+	ConeMultiTarget.bUseWeaponRangeForLength = false;
+	ConeMultiTarget.ConeLength=default.STREET_SWEEPER_CONE_LENGTH;
+	ConeMultiTarget.fTargetRadius = 99;     //  large number to handle weapon range - targets will get filtered according to cone constraints
+	ConeMultiTarget.bIgnoreBlockingCover = false;
+	Template.AbilityMultiTargetStyle = ConeMultiTarget;
+	
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	// Template.AdditionalAbilities.AddItem('StreetSweeperBonusDamage');
+	AddSecondaryAbility(Template, LW2WotC_StreetSweeperBonus());
+
+	return Template;
+}
+
+
+static function X2AbilityTemplate LW2WotC_StreetSweeperBonus()
+{
+	local X2AbilityTemplate					Template;	
+	local X2Effect_LW2WotC_StreetSweeper			StreetSweeperEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_StreetSweeper_Bonus');
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.bIsPassive = true;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.Hostility = eHostility_Neutral;
+	Template.bDisplayInUITacticalText = false;
+	
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+
+	StreetSweeperEffect = new class 'X2Effect_LW2WotC_StreetSweeper';
+	StreetSweeperEffect.Unarmored_Damage_Multiplier = default.STREET_SWEEPER_UNARMORED_DAMAGE_MULTIPLIER;
+	StreetSweeperEffect.Unarmored_Damage_Bonus = default.STREET_SWEEPER_UNARMORED_DAMAGE_BONUS;
+	StreetSweeperEffect.BuildPersistentEffect(1,true,false,false);
+	Template.AddTargetEffect(StreetSweeperEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	
 	return Template;
 }
 

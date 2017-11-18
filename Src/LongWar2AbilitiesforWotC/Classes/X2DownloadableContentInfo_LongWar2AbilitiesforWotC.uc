@@ -248,6 +248,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'FORMIDABLE_ABLATIVE_HP':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.FORMIDABLE_ABLATIVE_HP);
 			return true;
+		case 'STREET_SWEEPER_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.STREET_SWEEPER_COOLDOWN);
+			return true;
+		case 'STREET_SWEEPER_UNARMORED_DAMAGE_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.STREET_SWEEPER_UNARMORED_DAMAGE_BONUS);
+			return true;
 		default: 
 			return false;
 	}
