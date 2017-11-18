@@ -233,6 +233,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'RAPID_DEPLOYMENT_COOLDOWN':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.RAPID_DEPLOYMENT_COOLDOWN);
 			return true;
+		case 'FLECHE_BONUS_DAMAGE_PER_TILES':
+			OutString = getFlechePerTileDamageBonusString(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLECHE_BONUS_DAMAGE_PER_TILES);
+			return true;
 		default: 
 			return false;
 	}
@@ -298,4 +301,22 @@ private static function string getSquadsightString(bool squadsightValid)
     {
         return "Units visible at squadsight ranges do not confer bonus.";
     }
+}
+
+private static function string getFlechePerTileDamageBonusString(float bonusDamagePerTile)
+{
+	local float TempFloat;
+	local int TempInt;
+
+	TempFloat = 1 / class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLECHE_BONUS_DAMAGE_PER_TILES;
+	TempFloat = Round(TempFloat * 10.0) / 10.0;
+	TempInt = int(TempFloat);
+	if ( float(TempInt) ~= TempFloat)
+	{
+		return string(TempInt);
+	}
+	else
+	{
+		return Repl(string(TempFloat), "0", "");
+	}
 }

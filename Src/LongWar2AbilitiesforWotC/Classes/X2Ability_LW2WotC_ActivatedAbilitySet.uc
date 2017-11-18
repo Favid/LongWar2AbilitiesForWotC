@@ -96,6 +96,7 @@ var config float STREET_SWEEPER2_UNARMORED_DAMAGE_MULTIPLIER;
 var config int STREET_SWEEPER2_UNARMORED_DAMAGE_BONUS;
 var config int NUM_AIRDROP_CHARGES;
 var config int RAPID_DEPLOYMENT_COOLDOWN;
+var config float FLECHE_BONUS_DAMAGE_PER_TILES;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -136,6 +137,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddAirdrop());
 	//Templates.AddItem(AddSwordSlice_LWAbility());
 	//Templates.AddItem(AddFleche());
+	Templates.AddItem(Fleche());
 	//Templates.AddItem(AddStreetSweeperAbility());
 	//Templates.AddItem(AddStreetSweeperBonusDamageAbility());
 
@@ -351,3 +353,40 @@ static function X2AbilityTemplate RapidDeployment()
 
 	return Template;
 }
+
+// Perk name:		Fleche
+// Perk effect:		"Attack any enemy within movement range with your sword. Deals bonus damage depending on how far you move for the attack."
+// Localized text:	"Attack any enemy within movement range with your sword. Deals +1 damage for every <Ability:FLECHE_BONUS_DAMAGE_PER_TILES/> tiles between your starting position and the target."
+// Config:			(AbilityName="LW2WotC_Fleche", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Fleche()
+{
+	local X2AbilityTemplate                 Template;
+
+	// Fleche is just a copy of the vanilla Ranger's Slash ability, but with a bonus damage effect
+	Template = class'X2Ability_RangerAbilitySet'.static.AddSwordSliceAbility('LW2WotC_Fleche');
+	AddSecondaryAbility(Template, FlecheBonuses());
+
+	return Template;
+}
+
+// This is part of Fleche effect, above
+static function X2AbilityTemplate FlecheBonuses()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_LW2WotC_MovementBasedBonusDamage			FlecheBonusDamageEffect;
+
+	// Creates the effect to deal more damage the further the unit moved
+	FlecheBonusDamageEffect = new class 'X2Effect_LW2WotC_MovementBasedBonusDamage';
+	FlecheBonusDamageEffect.AbilityNames.AddItem('LW2WotC_Fleche');
+	FlecheBonusDamageEffect.BonusDmgPerTile = default.FLECHE_BONUS_DAMAGE_PER_TILES;
+	FlecheBonusDamageEffect.BuildPersistentEffect (1, true, false);
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_Fleche_Bonuses', "img:///UILibrary_LW_PerkPack.LW_AbilityFleche", false, FlecheBonusDamageEffect);
+
+	// Fleche will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
+
+	return Template;
+}
+
