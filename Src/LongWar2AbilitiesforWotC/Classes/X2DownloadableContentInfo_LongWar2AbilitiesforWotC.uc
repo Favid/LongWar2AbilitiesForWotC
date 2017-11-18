@@ -224,6 +224,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'SLUG_SHOT_PIERCE':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SLUG_SHOT_PIERCE);
 			return true;
+		case 'DAMAGE_CONTROL_DURATION':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.DAMAGE_CONTROL_DURATION);
+			return true;
+		case 'DAMAGE_CONTROL_BONUS_ARMOR':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.DAMAGE_CONTROL_BONUS_ARMOR);
+			return true;
 		default: 
 			return false;
 	}

@@ -76,8 +76,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(LockdownBonuses()); //Additional Ability
 	//Templates.AddItem(PurePassive('Mayhem', "img:///UILibrary_LW_PerkPack.LW_AbilityMayhem", false, 'eAbilitySource_Perk'));
 	//Templates.AddItem(MayhemBonuses()); // AdditionalAbility;
-	//Templates.AddItem(AddDamageControlAbility());
-	//Templates.AddItem(AddDamageControlAbilityPassive()); //Additional Ability
 	//Templates.AddItem(AddEvasiveAbility());
 	//Templates.AddItem(RemoveEvasive()); // Additional Ability
 	//Templates.AddItem(AddGhostwalkerAbility()); 
@@ -108,6 +106,7 @@ static function array<X2DataTemplate> CreateTemplates()
     Templates.AddItem(TraverseFire());
     Templates.AddItem(Cutthroat());
 	Templates.AddItem(Covert());
+	Templates.AddItem(DamageControl());
 
 	return Templates;
 }
@@ -907,4 +906,38 @@ static function X2AbilityTemplate Covert()
 	Effect.AddPersistentStatChange(eStat_DetectionModifier, default.COVERT_DETECTION_RANGE_REDUCTION);
 
 	return Passive('LW2WotC_Covert', "img:///UILibrary_LW_PerkPack.LW_AbilityCovert", true, Effect);
+}
+
+// Perk name:		Damage Control
+// Perk effect:		After taking damage, gain bonus armor through the end of the turn.
+// Localized text:	"After taking damage, gain <Ability:DAMAGE_CONTROL_BONUS_ARMOR> armor through the end of the turn."
+// Config:			(AbilityName="LW2WotC_DamageControl")
+static function X2AbilityTemplate DamageControl()
+{
+	local X2Effect_LW2WotC_BonusArmor Effect;
+	local X2AbilityTemplate Template;
+
+	// Create a persistent effect for the bonus armor
+	Effect = new class'X2Effect_LW2WotC_BonusArmor';
+	Effect.EffectName = 'LW2WotC_DamageControl';
+
+	// The effect duration
+	Effect.BuildPersistentEffect(default.DAMAGE_CONTROL_DURATION, false, false, false, eGameRule_PlayerTurnBegin);
+
+	// If the effect is added multiple times, it refreshes the duration of the existing effect
+	Effect.DuplicateResponse = eDupe_Refresh;
+
+	// Bonus armor
+	Effect.BonusArmor = default.DAMAGE_CONTROL_BONUS_ARMOR;
+
+	// Show a flyover over the target unit when the effect is added
+	Effect.VisualizationFn = EffectFlyOver_Visualization;
+
+	// Create the template using a helper function. This ability triggers when we take damage
+	Template = SelfTargetTrigger('LW2WotC_DamageControl', "img:///UILibrary_LW_PerkPack.LW_AbilityDamageControl", true, Effect, 'UnitTakeEffectDamage');
+
+	// Trigger abilities don't appear as passives. Add a passive ability icon.
+	AddIconPassive(Template);
+
+	return Template;
 }
