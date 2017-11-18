@@ -23,11 +23,10 @@ var config int CYCLIC_FIRE_AIM_MALUS;
 var config int CYCLIC_FIRE_MIN_ACTION_REQ;
 var config int CYCLIC_FIRE_SHOTS;
 var config int CYCLIC_FIRE_AMMO;
-var config int STREET_SWEEPER_AMMO_COST;
-var config int STREET_SWEEPER_COOLDOWN;
-var config int STREET_SWEEPER_TILE_WIDTH;
-var config int STREET_SWEEPER_MIN_ACTION_REQ;
-var config float STREET_SWEEPER_CONE_LENGTH;
+var config int TRENCH_GUN_AMMO_COST;
+var config int TRENCH_GUN_COOLDOWN;
+var config int TRENCH_GUN_TILE_WIDTH;
+var config float TRENCH_GUN_CONE_LENGTH;
 var config int SLUG_SHOT_COOLDOWN;
 var config int SLUG_SHOT_AMMO_COST;
 var config int SLUG_SHOT_MIN_ACTION_REQ;
@@ -108,7 +107,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(WalkFire());
 	Templates.AddItem(PrecisionShot());
 	//Templates.AddItem(AddCyclicFireAbility());
-	//Templates.AddItem(AddTrenchGunAbility());
+	Templates.AddItem(TrenchGun());
 	Templates.AddItem(SlugShot());
 	//Templates.AddItem(AddClutchShotAbility());
 	//Templates.AddItem(AddCommissarAbility());
@@ -472,6 +471,105 @@ static function X2AbilityTemplate Slash()
 	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
 	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.MeleeLostSpawnIncreasePerUse;
 
+	return Template;
+}
+
+// Perk name:		Trench Gun
+// Perk effect:		"Special shot for primary-weapon shotguns only: Fire a short-range cone-based attack at nearby targets. Cooldown-based."
+// Localized text:	"Special shot for primary-weapon shotguns only: Fire a short-range cone-based attack at nearby targets. <Ability:TRENCH_GUN_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_TrenchGun", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate TrenchGun()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityCost_Ammo                AmmoCost;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2AbilityTarget_Cursor            CursorTarget;
+	local X2AbilityMultiTarget_Cone         ConeMultiTarget;
+	local X2Condition_UnitProperty          UnitPropertyCondition;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local X2AbilityCooldown                 Cooldown;
+	local X2Condition_UnitInventory			InventoryCondition;
+	local X2Effect_Shredder					WeaponDamageEffect;
+	local X2Condition_UnitEffects			SuppressedCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_TrenchGun');
+
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityStreetSweeper";
+	Template.AbilityConfirmSound = "TacticalUI_ActivateAbility";
+	Template.CinescriptCameraType = "StandardGunFiring";
+	Template.bCrossClassEligible = false;
+	Template.Hostility = eHostility_Offensive;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.TargetingMethod = class'X2TargetingMethod_Cone';
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AbilityTargetConditions.AddItem(default.LivingTargetUnitOnlyProperty);
+	
+	Template.bAllowAmmoEffects = true;
+
+	ActionPointCost = new class 'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	ActionPointCost.bConsumeAllPoints = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	AmmoCost = new class'X2AbilityCost_Ammo';	
+	AmmoCost.iAmmo = default.TRENCH_GUN_AMMO_COST;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = default.TRENCH_GUN_COOLDOWN;
+	Template.AbilityCooldown = Cooldown;
+
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeDead = true;
+	UnitPropertyCondition.ExcludeFriendlyToSource = false;
+	Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
+	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
+
+	InventoryCondition = new class'X2Condition_UnitInventory';
+	InventoryCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	InventoryCondition.RequireWeaponCategory = 'shotgun';
+	Template.AbilityShooterConditions.AddItem(InventoryCondition);
+
+	Template.AddShooterEffectExclusions();
+	
+	SuppressedCondition = new class'X2Condition_UnitEffects';
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bMultiTargetOnly = false; 
+	StandardAim.bGuaranteedHit = false;
+	StandardAim.bOnlyMultiHitWithSuccess = false;
+	StandardAim.bAllowCrit = true;
+	Template.AbilityToHitCalc = StandardAim;
+	Template.bOverrideAim = false;
+
+	CursorTarget = new class'X2AbilityTarget_Cursor';
+	Template.AbilityTargetStyle = CursorTarget;	
+
+	WeaponDamageEffect = new class'X2Effect_Shredder';
+	Template.AddTargetEffect(WeaponDamageEffect);
+	Template.AddMultiTargetEffect(WeaponDamageEffect);
+	Template.bFragileDamageOnly = true;
+	Template.bCheckCollision = true;
+
+	ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+	ConeMultiTarget.bExcludeSelfAsTargetIfWithinRadius = true;
+	ConeMultiTarget.ConeEndDiameter = default.TRENCH_GUN_TILE_WIDTH * class'XComWorldData'.const.WORLD_StepSize;
+	ConeMultiTarget.bUseWeaponRangeForLength = false;
+	ConeMultiTarget.ConeLength=default.TRENCH_GUN_CONE_LENGTH;
+	ConeMultiTarget.fTargetRadius = 99;     //  large number to handle weapon range - targets will get filtered according to cone constraints
+	ConeMultiTarget.bIgnoreBlockingCover = false;
+	Template.AbilityMultiTargetStyle = ConeMultiTarget;
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
 	return Template;
 }
 

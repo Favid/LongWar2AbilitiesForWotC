@@ -9,7 +9,6 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
     local XComGameState_Unit TargetUnit;
     local XComGameState_Destructible TargetObject;
     local float BonusDmg;
-    local float Dist;
     local vector StartLoc, TargetLoc;
 
     TargetUnit = XComGameState_Unit(TargetDamageable);
@@ -29,7 +28,6 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
             {
                 TargetLoc = WorldData.GetPositionFromTileCoordinates(TargetObject.TileLocation);
             }
-            Dist = VSize(StartLoc - TargetLoc);
             BonusDmg = BonusDmgPerTile * VSize(StartLoc - TargetLoc)/ WorldData.WORLD_StepSize;
             return int(BonusDmg);
         }

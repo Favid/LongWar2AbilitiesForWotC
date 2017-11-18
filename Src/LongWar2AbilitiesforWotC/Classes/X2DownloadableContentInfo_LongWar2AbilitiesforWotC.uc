@@ -236,6 +236,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'FLECHE_BONUS_DAMAGE_PER_TILES':
 			OutString = getFlechePerTileDamageBonusString(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLECHE_BONUS_DAMAGE_PER_TILES);
 			return true;
+		case 'TRENCH_GUN_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.TRENCH_GUN_COOLDOWN);
+			return true;
 		default: 
 			return false;
 	}
