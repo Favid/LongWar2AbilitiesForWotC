@@ -504,7 +504,7 @@ static function X2AbilityTemplate Slash()
 }
 
 // Perk name:		Trench Gun
-// Perk effect:		"Special shot for primary-weapon shotguns only: Fire a short-range cone-based attack at nearby targets. Cooldown-based."
+// Perk effect:		Special shot for primary-weapon shotguns only: Fire a short-range cone-based attack at nearby targets. Cooldown-based.
 // Localized text:	"Special shot for primary-weapon shotguns only: Fire a short-range cone-based attack at nearby targets. <Ability:TRENCH_GUN_COOLDOWN> turn cooldown."
 // Config:			(AbilityName="LW2WotC_TrenchGun", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate TrenchGun()
@@ -625,7 +625,7 @@ static function X2AbilityTemplate StreetSweeper()
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY;
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
-	Template.IconImage = "img:///UILibrary_LW_Overhaul.LW_AbilityStreetSweeper2";
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityStreetSweeper2";
 	Template.ActivationSpeech = 'Reaper';
 	Template.CinescriptCameraType = "StandardGunFiring";
 	Template.bCrossClassEligible = false;
@@ -751,7 +751,7 @@ static function X2AbilityTemplate Fortify()
 	Effect.VisualizationFn = EffectFlyOver_Visualization;
 
 	// Create the template as a helper function. This is an activated ability that doesn't cost an action.
-	Template = SelfTargetActivated('LW2WotC_Fortify', "img:///UILibrary_LW_Overhaul.LW_AbilityFortify", true, Effect, class'UIUtilities_Tactical'.const.CLASS_LIEUTENANT_PRIORITY, eCost_Free);
+	Template = SelfTargetActivated('LW2WotC_Fortify', "img:///UILibrary_LW_PerkPack.LW_AbilityFortify", true, Effect, class'UIUtilities_Tactical'.const.CLASS_LIEUTENANT_PRIORITY, eCost_Free);
 
 	// Add a cooldown
 	AddCooldown(Template, default.FORTIFY_COOLDOWN);
@@ -803,7 +803,7 @@ static function X2AbilityTemplate ExtraConditioning()
 // Perk name:		Killer Instinct
 // Perk effect:		Activating Run & Gun grants bonus critical damage for the rest of the turn.
 // Localized text:	"Activating Run & Gun grants +<Ability:KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT>% critical damage for the rest of the turn."
-// Config:			(AbilityName="LW2WotC_KillInstinct")
+// Config:			(AbilityName="LW2WotC_KillerInstinct")
 static function X2AbilityTemplate KillerInstinct()
 {
 	// This ability is a passive with no effects. Run and Gun will simply check if the soldier has it and increase crit damage if it's found
