@@ -88,7 +88,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddSmartMacrophagesAbility());
 	//Templates.AddItem(AddIronSkinAbility());
 	//Templates.AddItem(AddShadowstrike_LWAbility());
-	//Templates.AddItem(AddFormidableAbility());
 	//Templates.AddItem(AddSoulStealTriggered2());
 	//Templates.AddItem(AddTrojan());
 	//Templates.AddItem(AddTrojanVirus());
@@ -107,6 +106,7 @@ static function array<X2DataTemplate> CreateTemplates()
     Templates.AddItem(Cutthroat());
 	Templates.AddItem(Covert());
 	Templates.AddItem(DamageControl());
+	Templates.AddItem(Formidable());
 
 	return Templates;
 }
@@ -938,6 +938,58 @@ static function X2AbilityTemplate DamageControl()
 
 	// Trigger abilities don't appear as passives. Add a passive ability icon.
 	AddIconPassive(Template);
+
+	return Template;
+}
+
+// Perk name:		Formidable
+// Perk effect:		Your gear includes an extra layer of protection, granting bonus ablative hit points and reduced damage from explosive attacks.
+// Localized text:	"Your gear includes an extra layer of protection, granting <Ability:FORMIDABLE_ABLATIVE_HP/> bonus ablative hit points and <Ability:BlastPadding/>% less damage from explosive attacks."
+// Config:			(AbilityName="LW2WotC_Formidable")
+static function X2AbilityTemplate Formidable()
+{
+	local X2AbilityTemplate						Template;
+	local X2AbilityTargetStyle                  TargetStyle;
+	local X2AbilityTrigger						Trigger;
+	local X2Effect_LW2WotC_Formidable	                PaddingEffect;
+	local X2EFfect_PersistentStatChange			HPEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Formidable');
+
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_extrapadding";
+
+	Template.AbilityToHitCalc = default.DeadEye;
+
+	TargetStyle = new class'X2AbilityTarget_Self';
+	Template.AbilityTargetStyle = TargetStyle;
+
+	Trigger = new class'X2AbilityTrigger_UnitPostBeginPlay';
+	Template.AbilityTriggers.AddItem(Trigger);
+
+	PaddingEffect = new class'X2Effect_LW2WotC_Formidable';
+	PaddingEffect.ExplosiveDamageReduction = default.FORMIDABLE_EXPLOSIVES_DR;
+	PaddingEffect.Armor_Mitigation = default.FORMIDABLE_ARMOR_MITIGATION;
+	PaddingEffect.BuildPersistentEffect(1, true, false);
+	PaddingEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,,Template.AbilitySourceName);
+	Template.AddTargetEffect(PaddingEffect);
+
+	HPEFfect = new class'X2Effect_PersistentStatChange';
+	HPEffect.BuildPersistentEffect(1, true, false);
+	HPEffect.AddPersistentStatChange(eStat_ShieldHP, default.FORMIDABLE_ABLATIVE_HP);
+	Template.AddTargetEFfect(HPEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  NOTE: No visualization on purpose!
+
+	Template.bCrossClassEligible = true;
+
+	if (default.FORMIDABLE_ARMOR_MITIGATION > 0)
+	{
+		Template.SetUIStatMarkup(class'XLocalizedData'.default.ArmorLabel, eStat_ArmorMitigation, PaddingEffect.ARMOR_MITIGATION);
+	}
 
 	return Template;
 }

@@ -245,6 +245,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'FORTIFY_COOLDOWN':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FORTIFY_COOLDOWN);
 			return true;
+		case 'FORMIDABLE_ABLATIVE_HP':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.FORMIDABLE_ABLATIVE_HP);
+			return true;
 		default: 
 			return false;
 	}
