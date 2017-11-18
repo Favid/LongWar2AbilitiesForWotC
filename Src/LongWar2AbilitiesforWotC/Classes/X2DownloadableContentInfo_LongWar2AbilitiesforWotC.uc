@@ -239,6 +239,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'TRENCH_GUN_COOLDOWN':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.TRENCH_GUN_COOLDOWN);
 			return true;
+		case 'FORTIFY_DEFENSE':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FORTIFY_DEFENSE);
+			return true;
+		case 'FORTIFY_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FORTIFY_COOLDOWN);
+			return true;
 		default: 
 			return false;
 	}

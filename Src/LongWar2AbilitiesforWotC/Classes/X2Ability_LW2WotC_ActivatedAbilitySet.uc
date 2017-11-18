@@ -97,6 +97,8 @@ var config int NUM_AIRDROP_CHARGES;
 var config int RAPID_DEPLOYMENT_COOLDOWN;
 var config float FLECHE_BONUS_DAMAGE_PER_TILES;
 var config bool NO_MELEE_ATTACKS_WHEN_ON_FIRE;
+var config int FORTIFY_DEFENSE;
+var config int FORTIFY_COOLDOWN;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -141,8 +143,31 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Slash());
 	//Templates.AddItem(AddStreetSweeperAbility());
 	//Templates.AddItem(AddStreetSweeperBonusDamageAbility());
+	Templates.AddItem(Fortify());
+
+	Templates.AddItem(ShootAnyone());
 
 	return Templates;
+}
+
+// For testing purposes. Useful for seeing if defensive bonuses apply properly
+static function X2AbilityTemplate ShootAnyone()
+{
+	local X2AbilityTemplate Template;
+	local X2Condition_Visibility            VisibilityCondition;
+
+	// Create a standard attack that doesn't cost an action.
+	Template = Attack('LW2WotC_ShootAnyone', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, none, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_Free, 1);
+
+	VisibilityCondition = new class'X2Condition_Visibility';
+	VisibilityCondition.bRequireGameplayVisible = true;
+	VisibilityCondition.bAllowSquadsight = true;
+
+	Template.AbilityTargetConditions.Length = 0;
+	Template.AbilityTargetConditions.AddItem(VisibilityCondition);
+	Template.AbilityTargetConditions.AddItem(default.LivingTargetOnlyProperty);
+
+	return Template;
 }
 
 // Perk name:		Walk Fire
@@ -570,6 +595,35 @@ static function X2AbilityTemplate TrenchGun()
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+	return Template;
+}
+
+// Perk name:		Fortify
+// Perk effect:		Activate to grant bonus defense until the beginning of the next turn. Does not cost an action. Cooldown-based."
+// Localized text:	"Activate to grant +<ABILITY:FORTIFY_DEFENSE_LW/> defense until the beginning of the next turn. Does not cost an action. Has a <ABILITY:FORTIFY_COOLDOWN_LW/>-turn cooldown."
+// Config:			(AbilityName="LW2WotC_Fortify")
+static function X2AbilityTemplate Fortify()
+{
+	local X2Effect_PersistentStatChange Effect;
+	local X2AbilityTemplate Template;
+
+	// Create an effect that will grant defense bonus
+	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.EffectName = 'LW2WotC_Fortify';
+	Effect.AddPersistentStatChange(eStat_Defense, default.FORTIFY_DEFENSE);
+	Effect.DuplicateResponse = eDupe_Refresh;
+	Effect.BuildPersistentEffect(1, false, true, false, eGameRule_PlayerTurnBegin);
+	Effect.VisualizationFn = EffectFlyOver_Visualization;
+
+	// Create the template as a helper function. This is an activated ability that doesn't cost an action.
+	Template = SelfTargetActivated('LW2WotC_Fortify', "img:///UILibrary_LW_Overhaul.LW_AbilityFortify", true, Effect, class'UIUtilities_Tactical'.const.CLASS_LIEUTENANT_PRIORITY, eCost_Free);
+
+	// Add a cooldown
+	AddCooldown(Template, default.FORTIFY_COOLDOWN);
+
+	// Cannot be used while burning, etc.
+	Template.AddShooterEffectExclusions();
+
 	return Template;
 }
 
