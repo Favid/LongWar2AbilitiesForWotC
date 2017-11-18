@@ -68,7 +68,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddLockedOnAbility());
 	Templates.AddItem(AddSentinel_LWAbility());
 	Templates.AddItem(AddRapidReactionAbility());
-	//Templates.AddItem(AddLightningReflexes_LWAbility());
 	//Templates.AddItem(AddKillerInstinctAbility());
 	//Templates.AddItem(AddExtraConditioningAbility());
 	//Templates.AddItem(AddLockdownAbility());
@@ -107,6 +106,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Covert());
 	Templates.AddItem(DamageControl());
 	Templates.AddItem(Formidable());
+	Templates.AddItem(LightningReflexes());
 
 	return Templates;
 }
@@ -991,5 +991,33 @@ static function X2AbilityTemplate Formidable()
 		Template.SetUIStatMarkup(class'XLocalizedData'.default.ArmorLabel, eStat_ArmorMitigation, PaddingEffect.ARMOR_MITIGATION);
 	}
 
+	return Template;
+}
+
+// Perk name:		Lightning Reflexes
+// Perk effect:		Your gear includes an extra layer of protection, granting bonus ablative hit points and reduced damage from explosive attacks.
+// Localized text:	"Your gear includes an extra layer of protection, granting <Ability:FORMIDABLE_ABLATIVE_HP/> bonus ablative hit points and <Ability:BlastPadding/>% less damage from explosive attacks."
+// Config:			(AbilityName="LW2WotC_LightningReflexes")
+static function X2AbilityTemplate LightningReflexes()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_LightningReflexes		PersistentEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_LightningReflexes');
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_lightningreflexes";
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	PersistentEffect = new class'X2Effect_LW2WotC_LightningReflexes';
+	PersistentEffect.BuildPersistentEffect(1, true, false);
+	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,, Template.AbilitySourceName);
+	Template.AddTargetEffect(PersistentEffect);
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.bCrossClassEligible = true;
 	return Template;
 }
