@@ -106,8 +106,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(PrecisionShot());
 	//Templates.AddItem(AddCyclicFireAbility());
 	//Templates.AddItem(AddTrenchGunAbility());
-	//Templates.AddItem(AddSlugShotAbility());
-	//Templates.AddItem(SlugShotRangeEffect()); //Additional Ability
+	Templates.AddItem(SlugShot());
 	//Templates.AddItem(AddClutchShotAbility());
 	//Templates.AddItem(AddCommissarAbility());
 	//Templates.AddItem(AddGunslingerAbility());
@@ -256,6 +255,64 @@ static function X2AbilityTemplate PrecisionShotBonuses()
 	Template = Passive('LW2WotC_PrecisionShot_Bonuses', "img:///UILibrary_LW_PerkPack.LW_Ability_PrecisionShot", false, Effect);
 
 	// Precision Shot will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Perk name:		Slug Shot
+// Perk effect:		Armor-piercing special shotgun shot with no range penalties.
+// Localized text:	"Special shot for primary-weapon shotguns only: Fire a shot that pierces <Ability:SLUG_SHOT_PIERCE> armor and has no range penalties. Uses <Ability:SelfAmmoCost/> ammo. <Ability:SLUG_SHOT_COOLDOWN/> turn cooldown."
+// Config:			(AbilityName="LW2WotC_SlugShot", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate SlugShot()
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_Knockback KnockbackEffect;
+	local X2Condition_UnitInventory ShotgunOnlyCondition;
+	
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_SlugShot', "img:///UILibrary_LW_PerkPack.LW_AbilitySlugShot", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.SLUG_SHOT_AMMO_COST);
+
+	// Create that sweet knockback effect for kills
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+    // Only allow this ability to be used with Shotguns
+    ShotgunOnlyCondition = new class'X2Condition_UnitInventory';
+	ShotgunOnlyCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	ShotgunOnlyCondition.RequireWeaponCategory = 'shotgun';
+	Template.AbilityShooterConditions.AddItem(ShotgunOnlyCondition);
+
+	// Add a cooldown.
+	AddCooldown(Template, default.SLUG_SHOT_COOLDOWN);
+
+	// Add a secondary ability to provide bonuses on the shot
+	AddSecondaryAbility(Template, SlugShotBonuses());
+
+	return Template;
+}
+
+// This is part of the Slug Shot effect, above
+static function X2AbilityTemplate SlugShotBonuses()
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_LW2WotC_NullifyWeaponRangeMalus SlugShotEffect;
+	local XMBCondition_AbilityName Condition;
+
+	// Creates the effect to ignore weapon range penalty and grant armor piercing
+	SlugShotEffect = new class'X2Effect_LW2WotC_NullifyWeaponRangeMalus';
+	SlugShotEffect.AddArmorPiercingModifier(default.SLUG_SHOT_PIERCE);
+
+	// The bonuses only apply to the Slug Shot ability
+	Condition = new class'XMBCondition_AbilityName';
+	Condition.IncludeAbilityNames.AddItem('LW2WotC_SlugShot');
+	SlugShotEffect.AbilityTargetConditions.AddItem(Condition);
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_SlugShot_Bonuses', "img:///UILibrary_LW_PerkPack.LW_AbilitySlugShot", false, SlugShotEffect);
+
+	// Slug Shot will show up as an active ability, so hide the icon for the passive damage effect
 	HidePerkIcon(Template);
 
 	return Template;

@@ -218,6 +218,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'COVERT_DETECTION_RANGE_REDUCTION':
 			OutString = string(int(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COVERT_DETECTION_RANGE_REDUCTION * 100));
 			return true;
+		case 'SLUG_SHOT_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SLUG_SHOT_COOLDOWN);
+			return true;
+		case 'SLUG_SHOT_PIERCE':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SLUG_SHOT_PIERCE);
+			return true;
 		default: 
 			return false;
 	}
