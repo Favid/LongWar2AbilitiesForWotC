@@ -317,6 +317,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'COMBAT_FITNESS_WILL':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_WILL);
 			return true;
+		case 'SPRINTER_MOBILITY':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.SPRINTER_MOBILITY);
+			return true;
 		default: 
 			return false;
 	}

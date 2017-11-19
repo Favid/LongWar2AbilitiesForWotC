@@ -39,6 +39,7 @@ var config int COMBAT_FITNESS_OFFENSE;
 var config int COMBAT_FITNESS_MOBILITY;
 var config int COMBAT_FITNESS_DODGE;
 var config int COMBAT_FITNESS_WILL;
+var config int SPRINTER_MOBILITY;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -1104,6 +1105,7 @@ static function X2AbilityTemplate GrazingFire()
 static function X2AbilityTemplate CombatFitness()
 {
 	local X2Effect_PersistentStatChange			StatEffect;
+	local X2AbilityTemplate 					Template;
 
 	StatEffect = new class'X2Effect_PersistentStatChange';
 	StatEffect.AddPersistentStatChange(eStat_HP, float(default.COMBAT_FITNESS_HP));
@@ -1112,11 +1114,31 @@ static function X2AbilityTemplate CombatFitness()
 	StatEffect.AddPersistentStatChange(eStat_Dodge, float(default.COMBAT_FITNESS_DODGE));
 	StatEffect.AddPersistentStatChange(eStat_Will, float(default.COMBAT_FITNESS_WILL));
 
+	Template = Passive('LW2WotC_CombatFitness', "img:///UILibrary_LW_PerkPack.LW_AbilityExtraConditioning", true, StatEffect);
+
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.HealthLabel, eStat_HP, default.COMBAT_FITNESS_HP);
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.AimLabel, eStat_Offense, default.COMBAT_FITNESS_OFFENSE);
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.COMBAT_FITNESS_MOBILITY);
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.DodgeLabel, eStat_Dodge, default.COMBAT_FITNESS_DODGE);
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.WillLabel, eStat_Will, default.COMBAT_FITNESS_WILL);
 
-	return Passive('LW2WotC_CombatFitness', "img:///UILibrary_LW_PerkPack.LW_AbilityExtraConditioning", true, StatEffect);;
+	return Template;
+}
+
+// Perk name:		Sprinter
+// Perk effect:		Gain bonus mobility.
+// Localized text:	"Gain <ABILITY:SPRINTER_MOBILITY/> mobility."
+// Config:			(AbilityName="LW2WotC_Sprinter")
+static function X2AbilityTemplate Sprinter()
+{
+	local X2Effect_PersistentStatChange			StatEffect;
+	local X2AbilityTemplate 					Template;
+
+	StatEffect = new class'X2Effect_PersistentStatChange';
+	StatEffect.AddPersistentStatChange(eStat_Mobility, float(default.SPRINTER_MOBILITY));
+
+	Template = Passive('LW2WotC_CombatFitness', "img:///UILibrary_LW_PerkPack.LW_AbilityExtraConditioning", true, StatEffect);;
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.SPRINTER_MOBILITY);
+
+	return Template;
 }
