@@ -320,6 +320,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'SPRINTER_MOBILITY':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.SPRINTER_MOBILITY);
 			return true;
+		case 'ALPHAMIKEFOXTROT_DAMAGE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.ALPHAMIKEFOXTROT_DAMAGE);
+			return true;
 		default: 
 			return false;
 	}

@@ -40,6 +40,7 @@ var config int COMBAT_FITNESS_MOBILITY;
 var config int COMBAT_FITNESS_DODGE;
 var config int COMBAT_FITNESS_WILL;
 var config int SPRINTER_MOBILITY;
+var config int ALPHAMIKEFOXTROT_DAMAGE;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -121,6 +122,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(DenseSmoke());
 	Templates.AddItem(GrazingFire());
 	Templates.AddItem(CombatFitness());
+	Templates.AddItem(AlphaMikeFoxtrot());
 
 	return Templates;
 }
@@ -1141,4 +1143,23 @@ static function X2AbilityTemplate Sprinter()
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.SPRINTER_MOBILITY);
 
 	return Template;
+}
+
+// Perk name:		Alpha Mike Foxtrot
+// Perk effect:		You do greatly increased damage with your primary weapon.
+// Localized text:	"You do <Ability:ALPHA_MIKE_FOXTROT_DAMAGE_LW/> additional points of base damage with your primary weapon."
+// Config:			(AbilityName="LW2WotC_AlphaMikeFoxtrot", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate AlphaMikeFoxtrot()
+{
+	local XMBEffect_ConditionalBonus Effect;
+
+	// The bonus adds damage
+	Effect = new class'XMBEffect_ConditionalBonus';
+	Effect.AddDamageModifier(default.ALPHAMIKEFOXTROT_DAMAGE, eHit_Success);
+
+	// The bonus only applies to attacks with the weapon associated with this ability
+	Effect.AbilityTargetConditions.AddItem(default.MatchingWeaponCondition);
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_AlphaMikeFoxtrot', "img:///UILibrary_LW_Overhaul.LW_AbilityAMF", false, Effect);
 }
