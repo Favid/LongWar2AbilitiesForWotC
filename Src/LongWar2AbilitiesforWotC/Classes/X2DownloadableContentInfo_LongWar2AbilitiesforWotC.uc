@@ -302,6 +302,21 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'GRAZING_FIRE_SUCCESS_CHANCE':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.GRAZING_FIRE_SUCCESS_CHANCE);
 			return true;
+		case 'COMBAT_FITNESS_HP':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_HP);
+			return true;
+		case 'COMBAT_FITNESS_OFFENSE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_OFFENSE);
+			return true;
+		case 'COMBAT_FITNESS_MOBILITY':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_MOBILITY);
+			return true;
+		case 'COMBAT_FITNESS_DODGE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_DODGE);
+			return true;
+		case 'COMBAT_FITNESS_WILL':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_WILL);
+			return true;
 		default: 
 			return false;
 	}

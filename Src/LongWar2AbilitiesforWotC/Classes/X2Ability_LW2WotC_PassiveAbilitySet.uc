@@ -34,6 +34,11 @@ var config int CUTTHROAT_BONUS_ARMOR_PIERCE;
 var config int CCS_AMMO_PER_SHOT;
 var config int DENSE_SMOKE_HITMOD;
 var config int COVERING_FIRE_OFFENSE_MALUS;
+var config int COMBAT_FITNESS_HP;
+var config int COMBAT_FITNESS_OFFENSE;
+var config int COMBAT_FITNESS_MOBILITY;
+var config int COMBAT_FITNESS_DODGE;
+var config int COMBAT_FITNESS_WILL;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -114,6 +119,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Smoker());
 	Templates.AddItem(DenseSmoke());
 	Templates.AddItem(GrazingFire());
+	Templates.AddItem(CombatFitness());
 
 	return Templates;
 }
@@ -1089,4 +1095,28 @@ static function X2AbilityTemplate GrazingFire()
 	GrazingEffect.SuccessChance = default.GRAZING_FIRE_SUCCESS_CHANCE;
 
 	return Passive('LW2WotC_GrazingFire', "img:///UILibrary_LW_PerkPack.LW_AbilityGrazingFire", true, GrazingEffect);
+}
+
+// Perk name:		Combat Fitness
+// Perk effect:		Gain bonuses to aim, mobility, HP, will, and dodge.
+// Localized text:	"Gain <ABILITY:COMBAT_FITNESS_OFFENSE/> aim, <ABILITY:COMBAT_FITNESS_MOBILITY/> mobility, <ABILITY:COMBAT_FITNESS_HP/> HP, <ABILITY:COMBAT_FITNESS_WILL/> will, and <ABILITY:COMBAT_FITNESS_DODGE/> dodge."
+// Config:			(AbilityName="LW2WotC_CombatFitness")
+static function X2AbilityTemplate CombatFitness()
+{
+	local X2Effect_PersistentStatChange			StatEffect;
+
+	StatEffect = new class'X2Effect_PersistentStatChange';
+	StatEffect.AddPersistentStatChange(eStat_HP, float(default.COMBAT_FITNESS_HP));
+	StatEffect.AddPersistentStatChange(eStat_Offense, float(default.COMBAT_FITNESS_OFFENSE));
+	StatEffect.AddPersistentStatChange(eStat_Mobility, float(default.COMBAT_FITNESS_MOBILITY));
+	StatEffect.AddPersistentStatChange(eStat_Dodge, float(default.COMBAT_FITNESS_DODGE));
+	StatEffect.AddPersistentStatChange(eStat_Will, float(default.COMBAT_FITNESS_WILL));
+
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.HealthLabel, eStat_HP, default.COMBAT_FITNESS_HP);
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.AimLabel, eStat_Offense, default.COMBAT_FITNESS_OFFENSE);
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.COMBAT_FITNESS_MOBILITY);
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.DodgeLabel, eStat_Dodge, default.COMBAT_FITNESS_DODGE);
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.WillLabel, eStat_Will, default.COMBAT_FITNESS_WILL);
+
+	return Passive('LW2WotC_CombatFitness', "img:///UILibrary_LW_PerkPack.LW_AbilityExtraConditioning", true, StatEffect);;
 }
