@@ -113,6 +113,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(LightningReflexes());
 	Templates.AddItem(Smoker());
 	Templates.AddItem(DenseSmoke());
+	Templates.AddItem(GrazingFire());
 
 	return Templates;
 }
@@ -1074,4 +1075,18 @@ static function X2Effect DenseSmokeEffect()
 	Effect.TargetConditions.AddItem(Condition);
 
 	return Effect;
+}
+
+// Perk name:		Grazing Fire
+// Perk effect:		Missed shots with your primary weapon have an additional roll to become a graze.
+// Localized text:	"Missed shots with your primary weapon have an additional roll to become a graze."
+// Config:			(AbilityName="LW2WotC_GrazingFire", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate GrazingFire()
+{
+	local X2Effect_LW2WotC_GrazingFire		GrazingEffect;
+
+	GrazingEffect = new class'X2Effect_LW2WotC_GrazingFire';
+	GrazingEffect.SuccessChance = default.GRAZING_FIRE_SUCCESS_CHANCE;
+
+	return Passive('LW2WotC_GrazingFire', "img:///UILibrary_LW_PerkPack.LW_AbilityGrazingFire", true, GrazingEffect);
 }

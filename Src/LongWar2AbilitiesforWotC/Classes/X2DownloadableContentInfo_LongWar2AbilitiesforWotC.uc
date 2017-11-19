@@ -299,6 +299,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'DENSE_SMOKE_TOTAL':
 			OutString = string(getInversedValue(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.DENSE_SMOKE_HITMOD) + getInversedValue(class'X2Item_DefaultGrenades'.default.SMOKEGRENADE_HITMOD));
 			return true;
+		case 'GRAZING_FIRE_SUCCESS_CHANCE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.GRAZING_FIRE_SUCCESS_CHANCE);
+			return true;
 		default: 
 			return false;
 	}
