@@ -24,8 +24,12 @@ static event OnLoadedSavedGame()
 static event OnPostTemplatesCreated()
 {
 	PatchAbilitiesForLightEmUp();
+	PatchSmokeGrenades();
 }
 
+/// <summary>
+/// Patches the standard shot ability so that it won't end a soldier's turn if they have Light 'Em Up
+/// </summary>
 private static function PatchAbilitiesForLightEmUp()
 {
     local X2AbilityTemplateManager TemplateManager;
@@ -47,6 +51,32 @@ private static function PatchAbilitiesForLightEmUp()
 		    }
 	    }
     }
+}
+
+/// <summary>
+/// Patches the Smoke Grenade and Smoke Bomb so that they function with Dense Smoke
+/// </summary>
+private static function PatchSmokeGrenades()
+{
+    PatchSmokeGrenade('SmokeGrenade');
+	PatchSmokeGrenade('SmokeGrenadeMk2');
+}
+
+private static function PatchSmokeGrenade(name ItemName)
+{
+	local X2ItemTemplateManager		ItemManager;
+	local array<X2DataTemplate>		TemplateAllDifficulties;
+	local X2DataTemplate			Template;
+	local X2GrenadeTemplate			GrenadeTemplate;
+
+	ItemManager = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
+	ItemManager.FindDataTemplateAllDifficulties(ItemName, TemplateAllDifficulties);
+	foreach TemplateAllDifficulties(Template)
+	{
+		GrenadeTemplate = X2GrenadeTemplate(Template);
+		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.DenseSmokeEffect());
+		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.DenseSmokeEffect());
+	}
 }
 
 /// <summary>
@@ -263,6 +293,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT':
 			OutString = string(int(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT));
 			return true;
+		case 'DENSE_SMOKE_INVERSE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.DENSE_SMOKE_HITMOD * -1);
+			return true;
+		case 'DENSE_SMOKE_TOTAL':
+			OutString = string(getInversedValue(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.DENSE_SMOKE_HITMOD) + getInversedValue(class'X2Item_DefaultGrenades'.default.SMOKEGRENADE_HITMOD));
+			return true;
 		default: 
 			return false;
 	}
@@ -311,6 +347,11 @@ private static function string getOneMinusFloatValueString(float modifier)
 	returnString = string(int(result * 100)) $ "%";
 
 	return returnString;
+}
+
+private static function int getInversedValue(int value)
+{
+	return -1 * value;
 }
 
 private static function string getInversedValueString(int value)

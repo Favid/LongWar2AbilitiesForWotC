@@ -32,9 +32,13 @@ var config int CUTTHROAT_BONUS_CRIT_CHANCE;
 var config int CUTTHROAT_BONUS_CRIT_DAMAGE;
 var config int CUTTHROAT_BONUS_ARMOR_PIERCE;
 var config int CCS_AMMO_PER_SHOT;
+var config int DENSE_SMOKE_HITMOD;
 var config int COVERING_FIRE_OFFENSE_MALUS;
+
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
+var localized string LocDenseSmokeEffect;
+var localized string LocDenseSmokeEffectDescription;
 
 var config bool NO_STANDARD_ATTACKS_WHEN_ON_FIRE;
 var config bool NO_MELEE_ATTACKS_WHEN_ON_FIRE;
@@ -107,6 +111,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(DamageControl());
 	Templates.AddItem(Formidable());
 	Templates.AddItem(LightningReflexes());
+	Templates.AddItem(Smoker());
+	Templates.AddItem(DenseSmoke());
 
 	return Templates;
 }
@@ -1020,4 +1026,52 @@ static function X2AbilityTemplate LightningReflexes()
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.bCrossClassEligible = true;
 	return Template;
+}
+
+// Perk name:		Smoker
+// Perk effect:		Grants one free smoke grenade item to your inventory.
+// Localized text:	"Grants one free smoke grenade item to your inventory."
+// Config:			(AbilityName="LW2WotC_Smoker")
+static function X2AbilityTemplate Smoker()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_AddUtilityItem ItemEffect;
+
+	// Adds a free smoke grenade
+	ItemEffect = new class'XMBEffect_AddUtilityItem';
+	ItemEffect.DataName = 'SmokeGrenade';
+
+	Template = Passive('LW2WotC_Smoker', "img:///UILibrary_PerkIcons.UIPerk_grenade_smoke", true, ItemEffect);
+
+	return Template;
+}
+
+// Perk name:		Smoker
+// Perk effect:		Your smoke grenades confer additional bonus defense.
+// Localized text:	"Your smoke grenades confer an additional <Ability:DENSE_SMOKE_INVERSE/> defense."
+// Config:			(AbilityName="LW2WotC_DenseSmoke")
+static function X2AbilityTemplate DenseSmoke()
+{
+	return Passive('LW2WotC_DenseSmoke', "img:///UILibrary_LW_PerkPack.LW_AbilityDenseSmoke", false, none);
+}
+
+// This effect is applied to Smoke Grenades and Smoke Bombs in X2DownloadableContentInfo_LongWar2AbilitiesforWotC.uc
+static function X2Effect DenseSmokeEffect()
+{
+	local X2Effect_LW2WotC_DenseSmokeGrenade Effect;
+	local XMBCondition_SourceAbilities Condition;
+
+	// Additional defense bonus for dense smoke
+	Effect = new class'X2Effect_LW2WotC_DenseSmokeGrenade';
+	Effect.BuildPersistentEffect(class'X2Effect_ApplySmokeGrenadeToWorld'.default.Duration + 1, false, false, false, eGameRule_PlayerTurnBegin);
+	Effect.SetDisplayInfo(ePerkBuff_Bonus, default.LocDenseSmokeEffect, default.LocDenseSmokeEffectDescription, "img:///UILibrary_LW_PerkPack.LW_AbilityDenseSmoke");
+	Effect.HitMod = default.DENSE_SMOKE_HITMOD;
+	Effect.DuplicateResponse = eDupe_Refresh;
+
+	// Only applies if the thrower has Dense Smoke
+	Condition = new class'XMBCondition_SourceAbilities';
+	Condition.AddRequireAbility('LW2WotC_DenseSmoke', 'AA_UnitIsImmune');
+	Effect.TargetConditions.AddItem(Condition);
+
+	return Effect;
 }
