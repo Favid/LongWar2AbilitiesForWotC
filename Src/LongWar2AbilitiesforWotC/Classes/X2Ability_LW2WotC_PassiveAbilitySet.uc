@@ -41,6 +41,10 @@ var config int COMBAT_FITNESS_DODGE;
 var config int COMBAT_FITNESS_WILL;
 var config int SPRINTER_MOBILITY;
 var config int ALPHAMIKEFOXTROT_DAMAGE;
+var config int COUP_DE_GRACE_HIT_BONUS;
+var config int COUP_DE_GRACE_CRIT_BONUS;
+var config int COUP_DE_GRACE_DAMAGE_BONUS;
+var config bool COUP_DE_GRACE_HALF_FOR_DISORIENTED;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -1162,4 +1166,23 @@ static function X2AbilityTemplate AlphaMikeFoxtrot()
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_AlphaMikeFoxtrot', "img:///UILibrary_LW_Overhaul.LW_AbilityAMF", false, Effect);
+}
+
+// Perk name:		Coup de Grace
+// Perk effect:		Bonus to hit, damage, and critical chance with a melee weapon against a disoriented, stunned or panicking enemy.
+// Localized text:	"Bonus to hit, damage, and critical chance with a melee weapon against a disoriented, stunned or panicking enemy."
+// Config:			(AbilityName="LW2WotC_CoupDeGrace", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate CoupDeGrace()
+{
+	local X2Effect_LW2WotC_CoupDeGrace CoupDeGraceEffect;
+
+	// Bonus granting aim, crit, and damage bonuses on secondary weapon attacks on afflicted targets
+	CoupDeGraceEffect = new class'X2Effect_LW2WotC_CoupDeGrace';
+	CoupDeGraceEffect.To_Hit_Modifier=default.COUP_DE_GRACE_HIT_BONUS;
+	CoupDeGraceEffect.Crit_Modifier=default.COUP_DE_GRACE_CRIT_BONUS;
+	CoupDeGraceEffect.Damage_Bonus=default.COUP_DE_GRACE_DAMAGE_BONUS;
+	CoupDeGraceEffect.Half_for_Disoriented=default.COUP_DE_GRACE_HALF_FOR_DISORIENTED;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_CoupDeGrace', "img:///UILibrary_LW_Overhaul.LW_AbilityCoupDeGrace", false, CoupDeGraceEffect);
 }
