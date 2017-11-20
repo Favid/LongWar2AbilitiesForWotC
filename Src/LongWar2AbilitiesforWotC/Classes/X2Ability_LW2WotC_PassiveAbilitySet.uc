@@ -22,7 +22,7 @@ var config int COMBAT_RUSH_MOBILITY_BONUS;
 var config int COMBAT_RUSH_DEFENSE_BONUS;
 var config int COMBAT_RUSH_DODGE_BONUS;
 var config int COMBAT_RUSH_DURATION;
-var config int HEAVY_FRAGS_DAMAGE;
+var config int BOOSTED_CORES_DAMAGE;
 var config int IRON_SKIN_MELEE_DAMAGE_REDUCTION;
 var config float FORMIDABLE_EXPLOSIVES_DR;
 var config int FORMIDABLE_ARMOR_MITIGATION;
@@ -1165,7 +1165,7 @@ static function X2AbilityTemplate AlphaMikeFoxtrot()
 	Effect.AbilityTargetConditions.AddItem(default.MatchingWeaponCondition);
 
 	// Create the template using a helper function
-	return Passive('LW2WotC_AlphaMikeFoxtrot', "img:///UILibrary_LW_Overhaul.LW_AbilityAMF", false, Effect);
+	return Passive('LW2WotC_AlphaMikeFoxtrot', "img:///UILibrary_LW_PerkPack.LW_AbilityAMF", false, Effect);
 }
 
 // Perk name:		Coup de Grace
@@ -1184,5 +1184,21 @@ static function X2AbilityTemplate CoupDeGrace()
 	CoupDeGraceEffect.Half_for_Disoriented=default.COUP_DE_GRACE_HALF_FOR_DISORIENTED;
 
 	// Create the template using a helper function
-	return Passive('LW2WotC_CoupDeGrace', "img:///UILibrary_LW_Overhaul.LW_AbilityCoupDeGrace", false, CoupDeGraceEffect);
+	return Passive('LW2WotC_CoupDeGrace', "img:///UILibrary_LW_PerkPack.LW_AbilityCoupDeGrace", false, CoupDeGraceEffect);
+}
+
+// Perk name:		Boosted Cores
+// Perk effect:		Explosive grenades do additional damage.
+// Localized text:	"Explosive grenades do <Ability:BOOSTED_CORES_DAMAGE> additional damage."
+// Config:			(AbilityName="LW2WotC_BoostedCores")
+static function X2AbilityTemplate BoostedCores()
+{
+	local X2Effect_VolatileMix				DamageEffect;
+
+	// Effect that grants additional damage to grenades
+	DamageEffect = new class'X2Effect_VolatileMix';
+	DamageEffect.BonusDamage = default.BOOSTED_CORES_DAMAGE;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_BoostedCores', "img:///UILibrary_LW_PerkPack.LW_AbilityHeavyFrags", false, DamageEffect);
 }

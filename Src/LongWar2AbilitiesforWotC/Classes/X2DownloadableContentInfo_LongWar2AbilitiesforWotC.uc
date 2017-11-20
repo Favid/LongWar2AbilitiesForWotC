@@ -338,6 +338,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'INTERFERENCE_ACTION_POINTS':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.INTERFERENCE_ACTION_POINTS);
 			return true;
+		case 'BOOSTED_CORES_DAMAGE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.BOOSTED_CORES_DAMAGE);
+			return true;
 		default: 
 			return false;
 	}
