@@ -341,6 +341,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'BOOSTED_CORES_DAMAGE':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.BOOSTED_CORES_DAMAGE);
 			return true;
+		case 'NUM_AIRDROP_CHARGES':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.NUM_AIRDROP_CHARGES);
+			return true;
 		default: 
 			return false;
 	}

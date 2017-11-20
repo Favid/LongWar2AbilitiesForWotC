@@ -153,6 +153,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(KillerInstinct());
 	Templates.AddItem(Interference());
 	Templates.AddItem(RescueProtocol());
+	Templates.AddItem(Airdrop());
 	Templates.AddItem(ShootAnyone());
 
 	return Templates;
@@ -1036,4 +1037,82 @@ static function X2AbilityTemplate RescueProtocol()
 	return Template;
 }
 
+// Perk name:		Airdrop
+// Perk effect:		The Gremlin grants an explosive grenade to the targeted ally.
+// Localized text:	"The Gremlin grants an explosive grenade to the targeted ally. <NUM_AIRDROP_CHARGES> uses per mission."
+// Config:			(AbilityName="LW2WotC_Airdrop", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Airdrop()
+{
+	local X2AbilityTemplate					Template;
+	local X2AbilityCost_ActionPoints		ActionPointCost;
+	local X2Condition_UnitProperty			TargetProperty;
+	local X2AbilityCost_Charges             ChargeCost;
+	local X2AbilityCharges                  Charges;
+	local XMBEffect_AddUtilityItem 			ItemEffect;
 
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Airdrop');
+
+	// Boilerplate setup
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityAirdrop";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_SQUADDIE_PRIORITY;
+	Template.Hostility = eHostility_Neutral;
+	Template.bLimitTargetIcons = true;
+	Template.DisplayTargetHitChance = false;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SingleTargetWithSelf;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.bCrossClassEligible = false;
+
+	// Configurable charges
+	Charges = new class'X2AbilityCharges';
+	Charges.InitialCharges = default.NUM_AIRDROP_CHARGES;
+	Template.AbilityCharges = Charges;
+
+	// Uses consume one charge
+	ChargeCost = new class'X2AbilityCost_Charges';
+	ChargeCost.NumCharges = 1;
+	Template.AbilityCosts.AddItem(ChargeCost);
+
+	// Does not end turn. Costs one action
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	ActionPointCost.bConsumeAllPoints = false;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	// Can't use it when you're dead
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	// Targets organic allies only
+	TargetProperty = new class'X2Condition_UnitProperty';
+	TargetProperty.ExcludeDead = true;
+	TargetProperty.ExcludeHostileToSource = true;
+	TargetProperty.ExcludeFriendlyToSource = false;
+	TargetProperty.TreatMindControlledSquadmateAsHostile = true;
+	TargetProperty.RequireSquadmates = true;
+	TargetProperty.ExcludeRobotic = true;
+	TargetProperty.ExcludeAlien = true;
+	Template.AbilityTargetConditions.AddItem(TargetProperty);
+
+	// Effect that gives the grenade
+	ItemEffect = new class'XMBEffect_AddUtilityItem';
+	ItemEffect.EffectName = 'AirdropGrenadeEffect';
+	ItemEffect.DataName = 'FragGrenade';
+	ItemEffect.BuildPersistentEffect(1, true, false);
+	ItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	ItemEffect.DuplicateResponse = eDupe_Allow;
+	Template.AddTargetEffect(ItemEffect);
+
+	// Gremlin animation stuff
+	Template.bStationaryWeapon = true;
+	Template.BuildNewGameStateFn = class'X2Ability_SpecialistAbilitySet'.static.AttachGremlinToTarget_BuildGameState;
+	Template.BuildVisualizationFn = class'X2Ability_SpecialistAbilitySet'.static.GremlinSingleTarget_BuildVisualization;
+	Template.bSkipPerkActivationActions = true;
+	Template.PostActivationEvents.AddItem('ItemRecalled');
+	Template.CustomSelfFireAnim = 'NO_CombatProtocol';
+	Template.CinescriptCameraType = "Specialist_CombatProtocol";
+
+	return Template;
+}
