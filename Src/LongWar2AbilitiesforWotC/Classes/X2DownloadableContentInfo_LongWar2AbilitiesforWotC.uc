@@ -332,6 +332,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'COUP_DE_GRACE_DAMAGE_BONUS':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COUP_DE_GRACE_DAMAGE_BONUS);
 			return true;
+		case 'INTERFERENCE_CV_CHARGES':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.INTERFERENCE_CV_CHARGES);
+			return true;
+		case 'INTERFERENCE_ACTION_POINTS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.INTERFERENCE_ACTION_POINTS);
+			return true;
 		default: 
 			return false;
 	}

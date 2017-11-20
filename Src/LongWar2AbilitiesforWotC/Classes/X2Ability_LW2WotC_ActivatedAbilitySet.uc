@@ -148,6 +148,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(RunAndGun());
 	Templates.AddItem(ExtraConditioning());
 	Templates.AddItem(KillerInstinct());
+	Templates.AddItem(Interference());
 
 	Templates.AddItem(ShootAnyone());
 
@@ -808,5 +809,86 @@ static function X2AbilityTemplate KillerInstinct()
 {
 	// This ability is a passive with no effects. Run and Gun will simply check if the soldier has it and increase crit damage if it's found
 	return Passive('LW2WotC_KillerInstinct', "img:///UILibrary_LW_PerkPack.LW_AbilityKillerInstinct", false, none);
+}
+
+// Perk name:		Interference
+// Perk effect:		GREMLIN cancels overwatch on targeted unit.
+// Localized text:	"GREMLIN cancels overwatch on targeted unit. Use <Ability:INTERFERENCE_CV_CHARGES> times per battle."
+// Config:			(AbilityName="LW2WotC_Interference", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Interference()
+{
+	local X2AbilityTemplate									Template;	
+	local X2AbilityCost_ActionPoints            			ActionPointCost;
+	local X2AbilityCharges_LW2WotC_GremlinTierBased         Charges;
+	local X2AbilityCost_Charges                 			ChargeCost;
+	local X2Condition_Visibility                			VisCondition;
+	local X2Effect_LW2WotC_RemoveReserveActionPoints		ActionPointsEffect;
+	local X2Condition_UnitActionPoints						ValidTargetCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Interference');
+
+	// Boilerplate setup
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityInterference";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.Hostility = eHostility_Offensive;
+	Template.bLimitTargetIcons = true;
+	Template.DisplayTargetHitChance = false;
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_CORPORAL_PRIORITY;
+	Template.bStationaryWeapon = true;
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_ShowIfAvailable;
+	Template.bSkipPerkActivationActions = true;
+	Template.bCrossClassEligible = false;
+
+	// Total charges based on Gremlin tier
+	Charges = new class 'X2AbilityCharges_LW2WotC_GremlinTierBased';
+	Charges.CV_Charges = default.INTERFERENCE_CV_CHARGES;
+	Charges.MG_Charges = default.INTERFERENCE_MG_CHARGES;
+	Charges.BM_Charges = default.INTERFERENCE_BM_CHARGES;
+	Template.AbilityCharges = Charges;
+
+	// Uses consume one charge
+	ChargeCost = new class'X2AbilityCost_Charges';
+	ChargeCost.NumCharges = 1;
+	Template.AbilityCosts.AddItem(ChargeCost);
+	
+	// Single target, can't miss
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+	// Does not end turn. Configurable action point cost
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = default.INTERFERENCE_ACTION_POINTS;
+	ActionPointCost.bConsumeAllPoints = false;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	// Can't use it when you're dead
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	// Can only target living targets, squadsight ok
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitOnlyProperty);
+	VisCondition = new class'X2Condition_Visibility';
+	VisCondition.bRequireGameplayVisible = true;
+	VisCondition.bActAsSquadsight = true;
+	Template.AbilityTargetConditions.AddItem(VisCondition);
+	
+	// Can only target those with reserve action points
+	ValidTargetCondition = new class'X2Condition_UnitActionPoints';
+	ValidTargetCondition.AddActionPointCheck(1,class'X2CharacterTemplateManager'.default.OverwatchReserveActionPoint,true,eCheck_GreaterThanOrEqual);
+	Template.AbilityTargetConditions.AddItem(ValidTargetCondition);
+
+	// Effect that removes the reserve action points
+	ActionPointsEffect = new class'X2Effect_LW2WotC_RemoveReserveActionPoints';
+	Template.AddTargetEffect (ActionPointsEffect);
+	
+	// Gremlin animation stuff
+	Template.PostActivationEvents.AddItem('ItemRecalled');
+	Template.CustomSelfFireAnim = 'NO_CombatProtocol';
+	Template.CinescriptCameraType = "Specialist_CombatProtocol";
+	Template.BuildNewGameStateFn = class'X2Ability_SpecialistAbilitySet'.static.AttachGremlinToTarget_BuildGameState;
+	Template.BuildVisualizationFn = class'X2Ability_SpecialistAbilitySet'.static.GremlinSingleTarget_BuildVisualization;
+
+	return Template;
 }
 
