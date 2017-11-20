@@ -152,7 +152,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(ExtraConditioning());
 	Templates.AddItem(KillerInstinct());
 	Templates.AddItem(Interference());
-
+	Templates.AddItem(RescueProtocol());
 	Templates.AddItem(ShootAnyone());
 
 	return Templates;

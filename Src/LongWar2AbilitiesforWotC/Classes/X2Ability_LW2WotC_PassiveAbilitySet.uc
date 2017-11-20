@@ -127,7 +127,9 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(GrazingFire());
 	Templates.AddItem(CombatFitness());
 	Templates.AddItem(AlphaMikeFoxtrot());
-
+	Templates.AddItem(CoupDeGrace());
+	Templates.AddItem(BoostedCores());
+	
 	return Templates;
 }
 
