@@ -121,18 +121,15 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddGunslingerAbility());
 	//Templates.AddItem(GunslingerShot()); //Additional Ability
 	//Templates.AddItem(AddSteadyWeaponAbility());
-	//Templates.AddItem(AddRunAndGun_LWAbility());
 	//Templates.AddItem(AddSuppressionAbility_LW());
 	//Templates.AddItem(SuppressionShot_LW()); //Additional Ability
 	//Templates.AddItem(AddAreaSuppressionAbility());
 	//Templates.AddItem(AreaSuppressionShot_LW()); //Additional Ability
-	//Templates.AddItem(AddInterferenceAbility());
 	//Templates.AddItem(AddGhostwalkerAbility()); 
 	//Templates.AddItem(AddKubikuriAbility());
 	//Templates.AddItem(KubikiriDamage());
 	//Templates.AddItem(AddIronCurtainAbility());
 	//Templates.AddItem(IronCurtainShot()); //Additional Ability
-	//Templates.AddItem(AddSlash_LWAbility());
 	//Templates.AddItem(AddAbsorptionFieldsAbility());
 	//Templates.AddItem(AddBodyShieldAbility());
 	//Templates.AddItem(AddMindMergeAbility());
@@ -141,9 +138,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(SnapShotOverwatch());
 	//Templates.AddItem(AddSnapShotAimModifierAbility());
 	Templates.AddItem(RapidDeployment());
-	//Templates.AddItem(AddAirdrop());
-	//Templates.AddItem(AddSwordSlice_LWAbility());
-	//Templates.AddItem(AddFleche());
 	Templates.AddItem(Fleche());
 	Templates.AddItem(Slash());
 	Templates.AddItem(StreetSweeper());
@@ -166,7 +160,7 @@ static function X2AbilityTemplate ShootAnyone()
 	local X2Condition_Visibility            VisibilityCondition;
 
 	// Create a standard attack that doesn't cost an action.
-	Template = Attack('LW2WotC_ShootAnyone', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, none, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_Free, 1);
+	Template = Attack('LW2WotC_ShootAnyone', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, none, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_Free, 1, true);
 
 	VisibilityCondition = new class'X2Condition_Visibility';
 	VisibilityCondition.bRequireGameplayVisible = true;
@@ -190,7 +184,7 @@ static function X2AbilityTemplate WalkFire()
     local X2Condition_UnitInventory NoSniperRiflesCondition;
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_WalkFire', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", true, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.WALK_FIRE_AMMO_COST);
+	Template = Attack('LW2WotC_WalkFire', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", true, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.WALK_FIRE_AMMO_COST, true);
 
 	// Add a cooldown.
 	AddCooldown(Template, default.WALK_FIRE_COOLDOWN);
@@ -256,7 +250,7 @@ static function X2AbilityTemplate PrecisionShot()
 	local X2AbilityTemplate Template;
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_PrecisionShot', "img:///UILibrary_LW_PerkPack.LW_AbilityPrecisionShot", true, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.PRECISION_SHOT_AMMO_COST);
+	Template = Attack('LW2WotC_PrecisionShot', "img:///UILibrary_LW_PerkPack.LW_AbilityPrecisionShot", true, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.PRECISION_SHOT_AMMO_COST, true);
 
 	// Add a cooldown.
 	AddCooldown(Template, default.PRECISION_SHOT_COOLDOWN);
@@ -309,7 +303,7 @@ static function X2AbilityTemplate SlugShot()
 	local X2Condition_UnitInventory ShotgunOnlyCondition;
 	
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_SlugShot', "img:///UILibrary_LW_PerkPack.LW_AbilitySlugShot", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.SLUG_SHOT_AMMO_COST);
+	Template = Attack('LW2WotC_SlugShot', "img:///UILibrary_LW_PerkPack.LW_AbilitySlugShot", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.SLUG_SHOT_AMMO_COST, true);
 
 	// Create that sweet knockback effect for kills
 	KnockbackEffect = new class'X2Effect_Knockback';
@@ -396,10 +390,25 @@ static function X2AbilityTemplate RapidDeployment()
 static function X2AbilityTemplate Fleche()
 {
 	local X2AbilityTemplate                 Template;
+	local array<name>                       SkipExclusions;
 
 	// Fleche is just a copy of the vanilla Ranger's Slash ability, but with a bonus damage effect
 	Template = class'X2Ability_RangerAbilitySet'.static.AddSwordSliceAbility('LW2WotC_Fleche');
+
+	// Add secondary ability for bonus damage
 	AddSecondaryAbility(Template, FlecheBonuses());
+
+	// In LW2, melee attacks are allowed when disoriented, so we have to redo the shooter conditions from the base ability, which disables them while disoriented
+	Template.AbilityShooterConditions.Length = 0;
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
+
+	if (!default.NO_MELEE_ATTACKS_WHEN_ON_FIRE)
+	{
+		SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
+	}
+
+	Template.AddShooterEffectExclusions(SkipExclusions);
 
 	return Template;
 }
@@ -500,7 +509,7 @@ static function X2AbilityTemplate Slash()
 	Template.BuildInterruptGameStateFn = TypicalMoveEndAbility_BuildInterruptGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 
-	// Some WotC specific stuff
+	// Standard interactions with Shadow, Chosen, and the Lost
 	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
 	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
 	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.MeleeLostSpawnIncreasePerUse;
@@ -528,6 +537,7 @@ static function X2AbilityTemplate TrenchGun()
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_TrenchGun');
 
+	// Boilerplate setup
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY;
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
@@ -539,42 +549,52 @@ static function X2AbilityTemplate TrenchGun()
 	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
 	Template.TargetingMethod = class'X2TargetingMethod_Cone';
 
+	// Boilerplate setup
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	Template.AbilityTargetConditions.AddItem(default.LivingTargetUnitOnlyProperty);
 	
+	// Ammo effects apply
 	Template.bAllowAmmoEffects = true;
 
+	// Requires one action point and ends turn
 	ActionPointCost = new class 'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = 1;
 	ActionPointCost.bConsumeAllPoints = true;
 	Template.AbilityCosts.AddItem(ActionPointCost);
 
+	// Configurable ammo cost
 	AmmoCost = new class'X2AbilityCost_Ammo';	
 	AmmoCost.iAmmo = default.TRENCH_GUN_AMMO_COST;
 	Template.AbilityCosts.AddItem(AmmoCost);
 
+	// Configurable cooldown
 	Cooldown = new class'X2AbilityCooldown';
 	Cooldown.iNumTurns = default.TRENCH_GUN_COOLDOWN;
 	Template.AbilityCooldown = Cooldown;
 
+	// Can hurt allies
 	UnitPropertyCondition = new class'X2Condition_UnitProperty';
 	UnitPropertyCondition.ExcludeDead = true;
 	UnitPropertyCondition.ExcludeFriendlyToSource = false;
 	Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
 	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
 
+	// Shotguns only
 	InventoryCondition = new class'X2Condition_UnitInventory';
 	InventoryCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
 	InventoryCondition.RequireWeaponCategory = 'shotgun';
 	Template.AbilityShooterConditions.AddItem(InventoryCondition);
 
+	// Cannot be used while disoriented, burning, etc.
 	Template.AddShooterEffectExclusions();
 	
+	// Cannot use while suppressed
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
+	// Standard aim calculation
 	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
 	StandardAim.bMultiTargetOnly = false; 
 	StandardAim.bGuaranteedHit = false;
@@ -583,15 +603,18 @@ static function X2AbilityTemplate TrenchGun()
 	Template.AbilityToHitCalc = StandardAim;
 	Template.bOverrideAim = false;
 
+	// Manual targetting
 	CursorTarget = new class'X2AbilityTarget_Cursor';
 	Template.AbilityTargetStyle = CursorTarget;	
 
+	// Can shred
 	WeaponDamageEffect = new class'X2Effect_Shredder';
 	Template.AddTargetEffect(WeaponDamageEffect);
 	Template.AddMultiTargetEffect(WeaponDamageEffect);
 	Template.bFragileDamageOnly = true;
 	Template.bCheckCollision = true;
 
+	// Cone style target, does not go through full cover
 	ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
 	ConeMultiTarget.bExcludeSelfAsTargetIfWithinRadius = true;
 	ConeMultiTarget.ConeEndDiameter = default.TRENCH_GUN_TILE_WIDTH * class'XComWorldData'.const.WORLD_StepSize;
@@ -601,9 +624,16 @@ static function X2AbilityTemplate TrenchGun()
 	ConeMultiTarget.bIgnoreBlockingCover = false;
 	Template.AbilityMultiTargetStyle = ConeMultiTarget;
 
+	// Standard visualization
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	// Standard interactions with Shadow, Chosen, and the Lost
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.MeleeLostSpawnIncreasePerUse;
+
 	return Template;
 }
 
@@ -627,6 +657,7 @@ static function X2AbilityTemplate StreetSweeper()
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_StreetSweeper');
 
+	// Boilerplate setup
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY;
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
@@ -640,41 +671,53 @@ static function X2AbilityTemplate StreetSweeper()
 	Template.bDisplayInUITooltip = true;
 	Template.bDisplayInUITacticalText = true;
 
+	// Boilerplate setup
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	Template.AbilityTargetConditions.AddItem(default.LivingTargetUnitOnlyProperty);
 
+	// Can shred
 	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
+
+	// Ammo effects apply
 	Template.bAllowAmmoEffects = true;
 
+	// Requires one action point and ends turn
 	ActionPointCost = new class 'X2AbilityCost_ActionPoints';
 	ActionPointCost.iNumPoints = 1;
 	ActionPointCost.bConsumeAllPoints = true;
 	Template.AbilityCosts.AddItem(ActionPointCost);
 
+	// Configurable ammo cost
 	AmmoCost = new class'X2AbilityCost_Ammo';	
 	AmmoCost.iAmmo = default.STREET_SWEEPER_AMMO_COST;
 	Template.AbilityCosts.AddItem(AmmoCost);
 
+	// Configurable cooldown
 	Cooldown = new class'X2AbilityCooldown';
 	Cooldown.iNumTurns = default.STREET_SWEEPER_COOLDOWN;
 	Template.AbilityCooldown = Cooldown;
 
+	// Can hit allies
 	UnitPropertyCondition = new class'X2Condition_UnitProperty';
 	UnitPropertyCondition.ExcludeFriendlyToSource = false;
 	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
 	
+	// Cannot be used while suppressed
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
+	// Shotgun only
 	InventoryCondition = new class'X2Condition_UnitInventory';
 	InventoryCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
 	InventoryCondition.RequireWeaponCategory = 'shotgun';
 	Template.AbilityShooterConditions.AddItem(InventoryCondition);
 
+	// Cannot be used while disoriented, burning, etc.
 	Template.AddShooterEffectExclusions();
 
+	// Standard aim calculation
 	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
 	StandardAim.bMultiTargetOnly = false; 
 	StandardAim.bGuaranteedHit = false;
@@ -683,14 +726,17 @@ static function X2AbilityTemplate StreetSweeper()
 	Template.AbilityToHitCalc = StandardAim;
 	Template.bOverrideAim = false;
 
+	// Manual targetting
 	CursorTarget = new class'X2AbilityTarget_Cursor';
 	Template.AbilityTargetStyle = CursorTarget;	
 
+	// Can shred
 	WeaponDamageEffect = new class'X2Effect_Shredder';
 	Template.AddMultiTargetEffect(WeaponDamageEffect);
 	Template.bFragileDamageOnly = true;
 	Template.bCheckCollision = true;
 
+	// Cone style target, does not go through full cover
 	ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
 	ConeMultiTarget.bExcludeSelfAsTargetIfWithinRadius = true;
 	ConeMultiTarget.ConeEndDiameter = default.STREET_SWEEPER_TILE_WIDTH * class'XComWorldData'.const.WORLD_StepSize;
@@ -700,40 +746,37 @@ static function X2AbilityTemplate StreetSweeper()
 	ConeMultiTarget.bIgnoreBlockingCover = false;
 	Template.AbilityMultiTargetStyle = ConeMultiTarget;
 	
+	// Standard visualization
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
 
-	// Template.AdditionalAbilities.AddItem('StreetSweeperBonusDamage');
+	// Standard interactions with Shadow, Chosen, and the Lost
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.MeleeLostSpawnIncreasePerUse;
+
+	// Add secondary ability that provides the unarmored damage bonus
 	AddSecondaryAbility(Template, LW2WotC_StreetSweeperBonus());
 
 	return Template;
 }
 
-
 static function X2AbilityTemplate LW2WotC_StreetSweeperBonus()
 {
-	local X2AbilityTemplate					Template;	
+	local X2AbilityTemplate							Template;	
 	local X2Effect_LW2WotC_StreetSweeper			StreetSweeperEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_StreetSweeper_Bonus');
-	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
-	Template.bIsPassive = true;
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.Hostility = eHostility_Neutral;
-	Template.bDisplayInUITacticalText = false;
-	
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-
+	// Effect granting bonus damage against unarmored targets
 	StreetSweeperEffect = new class 'X2Effect_LW2WotC_StreetSweeper';
 	StreetSweeperEffect.Unarmored_Damage_Multiplier = default.STREET_SWEEPER_UNARMORED_DAMAGE_MULTIPLIER;
 	StreetSweeperEffect.Unarmored_Damage_Bonus = default.STREET_SWEEPER_UNARMORED_DAMAGE_BONUS;
-	StreetSweeperEffect.BuildPersistentEffect(1,true,false,false);
-	Template.AddTargetEffect(StreetSweeperEffect);
 
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_StreetSweeper_Bonus', "img:///UILibrary_LW_PerkPack.LW_AbilityStreetSweeper2", false, StreetSweeperEffect);
+
+	// Street Sweeper will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
 	
 	return Template;
 }
@@ -866,7 +909,7 @@ static function X2AbilityTemplate Interference()
 	ActionPointCost.bConsumeAllPoints = false;
 	Template.AbilityCosts.AddItem(ActionPointCost);
 
-	// Can't use it when you're dead
+	// Can't use it when you're dead, disoriented, burning, etc.
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	Template.AddShooterEffectExclusions();
 

@@ -255,10 +255,11 @@ static function X2AbilityTemplate SelfTargetActivated(name DataName, string Icon
 }
 
 // Helper function for creating a typical weapon attack.
-static function X2AbilityTemplate Attack(name DataName, string IconImage, optional bool bCrossClassEligible = false, optional X2Effect Effect = none, optional int ShotHUDPriority = default.AUTO_PRIORITY, optional EActionPointCost Cost = eCost_SingleConsumeAll, optional int iAmmo = 1)
+static function X2AbilityTemplate Attack(name DataName, string IconImage, optional bool bCrossClassEligible = false, optional X2Effect Effect = none, optional int ShotHUDPriority = default.AUTO_PRIORITY, optional EActionPointCost Cost = eCost_SingleConsumeAll, optional int iAmmo = 1, optional bool PreventedBySuppression = true)
 {
 	local X2AbilityTemplate                 Template;	
 	local X2Condition_Visibility            VisibilityCondition;
+	local X2Condition_UnitEffects 			SuppressedCondition;
 
 	// Macro to do localisation and stuffs
 	`CREATE_X2ABILITY_TEMPLATE(Template, DataName);
@@ -273,8 +274,6 @@ static function X2AbilityTemplate Attack(name DataName, string IconImage, option
 
 	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
 
-	Template.AddShooterEffectExclusions();
-
 	VisibilityCondition = new class'X2Condition_Visibility';
 	VisibilityCondition.bRequireGameplayVisible = true;
 	VisibilityCondition.bAllowSquadsight = true;
@@ -286,6 +285,14 @@ static function X2AbilityTemplate Attack(name DataName, string IconImage, option
 
 	// Don't allow the ability to be used while the unit is disoriented, burning, unconscious, etc.
 	Template.AddShooterEffectExclusions();
+
+	if(PreventedBySuppression)
+	{
+		SuppressedCondition = new class'X2Condition_UnitEffects';
+		SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+		SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+		Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+	}
 
 	Template.AbilityTargetStyle = default.SimpleSingleTarget;
 
@@ -338,6 +345,10 @@ static function X2AbilityTemplate Attack(name DataName, string IconImage, option
 	Template.bDisplayInUITacticalText = false;
 
 	Template.bCrossClassEligible = bCrossClassEligible;
+	
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
 
 	return Template;	
 }
@@ -397,6 +408,10 @@ static function X2AbilityTemplate MeleeAttack(name DataName, string IconImage, o
 	Template.BuildInterruptGameStateFn = TypicalMoveEndAbility_BuildInterruptGameState;
 
 	Template.bCrossClassEligible = bCrossClassEligible;
+
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.MeleeLostSpawnIncreasePerUse;
 
 	return Template;
 }

@@ -83,8 +83,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AddLockedOnAbility());
 	Templates.AddItem(AddSentinel_LWAbility());
 	Templates.AddItem(AddRapidReactionAbility());
-	//Templates.AddItem(AddKillerInstinctAbility());
-	//Templates.AddItem(AddExtraConditioningAbility());
 	//Templates.AddItem(AddLockdownAbility());
 	//Templates.AddItem(AddDangerZoneAbility());
 	//Templates.AddItem(LockdownBonuses()); //Additional Ability
@@ -92,12 +90,9 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(MayhemBonuses()); // AdditionalAbility;
 	//Templates.AddItem(AddEvasiveAbility());
 	//Templates.AddItem(RemoveEvasive()); // Additional Ability
-	//Templates.AddItem(AddGhostwalkerAbility()); 
 	//Templates.AddItem(AddCombatAwarenessAbility());
 	//Templates.AddItem(AddCombatRushAbility());
 	//Templates.AddItem(BroadcastCombatRush()); //Additional Ability
-	//Templates.AddItem(AddGrazingFireAbility());
-	//Templates.AddItem(AddHeavyFragsAbility());
 	//Templates.AddItem(AddEmergencyLifeSupportAbility());
 	//Templates.AddItem(AddSmartMacrophagesAbility());
 	//Templates.AddItem(AddIronSkinAbility());
@@ -106,9 +101,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddTrojan());
 	//Templates.AddItem(AddTrojanVirus());
 	//Templates.AddItem(AddFlashbanger());
-	//Templates.AddItem(AddSmokeGrenade());
 	//Templates.AddItem(AddSavior());
-	//Templates.AddItem(AddDenseSmoke());
 	//Templates.AddItem(AddBastion());
 	//Templates.AddItem(AddBastionPassive());
 	//Templates.AddItem(AddBastionCleanse());
@@ -126,10 +119,11 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(DenseSmoke());
 	Templates.AddItem(GrazingFire());
 	Templates.AddItem(CombatFitness());
+	Templates.AddItem(Sprinter());
 	Templates.AddItem(AlphaMikeFoxtrot());
 	Templates.AddItem(CoupDeGrace());
 	Templates.AddItem(BoostedCores());
-	
+
 	return Templates;
 }
 
@@ -1145,7 +1139,7 @@ static function X2AbilityTemplate Sprinter()
 	StatEffect = new class'X2Effect_PersistentStatChange';
 	StatEffect.AddPersistentStatChange(eStat_Mobility, float(default.SPRINTER_MOBILITY));
 
-	Template = Passive('LW2WotC_CombatFitness', "img:///UILibrary_LW_PerkPack.LW_AbilityExtraConditioning", true, StatEffect);;
+	Template = Passive('LW2WotC_Sprinter', "img:///UILibrary_LW_PerkPack.LW_AbilityExtraConditioning", true, StatEffect);;
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.MobilityLabel, eStat_Mobility, default.SPRINTER_MOBILITY);
 
 	return Template;
