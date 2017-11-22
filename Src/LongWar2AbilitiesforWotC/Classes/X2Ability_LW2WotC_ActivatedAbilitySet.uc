@@ -384,7 +384,7 @@ static function X2AbilityTemplate RapidDeployment()
 }
 
 // Perk name:		Fleche
-// Perk effect:		"Attack any enemy within movement range with your sword. Deals bonus damage depending on how far you move for the attack."
+// Perk effect:		Attack any enemy within movement range with your sword. Deals bonus damage depending on how far you move for the attack.
 // Localized text:	"Attack any enemy within movement range with your sword. Deals +1 damage for every <Ability:FLECHE_BONUS_DAMAGE_PER_TILES/> tiles between your starting position and the target."
 // Config:			(AbilityName="LW2WotC_Fleche", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
 static function X2AbilityTemplate Fleche()
@@ -638,7 +638,7 @@ static function X2AbilityTemplate TrenchGun()
 }
 
 // Perk name:		Street Sweeper
-// Perk effect:		"Cone-based shotgun attack that does bonus damage to unarmored targets. Blocked by heavy cover."
+// Perk effect:		Cone-based shotgun attack that does bonus damage to unarmored targets. Blocked by heavy cover.
 // Localized text:	"Cone-based shotgun attack that does bonus damage to unarmored targets. Blocked by heavy cover."
 // Config:			(AbilityName="LW2WotC_StreetSweeper", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate StreetSweeper()

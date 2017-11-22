@@ -62,27 +62,27 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Lethal());
 	Templates.AddItem(HitAndRun());
 	Templates.AddItem(HitAndSlither());
-	Templates.AddItem(AddCloseCombatSpecialistAbility());
-	Templates.AddItem(CloseCombatSpecialistAttack()); //Additional Ability
-	Templates.AddItem(AddCloseandPersonalAbility());
-	Templates.AddItem(AddDamnGoodGroundAbility());
-	Templates.AddItem(AddExecutionerAbility());
-	Templates.AddItem(AddResilienceAbility());
-	Templates.AddItem(AddTacticalSenseAbility());
-	Templates.AddItem(AddAggressionAbility());
-	Templates.AddItem(AddBringEmOnAbility());
-	Templates.AddItem(AddHardTargetAbility());
-	Templates.AddItem(AddInfighterAbility());
-	Templates.AddItem(AddDepthPerceptionAbility());
-	Templates.AddItem(AddWilltoSurviveAbility()); 
-	Templates.AddItem(AddLightEmUpAbility());
-	Templates.AddItem(AddCloseEncountersAbility());
-	Templates.AddItem(AddLoneWolfAbility());
-	Templates.AddItem(AddLowProfileAbility());
-	Templates.AddItem(AddHyperReactivePupilsAbility());
-	Templates.AddItem(AddLockedOnAbility());
-	Templates.AddItem(AddSentinel_LWAbility());
-	Templates.AddItem(AddRapidReactionAbility());
+	Templates.AddItem(CloseCombatSpecialist());
+	Templates.AddItem(CloseCombatSpecialistAttack());
+	Templates.AddItem(CloseAndPersonal());
+	Templates.AddItem(DamnGoodGround());
+	Templates.AddItem(Executioner());
+	Templates.AddItem(Resilience());
+	Templates.AddItem(TacticalSense());
+	Templates.AddItem(Aggression());
+	Templates.AddItem(BringEmOn());
+	Templates.AddItem(HardTarget());
+	Templates.AddItem(Infighter());
+	Templates.AddItem(DepthPerception());
+	Templates.AddItem(WillToSurvive()); 
+	Templates.AddItem(LightEmUp());
+	Templates.AddItem(CloseEncounters());
+	Templates.AddItem(LoneWolf());
+	Templates.AddItem(LowProfile());
+	Templates.AddItem(HyperReactivePupils());
+	Templates.AddItem(LockOn());
+	Templates.AddItem(Sentinel());
+	Templates.AddItem(RapidReaction());
 	//Templates.AddItem(AddLockdownAbility());
 	//Templates.AddItem(AddDangerZoneAbility());
 	//Templates.AddItem(LockdownBonuses()); //Additional Ability
@@ -203,7 +203,7 @@ static function X2AbilityTemplate HitAndSlither()
 // Perk effect:		During enemy turns, fire a free reaction shot with your primary weapon at any nearby visible enemy who moves or fires.
 // Localized text:	"During enemy turns, fire a free reaction shot with your primary weapon at any visible enemy within <Ability:CCS_RANGE/> who moves or fires."
 // Config:			(AbilityName="LW2WotC_CloseCombatSpecialist", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
-static function X2AbilityTemplate AddCloseCombatSpecialistAbility()
+static function X2AbilityTemplate CloseCombatSpecialist()
 {
 	local X2AbilityTemplate                 Template;
 
@@ -367,7 +367,7 @@ static function EventListenerReturn CloseCombatSpecialistConcealmentListener(Obj
 // Perk effect:		Confers bonus critical chance against adjacent targets. The bonus declines with distance from the target.
 // Localized text:	"Confers +30 critical chance against adjacent targets. The bonus declines with distance from the target."
 // Config:			(AbilityName="LW2WotC_CloseAndPersonal")
-static function X2AbilityTemplate AddCloseandPersonalAbility()
+static function X2AbilityTemplate CloseAndPersonal()
 {
 	local X2Effect_LW2WotC_CloseandPersonal		CritModifier;
 
@@ -382,7 +382,7 @@ static function X2AbilityTemplate AddCloseandPersonalAbility()
 // Perk effect:		Confers bonus aim and defense against targets at a lower elevation.
 // Localized text:	"Confers +<Ability:DGG_AIM_BONUS/> aim and +<Ability:DGG_DEF_BONUS/> defense against targets at a lower elevation."
 // Config:			(AbilityName="LW2WotC_DamnGoodGround", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
-static function X2AbilityTemplate AddDamnGoodGroundAbility()
+static function X2AbilityTemplate DamnGoodGround()
 {
 	local X2Effect_LW2WotC_DamnGoodGround			AimandDefModifiers;
 
@@ -397,7 +397,7 @@ static function X2AbilityTemplate AddDamnGoodGroundAbility()
 // Perk effect:		Confers bonus aim and critical chance against targets at half or less of their original hit points.
 // Localized text:	"Confers +<Ability:EXECUTIONER_AIM_BONUS/> aim and +<Ability:EXECUTIONER_CRIT_BONUS/> critical chance against targets at half or less of their original hit points."
 // Config:			(AbilityName="LW2WotC_Executioner")
-static function X2AbilityTemplate AddExecutionerAbility()
+static function X2AbilityTemplate Executioner()
 {
 	local X2Effect_LW2WotC_Executioner		AimandCritModifiers;
 
@@ -412,7 +412,7 @@ static function X2AbilityTemplate AddExecutionerAbility()
 // Perk effect:		Enemy attacks against you suffer a penalty to critical hit chances.
 // Localized text:	"Enemy attacks against you suffer a -<Ability:RESILIENCE_CRITDEF_BONUS/> penalty to critical hit chances."
 // Config:			(AbilityName="LW2WotC_Resilience")
-static function X2AbilityTemplate AddResilienceAbility()
+static function X2AbilityTemplate Resilience()
 {
 	local X2Effect_LW2WotC_Resilience				CritModifierEffect;
 
@@ -428,7 +428,7 @@ static function X2AbilityTemplate AddResilienceAbility()
 // Perk effect:		Gain bonus defense for each enemy you can see, up to a specified maximum.
 // Localized text:	"Gain +<Ability:TACTICAL_SENSE_DEF_BONUS_PER_ENEMY/> defense for each enemy you can see, up to a maximum of +<Ability:TACTICAL_SENSE_MAX_DEF_BONUS/> defense."
 // Config:			(AbilityName="LW2WotC_TacticalSense")
-static function X2AbilityTemplate AddTacticalSenseAbility()
+static function X2AbilityTemplate TacticalSense()
 {
 	local X2Effect_LW2WotC_TacticalSense		DefenseEffect;
 
@@ -443,7 +443,7 @@ static function X2AbilityTemplate AddTacticalSenseAbility()
 // Perk effect:		Gain bonus critical chance for each enemy you can see, up to a specified maximum.
 // Localized text:	"Gain +<Ability:AGGRESSION_CRIT_BONUS_PER_ENEMY/> critical chance for each enemy you can see, up to a maximum of +<Ability:AGGRESSION_MAX_CRIT_BONUS/>."
 // Config:			(AbilityName="LW2WotC_Aggression", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
-static function X2AbilityTemplate AddAggressionAbility()
+static function X2AbilityTemplate Aggression()
 {
 	local X2Effect_LW2WotC_Aggression			CritEffect;
 
@@ -458,7 +458,7 @@ static function X2AbilityTemplate AddAggressionAbility()
 // Perk effect:		Gain bonus critical damage for each enemy you can see, up to a specified maximum.
 // Localized text:	"Gain +<Ability:BEO_BONUS_CRIT_DAMAGE_PER_ENEMY/> damage on critical hits for every two enemies you can see, up to a maximum of +<Ability:BEO_MAX_BONUS_CRIT_DAMAGE/>."
 // Config:			(AbilityName="LW2WotC_BringEmOn", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
-static function X2AbilityTemplate AddBringEmOnAbility()
+static function X2AbilityTemplate BringEmOn()
 {
 	local X2Effect_LW2WotC_BringEmOn		   DamageEffect;
 
@@ -473,7 +473,7 @@ static function X2AbilityTemplate AddBringEmOnAbility()
 // Perk effect:		Gain bonus dodge for each enemy you can see, up to a specified maximum.
 // Localized text:	"Gain +<Ability:HT_DODGE_BONUS_PER_ENEMY/> dodge per enemy you can see, up to a maximum of +<Ability:HT_MAX_DODGE_BONUS/>."
 // Config:			(AbilityName="LW2WotC_HardTarget")
-static function X2AbilityTemplate AddHardTargetAbility()
+static function X2AbilityTemplate HardTarget()
 {
 	local X2Effect_LW2WotC_HardTarget			DodgeBonus;
 		
@@ -488,7 +488,7 @@ static function X2AbilityTemplate AddHardTargetAbility()
 // Perk effect:		Gain bonus dodge against close-range attacks.
 // Localized text:	"Gain +<Ability:INFIGHTER_DODGE_BONUS/> dodge against attacks within <Ability:INFIGHTER_MAX_TILES/> tiles."
 // Config:			(AbilityName="LW2WotC_Infighter")
-static function X2AbilityTemplate AddInfighterAbility()
+static function X2AbilityTemplate Infighter()
 {
 	local X2Effect_LW2WotC_Infighter					DodgeBonus;
 
@@ -503,7 +503,7 @@ static function X2AbilityTemplate AddInfighterAbility()
 // Perk effect:		Gain aim and reduce enemies' dodge when at a higher elevation than your target.
 // Localized text:	"Gain <Ability:DP_AIM_BONUS/> aim and reduce enemies' dodge by <Ability:DP_ANTIDODGE_BONUS/> when at a higher elevation than your target."
 // Config:			(AbilityName="LW2WotC_DepthPerception")
-static function X2AbilityTemplate AddDepthPerceptionAbility()
+static function X2AbilityTemplate DepthPerception()
 {
 	local X2Effect_LW2WotC_DepthPerception				AttackBonus;
 
@@ -518,7 +518,7 @@ static function X2AbilityTemplate AddDepthPerceptionAbility()
 // Perk effect:		Enemy damage is reduced when in cover and attacked through that cover. Also grants bonus Will.
 // Localized text:	"Enemy damage is reduced when in cover and attacked through that cover. High cover reduces damage by <Ability:W2S_HIGH_COVER_ARMOR_BONUS/>. Low cover reduces damage by <Ability:W2S_LOW_COVER_ARMOR_BONUS/>. Also grants <Ability:WILLTOSURVIVE_WILLBONUS/> will."
 // Config:			(AbilityName="LW2WotC_WilltoSurvive")
-static function X2AbilityTemplate AddWilltoSurviveAbility()
+static function X2AbilityTemplate WillToSurvive()
 {
 	local X2AbilityTemplate						Template;
 	local X2Effect_LW2WotC_WilltoSurvive		ArmorBonus;
@@ -544,7 +544,7 @@ static function X2AbilityTemplate AddWilltoSurviveAbility()
 // Perk effect:		Taking a standard shot with your primary weapon as your first action no longer ends your turn.
 // Localized text:	"Taking a standard shot with your primary weapon as your first action no longer ends your turn."
 // Config:			(AbilityName="LW2WotC_LightEmUp")
-static function X2AbilityTemplate AddLightEmUpAbility()
+static function X2AbilityTemplate LightEmUp()
 {
 	local X2AbilityTemplate			Template;
 
@@ -558,7 +558,7 @@ static function X2AbilityTemplate AddLightEmUpAbility()
 // Perk effect:		Gain a bonus action after taking a standard shot with your primary weapon at an enemy at close range.
 // Localized text:	"Gain a bonus action after taking a standard shot with your primary weapon at an enemy within <Ability:CE_MAX_TILES/>. <Ability:CE_USES_PER_TURN/>"
 // Config:			(AbilityName="LW2WotC_CloseEncounters",	ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
-static function X2AbilityTemplate AddCloseEncountersAbility()
+static function X2AbilityTemplate CloseEncounters()
 {
 	local X2AbilityTemplate							Template;
 	local X2Effect_LW2WotC_CloseEncounters			ActionEffect;
@@ -579,7 +579,7 @@ static function X2AbilityTemplate AddCloseEncountersAbility()
 // Perk effect:		Gain bonus, aim, critical chance, and defense when distant from allies.
 // Localized text:	"Gain +<Ability:LONEWOLF_AIM_BONUS/> aim, +<Ability:LONEWOLF_CRIT_BONUS/> critical chance, and +<Ability:LONEWOLF_DEF_BONUS/> defense when <Ability:LONEWOLF_MIN_DIST_TILES/> or more tiles distant from any ally."
 // Config:			(AbilityName="LW2WotC_LoneWolf", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
-static function X2AbilityTemplate AddLoneWolfAbility()
+static function X2AbilityTemplate LoneWolf()
 {
 	local X2AbilityTemplate					Template;
 	local X2Effect_LW2WotC_LoneWolf			AimandDefModifiers;
@@ -597,7 +597,7 @@ static function X2AbilityTemplate AddLoneWolfAbility()
 // Perk effect:		Makes partial cover count as full.
 // Localized text:	"Makes partial cover count as full."
 // Config:			(AbilityName="LW2WotC_LowProfile")
-static function X2AbilityTemplate AddLowProfileAbility()
+static function X2AbilityTemplate LowProfile()
 {
 	local X2AbilityTemplate					Template;
 	local X2Effect_LW2WotC_LowProfile		DefModifier;
@@ -615,7 +615,7 @@ static function X2AbilityTemplate AddLowProfileAbility()
 // Perk effect:		Gain bonus aim for your next shot with your primary weapon after a miss.
 // Localized text:	"Gain +<Ability:HYPERREACTIVE_PUPILS_AIM_BONUS/> aim for your next shot with your primary weapon after a miss."
 // Config:			(AbilityName="LW2WotC_HyperReactivePupils")
-static function X2AbilityTemplate AddHyperReactivePupilsAbility()
+static function X2AbilityTemplate HyperReactivePupils()
 {
 	local X2AbilityTemplate                 		Template;	
 	local X2Effect_LW2WotC_HyperReactivePupils		HyperReactivePupilsEffect;
@@ -633,7 +633,7 @@ static function X2AbilityTemplate AddHyperReactivePupilsAbility()
 // Perk effect:		Gain bonus aim and crit for successive shots with your primary weapon at the same enemy unit.
 // Localized text:	"Gain +<Ability:LOCKEDON_AIM_BONUS/> aim and +<Ability:LOCKEDON_CRIT_BONUS/> crit for successive shots with your primary weapon at the same enemy unit."
 // Config:			(AbilityName="LW2WotC_LockedOn", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
-static function X2AbilityTemplate AddLockedOnAbility()
+static function X2AbilityTemplate LockOn()
 {
 	local X2AbilityTemplate                 Template;	
 	local X2Effect_LW2WotC_LockedOn			LockedOnEffect;
@@ -651,7 +651,7 @@ static function X2AbilityTemplate AddLockedOnAbility()
 // Perk effect:		When in overwatch, you may take additional reaction shots.
 // Localized text:	"When in overwatch, you may take <Ability:SENTINEL_LW_USES_PER_TURN/> reaction shots."
 // Config:			(AbilityName="LW2WotC_Sentinel", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
-static function X2AbilityTemplate AddSentinel_LWAbility()
+static function X2AbilityTemplate Sentinel()
 {
 	local X2AbilityTemplate                 Template;	
 	local X2Effect_LW2WotC_Sentinel			PersistentEffect;
@@ -670,7 +670,7 @@ static function X2AbilityTemplate AddSentinel_LWAbility()
 // Perk effect:		When in overwatch, each shot you hit with grants another reaction fire shot, up to a specified maximum.
 // Localized text:	"When in overwatch, each shot you hit with grants another reaction fire shot, up to a maximum of <Ability:RAPID_REACTION_USES_PER_TURN/> shots."
 // Config:			(AbilityName="LW2WotC_RapidReaction", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
-static function X2AbilityTemplate AddRapidReactionAbility()
+static function X2AbilityTemplate RapidReaction()
 {
 	local X2AbilityTemplate                 Template;	
 	local X2Effect_LW2WotC_RapidReaction	PersistentEffect;
