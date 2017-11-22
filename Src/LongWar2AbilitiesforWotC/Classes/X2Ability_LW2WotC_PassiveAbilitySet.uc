@@ -58,10 +58,10 @@ static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
 
-	Templates.AddItem(AddCenterMassAbility());
-	Templates.AddItem(AddLethalAbility());
-	Templates.AddItem(AddHitandRunAbility());
-	Templates.AddItem(AddHitandSlitherAbility());
+	Templates.AddItem(CenterMass());
+	Templates.AddItem(Lethal());
+	Templates.AddItem(HitAndRun());
+	Templates.AddItem(HitAndSlither());
 	Templates.AddItem(AddCloseCombatSpecialistAbility());
 	Templates.AddItem(CloseCombatSpecialistAttack()); //Additional Ability
 	Templates.AddItem(AddCloseandPersonalAbility());
@@ -127,120 +127,90 @@ static function array<X2DataTemplate> CreateTemplates()
 	return Templates;
 }
 
-static function X2AbilityTemplate AddCenterMassAbility()
+// Perk name:		Center Mass
+// Perk effect:		You do increased base damage when using guns.
+// Localized text:	"You do <Ability:CENTERMASS_DAMAGE/> additional point of base damage when using guns."
+// Config:			(AbilityName="LW2WotC_CenterMass", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate CenterMass()
 {
-	local X2AbilityTemplate						Template;
 	local X2Effect_LW2WotC_PrimaryHitBonusDamage        DamageEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_CenterMass');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityCenterMass";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Primary weapon bonus damage comes from XComClassData.ini setup. Secondary weapons are based on the includes below
 	DamageEffect = new class'X2Effect_LW2WotC_PrimaryHitBonusDamage';
 	DamageEffect.BonusDmg = default.CENTERMASS_DAMAGE;
 	DamageEffect.includepistols = true;
 	DamageEffect.includesos = true;
-	DamageEffect.BuildPersistentEffect(1, true, false, false);
-	DamageEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect(DamageEffect);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	//  No visualization
-	// NOTE: Limitation of this ability to PRIMARY weapons only must be configured in ClassData.ini, otherwise will apply to pistols/swords, etc., contrary to design and loc text
-	// Ability parameter is ApplyToWeaponSlot=eInvSlot_PrimaryWeapon
-	return Template;
+	DamageEffect.includemachinepistols = true;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_CenterMass', "img:///UILibrary_LW_PerkPack.LW_AbilityCenterMass", true, DamageEffect);
 }
 
-static function X2AbilityTemplate AddLethalAbility()
+// Perk name:		Lethal
+// Perk effect:		You do increased base damage with your primary weapon.
+// Localized text:	"You do <Ability:LETHAL_DAMAGE/> additional points of base damage with your primary weapon."
+// Config:			(AbilityName="LW2WotC_Lethal", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate Lethal()
 {
-	local X2AbilityTemplate						Template;
 	local X2Effect_LW2WotC_PrimaryHitBonusDamage        DamageEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_Lethal');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityKinetic";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Primary weapon bonus damage comes from XComClassData.ini setup. Secondary weapons are based on the includes below
 	DamageEffect = new class'X2Effect_LW2WotC_PrimaryHitBonusDamage';
 	DamageEffect.BonusDmg = default.LETHAL_DAMAGE;
 	DamageEffect.includepistols = false;
 	DamageEffect.includesos = false;
-	DamageEffect.BuildPersistentEffect(1, true, false, false);
-	DamageEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect(DamageEffect);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	// No visualization
-	// NOTE: Limitation of this ability to PRIMARY weapons only must be configured in ClassData.ini, otherwise will apply to pistols/swords, etc., contrary to design and loc text
-	// Ability parameter is ApplyToWeaponSlot=eInvSlot_PrimaryWeapon
-	return Template;
+	DamageEffect.includemachinepistols = false;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_Lethal', "img:///UILibrary_LW_PerkPack.LW_AbilityKinetic", true, DamageEffect);
 }
 
-static function X2AbilityTemplate AddHitandRunAbility()
+// Perk name:		Hit and Run
+// Perk effect:		Gain an additional action after taking a standard shot at a flanked or exposed target with your primary weapon.
+// Localized text:	"Gain an additional action after taking a standard shot at a flanked or exposed target with your primary weapon. <Ability:HNR_USES_PER_TURN/>"
+// Config:			(AbilityName="LW2WotC_HitandRun", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate HitAndRun()
 {
-	local X2AbilityTemplate					Template;
 	local X2Effect_LW2WotC_HitandRun				HitandRunEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_HitandRun');
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityHitandRun";
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	// Hit and run effect that grants a full action
 	HitandRunEffect = new class'X2Effect_LW2WotC_HitandRun';
-	HitandRunEffect.BuildPersistentEffect(1, true, false, false);
-	HitandRunEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage,,,Template.AbilitySourceName);
 	HitandRunEffect.DuplicateResponse = eDupe_Ignore;
 	HitandRunEffect.HITANDRUN_FULLACTION = true;
-	Template.AddTargetEffect(HitandRunEffect);
-	Template.bCrossClassEligible = false;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	//  NOTE: Visualization handled in X2Effect_LW2WotC_HitandRun
-	return Template;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_HitandRun', "img:///UILibrary_LW_PerkPack.LW_AbilityHitandRun", false, HitandRunEffect);
 }
 
-static function X2AbilityTemplate AddHitandSlitherAbility()
+// Perk name:		Hit and Slither
+// Perk effect:		Gain an additional move action after taking a standard shot at a flanked or exposed target with your primary weapon.
+// Localized text:	"Gain an additional move action after taking a standard shot at a flanked or exposed target with your primary weapon. <Ability:HNR_USES_PER_TURN/>"
+// Config:			(AbilityName="LW2WotC_HitandSlither", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate HitAndSlither()
 {
-	local X2AbilityTemplate					Template;
 	local X2Effect_LW2WotC_HitandRun				HitandRunEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_HitandSlither');
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityHitandRun";
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	// Hit and run effect that grants a movement action
 	HitandRunEffect = new class'X2Effect_LW2WotC_HitandRun';
-	HitandRunEffect.BuildPersistentEffect(1, true, false, false);
-	HitandRunEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage,,,Template.AbilitySourceName);
 	HitandRunEffect.DuplicateResponse = eDupe_Ignore;
 	HitandRunEffect.HITANDRUN_FULLACTION=false;
-	Template.AddTargetEffect(HitandRunEffect);
-	Template.bCrossClassEligible = false;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	//  NOTE: Visualization handled in X2Effect_LW2WotC_HitandRun
-	return Template;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_HitandSlither', "img:///UILibrary_LW_PerkPack.LW_AbilityHitandRun", false, HitandRunEffect);
 }
 
+// Perk name:		Close Combat Specialist
+// Perk effect:		During enemy turns, fire a free reaction shot with your primary weapon at any nearby visible enemy who moves or fires.
+// Localized text:	"During enemy turns, fire a free reaction shot with your primary weapon at any visible enemy within <Ability:CCS_RANGE/> who moves or fires."
+// Config:			(AbilityName="LW2WotC_CloseCombatSpecialist", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AddCloseCombatSpecialistAbility()
 {
 	local X2AbilityTemplate                 Template;
 
+	// Pure passive, most of the functionality is in the additional ability
 	Template = PurePassive('LW2WotC_CloseCombatSpecialist', "img:///UILibrary_LW_PerkPack.LW_AbilityCloseCombatSpecialist", false, 'eAbilitySource_Perk');
 	Template.AdditionalAbilities.AddItem('LW2WotC_CloseCombatSpecialistAttack');
+
 	return Template;
 }
 
@@ -256,11 +226,11 @@ static function X2AbilityTemplate CloseCombatSpecialistAttack()
 	local X2Condition_UnitEffects						SuppressedCondition;
 	local X2Condition_Visibility						TargetVisibilityCondition;
 	local X2AbilityCost_Ammo							AmmoCost;
-	local X2AbilityTarget_LW2WotC_Single_CCS					SingleTarget;
-	//local X2AbilityCooldown								Cooldown;	
+	local X2AbilityTarget_LW2WotC_Single_CCS			SingleTarget;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_CloseCombatSpecialistAttack');
 
+	// Boilerplate setup
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityCloseCombatSpecialist";
@@ -268,19 +238,17 @@ static function X2AbilityTemplate CloseCombatSpecialistAttack()
 	Template.Hostility = eHostility_Defensive;
 	Template.bCrossClassEligible = false;
 
+	// Standard aim calculation
 	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
 	ToHitCalc.bReactionFire = true;
 	Template.AbilityToHitCalc = ToHitCalc;
 	 
-	//Cooldown = new class'X2AbilityCooldown';
-	//Cooldown.iNumTurns = 1;
-    //Template.AbilityCooldown = Cooldown;
-
+	// Configurable ammo cost
 	AmmoCost = new class 'X2AbilityCost_Ammo';
 	AmmoCost.iAmmo = default.CCS_AMMO_PER_SHOT;
 	Template.AbilityCosts.AddItem(AmmoCost);
 	
-	//  trigger on movement
+	// Trigger on movement
 	Trigger = new class'X2AbilityTrigger_Event';
 	Trigger.EventObserverClass = class'X2TacticalGameRuleset_MovementObserver';
 	Trigger.MethodName = 'InterruptGameState';
@@ -289,13 +257,14 @@ static function X2AbilityTemplate CloseCombatSpecialistAttack()
 	Trigger.EventObserverClass = class'X2TacticalGameRuleset_MovementObserver';
 	Trigger.MethodName = 'PostBuildGameState';
 	Template.AbilityTriggers.AddItem(Trigger);
-	//  trigger on an attack
+
+	// Trigger on an attack
 	Trigger = new class'X2AbilityTrigger_Event';
 	Trigger.EventObserverClass = class'X2TacticalGameRuleset_AttackObserver';
 	Trigger.MethodName = 'InterruptGameState';
 	Template.AbilityTriggers.AddItem(Trigger);
 
-	//  it may be the case that enemy movement caused a concealment break, which made Bladestorm applicable - attempt to trigger afterwards
+	// It may be the case that enemy movement caused a concealment break, which made Bladestorm applicable - attempt to trigger afterwards
 	EventListener = new class'X2AbilityTrigger_EventListener';
 	EventListener.ListenerData.Deferral = ELD_OnStateSubmitted;
 	EventListener.ListenerData.EventID = 'UnitConcealmentBroken';
@@ -304,6 +273,7 @@ static function X2AbilityTemplate CloseCombatSpecialistAttack()
 	EventListener.ListenerData.Priority = 55;
 	Template.AbilityTriggers.AddItem(EventListener);
 	
+	// Special target conditions
 	Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitDisallowMindControlProperty);
 	TargetVisibilityCondition = new class'X2Condition_Visibility';
 	TargetVisibilityCondition.bRequireGameplayVisible = true;
@@ -312,47 +282,56 @@ static function X2AbilityTemplate CloseCombatSpecialistAttack()
 	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
 	Template.AbilityTargetConditions.AddItem(class'X2Ability_DefaultAbilitySet'.static.OverwatchTargetEffectsCondition());
 
+	// Don't trigger while disoriented, burning, etc.
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);	
 	Template.AddShooterEffectExclusions();
 
-	//Don't trigger when the source is concealed
+	// Don't trigger when the source is concealed
 	SourceNotConcealedCondition = new class'X2Condition_UnitProperty';
 	SourceNotConcealedCondition.ExcludeConcealed = true;
 	Template.AbilityShooterConditions.AddItem(SourceNotConcealedCondition);
 
+	// Don't trigger while suppressed
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
+	// Effect that limits the range of the reaction shot
 	SingleTarget = new class 'X2AbilityTarget_LW2WotC_Single_CCS';
-	//SingleTarget.OnlyIncludeTargetsInsideWeaponRange = true;
 	Template.AbilityTargetStyle = SingleTarget;
 
+	// Can shred and apply ammo effects
 	Template.bAllowBonusWeaponEffects = true;
 	Template.AddTargetEffect(class 'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
 
-	//Prevent repeatedly hammering on a unit when CCS triggers.
-	//(This effect does nothing, but enables many-to-many marking of which CCS attacks have already occurred each turn.)
+	// Prevent repeatedly hammering on a unit when CCS triggers.
+	// (This effect does nothing, but enables many-to-many marking of which CCS attacks have already occurred each turn.)
 	CloseCombatSpecialistTargetEffect = new class'X2Effect_Persistent';
 	CloseCombatSpecialistTargetEffect.BuildPersistentEffect(1, false, true, true, eGameRule_PlayerTurnEnd);
 	CloseCombatSpecialistTargetEffect.EffectName = 'CloseCombatSpecialistTarget';
 	CloseCombatSpecialistTargetEffect.bApplyOnMiss = true; //Only one chance, even if you miss (prevents crazy flailing counter-attack chains with a Muton, for example)
 	Template.AddTargetEffect(CloseCombatSpecialistTargetEffect);
-	
+
 	CloseCombatSpecialistTargetCondition = new class'X2Condition_UnitEffectsWithAbilitySource';
 	CloseCombatSpecialistTargetCondition.AddExcludeEffect('CloseCombatSpecialistTarget', 'AA_DuplicateEffectIgnored');
 	Template.AbilityTargetConditions.AddItem(CloseCombatSpecialistTargetCondition);
 
+	// Visualization
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 	Template.bShowActivation = true;
 
+	// Standard interactions with Shadow, Chosen, and the Lost
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.MeleeLostSpawnIncreasePerUse;
+
 	return Template;
 }
 
-//Must be static, because it will be called with a different object (an XComGameState_Ability)
-//Used to trigger Bladestorm when the source's concealment is broken by a unit in melee range (the regular movement triggers get called too soon)
+// Must be static, because it will be called with a different object (an XComGameState_Ability)
+// Used to trigger Bladestorm when the source's concealment is broken by a unit in melee range (the regular movement triggers get called too soon)
 static function EventListenerReturn CloseCombatSpecialistConcealmentListener(Object EventData, Object EventSource, XComGameState GameState, Name EventID, Object CallbackData)
 {
 	local XComGameStateContext_Ability AbilityContext;
@@ -384,451 +363,325 @@ static function EventListenerReturn CloseCombatSpecialistConcealmentListener(Obj
 	return ELR_NoInterrupt;
 }
 
+// Perk name:		Close and Personal
+// Perk effect:		Confers bonus critical chance against adjacent targets. The bonus declines with distance from the target.
+// Localized text:	"Confers +30 critical chance against adjacent targets. The bonus declines with distance from the target."
+// Config:			(AbilityName="LW2WotC_CloseAndPersonal")
 static function X2AbilityTemplate AddCloseandPersonalAbility()
 {
-	local X2AbilityTemplate						Template;
-	local X2Effect_LW2WotC_CloseandPersonal				CritModifier;
+	local X2Effect_LW2WotC_CloseandPersonal		CritModifier;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_CloseandPersonal');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityCloseandPersonal";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Effect granting bonus crit chance depending on range
 	CritModifier = new class 'X2Effect_LW2WotC_CloseandPersonal';
-	CritModifier.BuildPersistentEffect (1, true, false);
-	CritModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect (CritModifier);
-	Template.bCrossClassEligible = false;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
-	return Template;
+	// Create the template using a helper function
+	return Passive('LW2WotC_CloseandPersonal', "img:///UILibrary_LW_PerkPack.LW_AbilityCloseandPersonal", false, CritModifier);
 }
 
+// Perk name:		Damn Good Ground
+// Perk effect:		Confers bonus aim and defense against targets at a lower elevation.
+// Localized text:	"Confers +<Ability:DGG_AIM_BONUS/> aim and +<Ability:DGG_DEF_BONUS/> defense against targets at a lower elevation."
+// Config:			(AbilityName="LW2WotC_DamnGoodGround", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AddDamnGoodGroundAbility()
 {
-	local X2AbilityTemplate					Template;
 	local X2Effect_LW2WotC_DamnGoodGround			AimandDefModifiers;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_DamnGoodGround');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityDamnGoodGround";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Effect granting bonus aim and defense against lower elevation targets
 	AimandDefModifiers = new class 'X2Effect_LW2WotC_DamnGoodGround';
-	AimandDefModifiers.BuildPersistentEffect (1, true, true);
-	AimandDefModifiers.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect (AimandDefModifiers);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	return Template;		
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_DamnGoodGround', "img:///UILibrary_LW_PerkPack.LW_AbilityDamnGoodGround", true, AimandDefModifiers);
 }
 
+// Perk name:		Executioner
+// Perk effect:		Confers bonus aim and critical chance against targets at half or less of their original hit points.
+// Localized text:	"Confers +<Ability:EXECUTIONER_AIM_BONUS/> aim and +<Ability:EXECUTIONER_CRIT_BONUS/> critical chance against targets at half or less of their original hit points."
+// Config:			(AbilityName="LW2WotC_Executioner")
 static function X2AbilityTemplate AddExecutionerAbility()
 {
-	local X2AbilityTemplate					Template;
-	local X2Effect_LW2WotC_Executioner				AimandCritModifiers;
+	local X2Effect_LW2WotC_Executioner		AimandCritModifiers;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Executioner');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityExecutioner";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Effect granting aim and crit bonuses against targets at half or less health
 	AimandCritModifiers = new class 'X2Effect_LW2WotC_Executioner';
-	AimandCritModifiers.BuildPersistentEffect (1, true, false);
-	AimandCritModifiers.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect (AimandCritModifiers);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
-	return Template;		
+	// Create the template using a helper function
+	return Passive('LW2WotC_Executioner', "img:///UILibrary_LW_PerkPack.LW_AbilityExecutioner", true, AimandCritModifiers);
 }
 
+// Perk name:		Resilience
+// Perk effect:		Enemy attacks against you suffer a penalty to critical hit chances.
+// Localized text:	"Enemy attacks against you suffer a -<Ability:RESILIENCE_CRITDEF_BONUS/> penalty to critical hit chances."
+// Config:			(AbilityName="LW2WotC_Resilience")
 static function X2AbilityTemplate AddResilienceAbility()
 {
-	local X2AbilityTemplate					Template;
-	local X2Effect_LW2WotC_Resilience				MyCritModifier;
+	local X2Effect_LW2WotC_Resilience				CritModifierEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Resilience');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityResilience";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
-	MyCritModifier = new class 'X2Effect_LW2WotC_Resilience';
-	MyCritModifier.CritDef_Bonus = default.RESILIENCE_CRITDEF_BONUS;
-	MyCritModifier.BuildPersistentEffect (1, true, false, true);
-	MyCritModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect (MyCritModifier);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	// Effect that reduces crit chance against the owner of this passive
+	CritModifierEffect = new class 'X2Effect_LW2WotC_Resilience';
+	CritModifierEffect.CritDef_Bonus = default.RESILIENCE_CRITDEF_BONUS;
 
-	return Template;		
+	// Create the template using a helper function
+	return Passive('LW2WotC_Resilience', "img:///UILibrary_LW_PerkPack.LW_AbilityResilience", true, CritModifierEffect);
 }
 
+// Perk name:		Tactical Sense
+// Perk effect:		Gain bonus defense for each enemy you can see, up to a specified maximum.
+// Localized text:	"Gain +<Ability:TACTICAL_SENSE_DEF_BONUS_PER_ENEMY/> defense for each enemy you can see, up to a maximum of +<Ability:TACTICAL_SENSE_MAX_DEF_BONUS/> defense."
+// Config:			(AbilityName="LW2WotC_TacticalSense")
 static function X2AbilityTemplate AddTacticalSenseAbility()
 {
-	local X2AbilityTemplate				Template;
-	local X2Effect_LW2WotC_TacticalSense		MyDefModifier;
+	local X2Effect_LW2WotC_TacticalSense		DefenseEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_TacticalSense');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityTacticalSense";	
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.bIsPassive = true;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	MyDefModifier = new class 'X2Effect_LW2WotC_TacticalSense';
-	MyDefModifier.BuildPersistentEffect (1, true, false);
-	MyDefModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect (MyDefModifier);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	// Effect granting tactical sense defense bonuses
+	DefenseEffect = new class 'X2Effect_LW2WotC_TacticalSense';
 
-	return Template;	
+	// Create the template using a helper function
+	return Passive('LW2WotC_TacticalSense', "img:///UILibrary_LW_PerkPack.LW_AbilityTacticalSense", true, DefenseEffect);
 }
 
+// Perk name:		Aggression
+// Perk effect:		Gain bonus critical chance for each enemy you can see, up to a specified maximum.
+// Localized text:	"Gain +<Ability:AGGRESSION_CRIT_BONUS_PER_ENEMY/> critical chance for each enemy you can see, up to a maximum of +<Ability:AGGRESSION_MAX_CRIT_BONUS/>."
+// Config:			(AbilityName="LW2WotC_Aggression", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AddAggressionAbility()
 {
-	local X2AbilityTemplate				Template;
-	local X2Effect_LW2WotC_Aggression			MyCritModifier;
+	local X2Effect_LW2WotC_Aggression			CritEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Aggression');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityAggression";	
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
-	MyCritModifier = new class 'X2Effect_LW2WotC_Aggression';
-	MyCritModifier.BuildPersistentEffect (1, true, false);
-	MyCritModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect (MyCritModifier);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	// Effect graning aggression crit bonus
+	CritEffect = new class 'X2Effect_LW2WotC_Aggression';
 
-	return Template;	
+	// Create the template using a helper function
+	return Passive('LW2WotC_Aggression', "img:///UILibrary_LW_PerkPack.LW_AbilityAggression", true, CritEffect);
 }
 
+// Perk name:		Bring 'Em On
+// Perk effect:		Gain bonus critical damage for each enemy you can see, up to a specified maximum.
+// Localized text:	"Gain +<Ability:BEO_BONUS_CRIT_DAMAGE_PER_ENEMY/> damage on critical hits for every two enemies you can see, up to a maximum of +<Ability:BEO_MAX_BONUS_CRIT_DAMAGE/>."
+// Config:			(AbilityName="LW2WotC_BringEmOn", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AddBringEmOnAbility()
 {
-	local X2AbilityTemplate						Template;
-	local X2Effect_LW2WotC_BringEmOn		            DamageEffect;
+	local X2Effect_LW2WotC_BringEmOn		   DamageEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_BringEmOn');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityBringEmOn";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Effect granting bring em on crit damage bonus
 	DamageEffect = new class'X2Effect_LW2WotC_BringEmOn';
-	DamageEffect.BuildPersistentEffect(1, true, false, false);
-	DamageEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect(DamageEffect);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	//  No visualization
-	return Template;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_BringEmOn', "img:///UILibrary_LW_PerkPack.LW_AbilityBringEmOn", true, DamageEffect);
 }
 
+// Perk name:		Hard Target
+// Perk effect:		Gain bonus dodge for each enemy you can see, up to a specified maximum.
+// Localized text:	"Gain +<Ability:HT_DODGE_BONUS_PER_ENEMY/> dodge per enemy you can see, up to a maximum of +<Ability:HT_MAX_DODGE_BONUS/>."
+// Config:			(AbilityName="LW2WotC_HardTarget")
 static function X2AbilityTemplate AddHardTargetAbility()
 {
-	local X2AbilityTemplate						Template;
-	local X2Effect_LW2WotC_HardTarget					DodgeBonus;
+	local X2Effect_LW2WotC_HardTarget			DodgeBonus;
 		
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_HardTarget');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityHardTarget";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Effect granting hard target dodge bonus
 	DodgeBonus = new class 'X2Effect_LW2WotC_HardTarget';
-	DodgeBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	DodgeBonus.BuildPersistentEffect(1, true, false);
-	Template.AddTargetEffect(DodgeBonus);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	//  No visualization
 
-	return Template;
+	// Create the template using a helper function
+	return Passive('LW2WotC_HardTarget', "img:///UILibrary_LW_PerkPack.LW_AbilityHardTarget", true, DodgeBonus);
 }
 
+// Perk name:		Infighter
+// Perk effect:		Gain bonus dodge against close-range attacks.
+// Localized text:	"Gain +<Ability:INFIGHTER_DODGE_BONUS/> dodge against attacks within <Ability:INFIGHTER_MAX_TILES/> tiles."
+// Config:			(AbilityName="LW2WotC_Infighter")
 static function X2AbilityTemplate AddInfighterAbility()
 {
-	local X2AbilityTemplate						Template;
 	local X2Effect_LW2WotC_Infighter					DodgeBonus;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_Infighter');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityInfighter";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Effect granting infighter dodge bonus
 	DodgeBonus = new class 'X2Effect_LW2WotC_Infighter';
-	DodgeBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	DodgeBonus.BuildPersistentEffect(1, true, false);
-	Template.AddTargetEffect(DodgeBonus);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	//  No visualization
-	return Template;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_Infighter', "img:///UILibrary_LW_PerkPack.LW_AbilityInfighter", true, DodgeBonus);
 }
 
+// Perk name:		Depth Perception
+// Perk effect:		Gain aim and reduce enemies' dodge when at a higher elevation than your target.
+// Localized text:	"Gain <Ability:DP_AIM_BONUS/> aim and reduce enemies' dodge by <Ability:DP_ANTIDODGE_BONUS/> when at a higher elevation than your target."
+// Config:			(AbilityName="LW2WotC_DepthPerception")
 static function X2AbilityTemplate AddDepthPerceptionAbility()
 {
-	local X2AbilityTemplate						Template;
 	local X2Effect_LW2WotC_DepthPerception				AttackBonus;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_DepthPerception');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityDepthPerception";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	//Template.bIsPassive = true;
+	// Effect granting bonuses
 	AttackBonus = new class 'X2Effect_LW2WotC_DepthPerception';
-	AttackBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	AttackBonus.BuildPersistentEffect(1, true, false);
-	Template.AddTargetEffect(AttackBonus);
-	Template.bCrossClassEligible = false;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	return Template;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_DepthPerception', "img:///UILibrary_LW_PerkPack.LW_AbilityDepthPerception", false, AttackBonus);
 }
 
+// Perk name:		Will to Survive
+// Perk effect:		Enemy damage is reduced when in cover and attacked through that cover. Also grants bonus Will.
+// Localized text:	"Enemy damage is reduced when in cover and attacked through that cover. High cover reduces damage by <Ability:W2S_HIGH_COVER_ARMOR_BONUS/>. Low cover reduces damage by <Ability:W2S_LOW_COVER_ARMOR_BONUS/>. Also grants <Ability:WILLTOSURVIVE_WILLBONUS/> will."
+// Config:			(AbilityName="LW2WotC_WilltoSurvive")
 static function X2AbilityTemplate AddWilltoSurviveAbility()
 {
 	local X2AbilityTemplate						Template;
-	local X2Effect_LW2WotC_WilltoSurvive				ArmorBonus;
+	local X2Effect_LW2WotC_WilltoSurvive		ArmorBonus;
 	local X2Effect_PersistentStatChange			WillBonus;
 
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_WilltoSurvive');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityWilltoSurvive";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// The armor bonus through cover
 	ArmorBonus = new class 'X2Effect_LW2WotC_WilltoSurvive';
-	ArmorBonus.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	ArmorBonus.BuildPersistentEffect(1, true, false);
-	Template.AddTargetEffect(ArmorBonus);
 
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_WilltoSurvive', "img:///UILibrary_LW_PerkPack.LW_AbilityWilltoSurvive", true, ArmorBonus);
+
+	// The will bonus
 	WillBonus = new class'X2Effect_PersistentStatChange';
 	WillBonus.AddPersistentStatChange(eStat_Will, float(default.WILLTOSURVIVE_WILLBONUS));
 	WillBonus.BuildPersistentEffect (1, true, false, false, 7);
 	Template.AddTargetEffect(WillBonus);
 	Template.SetUIStatMarkup(class'XLocalizedData'.default.WillLabel, eStat_Will, default.WILLTOSURVIVE_WILLBONUS);
 
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	//  No visualization
 	return Template;
 }
 
+// Perk name:		Light 'Em Up
+// Perk effect:		Taking a standard shot with your primary weapon as your first action no longer ends your turn.
+// Localized text:	"Taking a standard shot with your primary weapon as your first action no longer ends your turn."
+// Config:			(AbilityName="LW2WotC_LightEmUp")
 static function X2AbilityTemplate AddLightEmUpAbility()
 {
 	local X2AbilityTemplate			Template;
 
+	// The standard shot ability will check if the shooter has this ability. If they do, the shot won't end the shooter's turn
 	Template = PurePassive('LW2WotC_LightEmUp', "img:///UILibrary_LW_PerkPack.LW_AbilityLightEmUp");
 
 	return Template;
 }
 
+// Perk name:		Close Encounters
+// Perk effect:		Gain a bonus action after taking a standard shot with your primary weapon at an enemy at close range.
+// Localized text:	"Gain a bonus action after taking a standard shot with your primary weapon at an enemy within <Ability:CE_MAX_TILES/>. <Ability:CE_USES_PER_TURN/>"
+// Config:			(AbilityName="LW2WotC_CloseEncounters",	ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AddCloseEncountersAbility()
 {
 	local X2AbilityTemplate							Template;
-	local X2Effect_LW2WotC_CloseEncounters					ActionEffect;
+	local X2Effect_LW2WotC_CloseEncounters			ActionEffect;
 	
-	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_CloseEncounters');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityCloseEncounters";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	//Template.bIsPassive = true;  // needs to be off to allow perks
+	// The close encounters effect
 	ActionEffect = new class 'X2Effect_LW2WotC_CloseEncounters';
-	ActionEffect.SetDisplayInfo (ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	ActionEffect.BuildPersistentEffect(1, true, false);
-	Template.AddTargetEffect(ActionEffect);
-	Template.bCrossClassEligible = false;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	// Visualization handled in Effect
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_CloseEncounters', "img:///UILibrary_LW_PerkPack.LW_AbilityCloseEncounters", false, ActionEffect);
+
+	// Needs to be off to allow perks
+	Template.bIsPassive = false;  
+
 	return Template;
 }
 
+// Perk name:		Lone Wolf
+// Perk effect:		Gain bonus, aim, critical chance, and defense when distant from allies.
+// Localized text:	"Gain +<Ability:LONEWOLF_AIM_BONUS/> aim, +<Ability:LONEWOLF_CRIT_BONUS/> critical chance, and +<Ability:LONEWOLF_DEF_BONUS/> defense when <Ability:LONEWOLF_MIN_DIST_TILES/> or more tiles distant from any ally."
+// Config:			(AbilityName="LW2WotC_LoneWolf", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AddLoneWolfAbility()
 {
 	local X2AbilityTemplate					Template;
-	local X2Effect_LW2WotC_LoneWolf					AimandDefModifiers;
+	local X2Effect_LW2WotC_LoneWolf			AimandDefModifiers;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_LoneWolf');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityLoneWolf";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Lone wolf effect
 	AimandDefModifiers = new class 'X2Effect_LW2WotC_LoneWolf';
-	AimandDefModifiers.BuildPersistentEffect (1, true, false);
-	AimandDefModifiers.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect (AimandDefModifiers);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;	
-	//no visualization
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_LoneWolf', "img:///UILibrary_LW_PerkPack.LW_AbilityLoneWolf", true, AimandDefModifiers);
+
 	return Template;		
 }
 
+// Perk name:		Low Profile
+// Perk effect:		Makes partial cover count as full.
+// Localized text:	"Makes partial cover count as full."
+// Config:			(AbilityName="LW2WotC_LowProfile")
 static function X2AbilityTemplate AddLowProfileAbility()
 {
 	local X2AbilityTemplate					Template;
-	local X2Effect_LW2WotC_LowProfile			DefModifier;
+	local X2Effect_LW2WotC_LowProfile		DefModifier;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_LowProfile');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityLowProfile";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Low profile effect
 	DefModifier = new class 'X2Effect_LW2WotC_LowProfile';
-	DefModifier.BuildPersistentEffect (1, true, false);
-	DefModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect (DefModifier);
-	Template.bCrossClassEligible = true;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;	
-	//no visualization
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_LowProfile', "img:///UILibrary_LW_PerkPack.LW_AbilityLowProfile", true, DefModifier);
+
 	return Template;
 }
 
+// Perk name:		Hyper-Reactive Pupils
+// Perk effect:		Gain bonus aim for your next shot with your primary weapon after a miss.
+// Localized text:	"Gain +<Ability:HYPERREACTIVE_PUPILS_AIM_BONUS/> aim for your next shot with your primary weapon after a miss."
+// Config:			(AbilityName="LW2WotC_HyperReactivePupils")
 static function X2AbilityTemplate AddHyperReactivePupilsAbility()
 {
-	local X2AbilityTemplate                 Template;	
+	local X2AbilityTemplate                 		Template;	
 	local X2Effect_LW2WotC_HyperReactivePupils		HyperReactivePupilsEffect;
-	
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_HyperReactivePupils');	
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityHyperreactivePupils";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.bDisplayInUITacticalText = false;
-	Template.Hostility = eHostility_Neutral;
-	Template.bIsPassive = true;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);		
+
+	// Effect granting aim after a miss
 	HyperReactivePupilsEffect = new class'X2Effect_LW2WotC_HyperReactivePupils';
-	HyperReactivePupilsEffect.BuildPersistentEffect(1, true, false,, eGameRule_TacticalGameStart);
-	HyperReactivePupilsEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect(HyperReactivePupilsEffect);
-	Template.bCrossClassEligible = false;
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_HyperReactivePupils', "img:///UILibrary_LW_PerkPack.LW_AbilityHyperreactivePupils", false, HyperReactivePupilsEffect);
+
 	return Template;
 }
 
+// Perk name:		Locked On
+// Perk effect:		Gain bonus aim and crit for successive shots with your primary weapon at the same enemy unit.
+// Localized text:	"Gain +<Ability:LOCKEDON_AIM_BONUS/> aim and +<Ability:LOCKEDON_CRIT_BONUS/> crit for successive shots with your primary weapon at the same enemy unit."
+// Config:			(AbilityName="LW2WotC_LockedOn", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AddLockedOnAbility()
 {
 	local X2AbilityTemplate                 Template;	
-	local X2Effect_LW2WotC_LockedOn					LockedOnEffect;
+	local X2Effect_LW2WotC_LockedOn			LockedOnEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_LockedOn');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityLockedOn";
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
-	Template.bCrossClassEligible = true;
+	// Locked on effect
 	LockedOnEffect = new class'X2Effect_LW2WotC_LockedOn';
-	LockedOnEffect.BuildPersistentEffect(1, true, false,, eGameRule_TacticalGameStart);
-	LockedOnEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-	Template.AddTargetEffect(LockedOnEffect);
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_LockedOn', "img:///UILibrary_LW_PerkPack.LW_AbilityLockedOn", true, LockedOnEffect);
 
 	return Template;
 }
 
+// Perk name:		Sentinel
+// Perk effect:		When in overwatch, you may take additional reaction shots.
+// Localized text:	"When in overwatch, you may take <Ability:SENTINEL_LW_USES_PER_TURN/> reaction shots."
+// Config:			(AbilityName="LW2WotC_Sentinel", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AddSentinel_LWAbility()
 {
 	local X2AbilityTemplate                 Template;	
-	local X2Effect_LW2WotC_Sentinel				PersistentEffect;
+	local X2Effect_LW2WotC_Sentinel			PersistentEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Sentinel');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilitySentinel";
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-	Template.bIsPassive = true;
+	// Sentinel effect
 	PersistentEffect = new class'X2Effect_LW2WotC_Sentinel';
-	PersistentEffect.BuildPersistentEffect(1, true, false);
-	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,, Template.AbilitySourceName);
-	Template.AddTargetEffect(PersistentEffect);
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	Template.bCrossClassEligible = false;
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_Sentinel', "img:///UILibrary_LW_PerkPack.LW_AbilitySentinel", false, PersistentEffect);
+	Template.bIsPassive = false;
+
 	return Template;
 }
 
+// Perk name:		Rapid Reaction
+// Perk effect:		When in overwatch, each shot you hit with grants another reaction fire shot, up to a specified maximum.
+// Localized text:	"When in overwatch, each shot you hit with grants another reaction fire shot, up to a maximum of <Ability:RAPID_REACTION_USES_PER_TURN/> shots."
+// Config:			(AbilityName="LW2WotC_RapidReaction", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AddRapidReactionAbility()
 {
 	local X2AbilityTemplate                 Template;	
-	local X2Effect_LW2WotC_RapidReaction			PersistentEffect;
+	local X2Effect_LW2WotC_RapidReaction	PersistentEffect;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_RapidReaction');
-	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityRapidReaction3";
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-	Template.Hostility = eHostility_Neutral;
-	Template.AbilityToHitCalc = default.DeadEye;
-	Template.AbilityTargetStyle = default.SelfTarget;
-	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	// Rapid reaction effect
 	PersistentEffect = new class'X2Effect_LW2WotC_RapidReaction';
-	PersistentEffect.BuildPersistentEffect(1, true, false);
-	PersistentEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,, Template.AbilitySourceName);
-	Template.AddTargetEffect(PersistentEffect);
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	Template.bCrossClassEligible = false;
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_RapidReaction', "img:///UILibrary_LW_PerkPack.LW_AbilityRapidReaction3", false, PersistentEffect);
+	Template.bIsPassive = false;
+
 	return Template;
 }
 
@@ -1147,7 +1000,7 @@ static function X2AbilityTemplate Sprinter()
 
 // Perk name:		Alpha Mike Foxtrot
 // Perk effect:		You do greatly increased damage with your primary weapon.
-// Localized text:	"You do <Ability:ALPHA_MIKE_FOXTROT_DAMAGE_LW/> additional points of base damage with your primary weapon."
+// Localized text:	"You do <Ability:ALPHAMIKEFOXTROT_DAMAGE/> additional points of base damage with your primary weapon."
 // Config:			(AbilityName="LW2WotC_AlphaMikeFoxtrot", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AlphaMikeFoxtrot()
 {

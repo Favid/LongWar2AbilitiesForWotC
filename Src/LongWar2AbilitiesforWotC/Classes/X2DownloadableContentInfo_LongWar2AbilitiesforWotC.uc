@@ -344,6 +344,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'NUM_AIRDROP_CHARGES':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.NUM_AIRDROP_CHARGES);
 			return true;
+		case 'ALPHAMIKEFOXTROT_DAMAGE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.ALPHAMIKEFOXTROT_DAMAGE);
+			return true;
 		default: 
 			return false;
 	}
