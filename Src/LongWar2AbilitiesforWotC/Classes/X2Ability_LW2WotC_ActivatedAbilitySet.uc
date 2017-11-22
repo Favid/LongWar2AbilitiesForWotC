@@ -816,9 +816,10 @@ static function X2AbilityTemplate Fortify()
 // Config:			(AbilityName="LW2WotC_RunAndGun")
 static function X2AbilityTemplate RunAndGun()
 {
-	local X2AbilityTemplate                 Template;
-	local X2AbilityCooldown_LW2WotC_RunAndGun Cooldown;
-	local X2Effect_LW2WotC_KillerInstinct CritDamageEffect;
+	local X2AbilityTemplate                 	Template;
+	local X2AbilityCooldown_LW2WotC_RunAndGun 	Cooldown;
+	local X2Effect_LW2WotC_KillerInstinct 		CritDamageEffect;
+	local X2Condition_UnitValue					ActionRefundCondition;
 
 	// Start with a copy of the vanilla Ranger's Run and Gun ability
 	Template = class'X2Ability_RangerAbilitySet'.static.RunAndGunAbility('LW2WotC_RunAndGun');
@@ -834,6 +835,13 @@ static function X2AbilityTemplate RunAndGun()
 	CritDamageEffect.BuildPersistentEffect(1,false,false,false,eGameRule_PlayerTurnEnd);
 	CritDamageEffect.CritDamageBonusPercent = default.KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT;
 	Template.AddTargetEffect(CritDamageEffect);
+
+	// Do not let Run and Gun be used if Hit and Run or Close Encounters were activated this turn
+	ActionRefundCondition = new class 'X2Condition_UnitValue';
+	ActionRefundCondition.AddCheckValue ('LW2WotC_CloseEncountersUses', 0, eCheck_Exact,,,'AA_AbilityUnavailable');
+	ActionRefundCondition.AddCheckValue ('LW2WotC_HitandRunUses', 0, eCheck_Exact,,,'AA_AbilityUnavailable');
+	Template.AbilityShooterConditions.AddItem(ActionRefundCondition); 
+
 
 	return Template;
 }
