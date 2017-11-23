@@ -350,6 +350,8 @@ static function X2AbilityTemplate Attack(name DataName, string IconImage, option
 	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
 	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
 
+    Template.AbilityConfirmSound = "TacticalUI_ActivateAbility";
+
 	return Template;	
 }
 
