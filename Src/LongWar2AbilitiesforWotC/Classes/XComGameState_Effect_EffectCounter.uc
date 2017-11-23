@@ -38,4 +38,17 @@ simulated function XComGameState.EventListenerReturn ResetUses(Object EventData,
 	return ELR_NoInterrupt;
 }
 
+simulated function XComGameState.EventListenerReturn IncrementUses(Object EventData, Object EventSource, XComGameState GameState, Name EventID, Object CallbackData)
+{
+    local XComGameState								NewGameState;
+	local XComGameState_Effect_EffectCounter		ThisEffect;
+	
+	NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Update: Increment Effect Counter");
+	ThisEffect=XComGameState_Effect_EffectCounter(NewGameState.CreateStateObject(Class,ObjectID));
+	ThisEffect.uses += 1;
+	NewGameState.AddStateObject(ThisEffect);
+	`TACTICALRULES.SubmitGameState(NewGameState);	
+	return ELR_NoInterrupt;
+}
+
 

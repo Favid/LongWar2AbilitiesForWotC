@@ -24,8 +24,14 @@ static event OnLoadedSavedGame()
 static event OnPostTemplatesCreated()
 {
 	PatchAbilitiesForLightEmUp();
+	PatchSmokeGrenades();
+
+	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.4");
 }
 
+/// <summary>
+/// Patches the standard shot ability so that it won't end a soldier's turn if they have Light 'Em Up
+/// </summary>
 private static function PatchAbilitiesForLightEmUp()
 {
     local X2AbilityTemplateManager TemplateManager;
@@ -47,6 +53,32 @@ private static function PatchAbilitiesForLightEmUp()
 		    }
 	    }
     }
+}
+
+/// <summary>
+/// Patches the Smoke Grenade and Smoke Bomb so that they function with Dense Smoke
+/// </summary>
+private static function PatchSmokeGrenades()
+{
+    PatchSmokeGrenade('SmokeGrenade');
+	PatchSmokeGrenade('SmokeGrenadeMk2');
+}
+
+private static function PatchSmokeGrenade(name ItemName)
+{
+	local X2ItemTemplateManager		ItemManager;
+	local array<X2DataTemplate>		TemplateAllDifficulties;
+	local X2DataTemplate			Template;
+	local X2GrenadeTemplate			GrenadeTemplate;
+
+	ItemManager = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
+	ItemManager.FindDataTemplateAllDifficulties(ItemName, TemplateAllDifficulties);
+	foreach TemplateAllDifficulties(Template)
+	{
+		GrenadeTemplate = X2GrenadeTemplate(Template);
+		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.DenseSmokeEffect());
+		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.DenseSmokeEffect());
+	}
 }
 
 /// <summary>
@@ -182,6 +214,141 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'RAPID_REACTION_USES_PER_TURN':
 			OutString = string(class'X2Effect_LW2WotC_RapidReaction'.default.RAPID_REACTION_USES_PER_TURN + 1);
 			return true;
+		case 'CUTTHROAT_BONUS_CRIT_CHANCE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.CUTTHROAT_BONUS_CRIT_CHANCE);
+			return true;
+		case 'CUTTHROAT_BONUS_CRIT_DAMAGE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.CUTTHROAT_BONUS_CRIT_DAMAGE);
+			return true;
+		case 'WALK_FIRE_AIM_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_AIM_BONUS);
+			return true;
+		case 'WALK_FIRE_CRIT_MALUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_CRIT_MALUS);
+			return true;
+		case 'WALK_FIRE_AMMO_COST':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_AMMO_COST);
+			return true;
+		case 'WALK_FIRE_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_COOLDOWN);
+			return true;
+		case 'WALK_FIRE_DAMAGE_PERCENT_MALUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.WALK_FIRE_DAMAGE_PERCENT_MALUS);
+			return true;
+		case 'PRECISION_SHOT_AMMO_COST':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.PRECISION_SHOT_AMMO_COST);
+			return true;
+		case 'PRECISION_SHOT_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.PRECISION_SHOT_COOLDOWN);
+			return true;
+		case 'PRECISION_SHOT_CRIT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.PRECISION_SHOT_CRIT_BONUS);
+			return true;
+		case 'PRECISION_SHOT_CRIT_DAMAGE_PERCENT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.PRECISION_SHOT_CRIT_DAMAGE_PERCENT_BONUS);
+			return true;
+		case 'COVERT_DETECTION_RANGE_REDUCTION':
+			OutString = string(int(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COVERT_DETECTION_RANGE_REDUCTION * 100));
+			return true;
+		case 'SLUG_SHOT_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SLUG_SHOT_COOLDOWN);
+			return true;
+		case 'SLUG_SHOT_PIERCE':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SLUG_SHOT_PIERCE);
+			return true;
+		case 'DAMAGE_CONTROL_DURATION':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.DAMAGE_CONTROL_DURATION);
+			return true;
+		case 'DAMAGE_CONTROL_BONUS_ARMOR':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.DAMAGE_CONTROL_BONUS_ARMOR);
+			return true;
+		case 'RAPID_DEPLOYMENT_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.RAPID_DEPLOYMENT_COOLDOWN);
+			return true;
+		case 'FLECHE_BONUS_DAMAGE_PER_TILES':
+			OutString = getFlechePerTileDamageBonusString(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLECHE_BONUS_DAMAGE_PER_TILES);
+			return true;
+		case 'TRENCH_GUN_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.TRENCH_GUN_COOLDOWN);
+			return true;
+		case 'FORTIFY_DEFENSE':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FORTIFY_DEFENSE);
+			return true;
+		case 'FORTIFY_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FORTIFY_COOLDOWN);
+			return true;
+		case 'FORMIDABLE_ABLATIVE_HP':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.FORMIDABLE_ABLATIVE_HP);
+			return true;
+		case 'STREET_SWEEPER_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.STREET_SWEEPER_COOLDOWN);
+			return true;
+		case 'STREET_SWEEPER_UNARMORED_DAMAGE_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.STREET_SWEEPER_UNARMORED_DAMAGE_BONUS);
+			return true;
+		case 'RUN_AND_GUN_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.RUN_AND_GUN_COOLDOWN);
+			return true;
+		case 'EXTRA_CONDITIONING_COOLDOWN_REDUCTION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.EXTRA_CONDITIONING_COOLDOWN_REDUCTION);
+			return true;
+		case 'KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT':
+			OutString = string(int(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT));
+			return true;
+		case 'DENSE_SMOKE_INVERSE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.DENSE_SMOKE_HITMOD * -1);
+			return true;
+		case 'DENSE_SMOKE_TOTAL':
+			OutString = string(getInversedValue(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.DENSE_SMOKE_HITMOD) + getInversedValue(class'X2Item_DefaultGrenades'.default.SMOKEGRENADE_HITMOD));
+			return true;
+		case 'GRAZING_FIRE_SUCCESS_CHANCE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.GRAZING_FIRE_SUCCESS_CHANCE);
+			return true;
+		case 'COMBAT_FITNESS_HP':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_HP);
+			return true;
+		case 'COMBAT_FITNESS_OFFENSE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_OFFENSE);
+			return true;
+		case 'COMBAT_FITNESS_MOBILITY':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_MOBILITY);
+			return true;
+		case 'COMBAT_FITNESS_DODGE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_DODGE);
+			return true;
+		case 'COMBAT_FITNESS_WILL':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_FITNESS_WILL);
+			return true;
+		case 'SPRINTER_MOBILITY':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.SPRINTER_MOBILITY);
+			return true;
+		case 'ALPHAMIKEFOXTROT_DAMAGE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.ALPHAMIKEFOXTROT_DAMAGE);
+			return true;
+		case 'COUP_DE_GRACE_HIT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COUP_DE_GRACE_HIT_BONUS);
+			return true;
+		case 'COUP_DE_GRACE_CRIT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COUP_DE_GRACE_CRIT_BONUS);
+			return true;
+		case 'COUP_DE_GRACE_DAMAGE_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COUP_DE_GRACE_DAMAGE_BONUS);
+			return true;
+		case 'INTERFERENCE_CV_CHARGES':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.INTERFERENCE_CV_CHARGES);
+			return true;
+		case 'INTERFERENCE_ACTION_POINTS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.INTERFERENCE_ACTION_POINTS);
+			return true;
+		case 'BOOSTED_CORES_DAMAGE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.BOOSTED_CORES_DAMAGE);
+			return true;
+		case 'NUM_AIRDROP_CHARGES':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.NUM_AIRDROP_CHARGES);
+			return true;
+		case 'ALPHAMIKEFOXTROT_DAMAGE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.ALPHAMIKEFOXTROT_DAMAGE);
+			return true;
 		default: 
 			return false;
 	}
@@ -232,6 +399,11 @@ private static function string getOneMinusFloatValueString(float modifier)
 	return returnString;
 }
 
+private static function int getInversedValue(int value)
+{
+	return -1 * value;
+}
+
 private static function string getInversedValueString(int value)
 {
 	return string(-1 * value);
@@ -247,4 +419,22 @@ private static function string getSquadsightString(bool squadsightValid)
     {
         return "Units visible at squadsight ranges do not confer bonus.";
     }
+}
+
+private static function string getFlechePerTileDamageBonusString(float bonusDamagePerTile)
+{
+	local float TempFloat;
+	local int TempInt;
+
+	TempFloat = 1 / class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLECHE_BONUS_DAMAGE_PER_TILES;
+	TempFloat = Round(TempFloat * 10.0) / 10.0;
+	TempInt = int(TempFloat);
+	if ( float(TempInt) ~= TempFloat)
+	{
+		return string(TempInt);
+	}
+	else
+	{
+		return Repl(string(TempFloat), "0", "");
+	}
 }

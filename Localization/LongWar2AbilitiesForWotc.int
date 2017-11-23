@@ -1,0 +1,3 @@
+[X2Ability_LW2WotC_PassiveAbilitySet]
+LocDenseSmokeEffect="Dense Smoke"
+LocDenseSmokeEffectDescription="This smoke effect was created by a unit with Dense Smoke, and grants an additional +<Ability:DENSE_SMOKE_INVERSE/> defense."
