@@ -1051,3 +1051,21 @@ static function X2AbilityTemplate BoostedCores()
 	// Create the template using a helper function
 	return Passive('LW2WotC_BoostedCores', "img:///UILibrary_LW_PerkPack.LW_AbilityHeavyFrags", false, DamageEffect);
 }
+
+// Perk name:		Flashbanger
+// Perk effect:		Grants one free flashbang grenade item to your inventory.
+// Localized text:	"Grants one free flashbang grenade item to your inventory."
+// Config:			(AbilityName="LW2WotC_Flashbanger")
+static function X2AbilityTemplate Flashbanger()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_AddUtilityItem ItemEffect;
+
+	// Adds a free smoke grenade
+	ItemEffect = new class'XMBEffect_AddUtilityItem';
+	ItemEffect.DataName = 'FlashbangGrenade';
+
+	Template = Passive('LW2WotC_Flashbanger', "img:///UILibrary_PerkIcons.UIPerk_grenade_flash", true, ItemEffect);
+
+	return Template;
+}
