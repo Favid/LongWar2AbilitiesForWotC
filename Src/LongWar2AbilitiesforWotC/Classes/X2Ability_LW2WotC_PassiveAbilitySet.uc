@@ -123,6 +123,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AlphaMikeFoxtrot());
 	Templates.AddItem(CoupDeGrace());
 	Templates.AddItem(BoostedCores());
+	Templates.AddItem(Flashbanger());
 
 	return Templates;
 }
