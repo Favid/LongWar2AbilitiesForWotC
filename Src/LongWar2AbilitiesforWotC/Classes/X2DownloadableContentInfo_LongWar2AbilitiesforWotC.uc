@@ -26,7 +26,7 @@ static event OnPostTemplatesCreated()
 	PatchAbilitiesForLightEmUp();
 	PatchSmokeGrenades();
 
-	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.4");
+	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.5");
 }
 
 /// <summary>
@@ -348,6 +348,18 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 			return true;
 		case 'ALPHAMIKEFOXTROT_DAMAGE':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.ALPHAMIKEFOXTROT_DAMAGE);
+			return true;
+		case 'CYCLIC_FIRE_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.CYCLIC_FIRE_COOLDOWN);
+			return true;
+		case 'CYCLIC_FIRE_AIM_MALUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.CYCLIC_FIRE_AIM_MALUS);
+			return true;
+		case 'CYCLIC_FIRE_MIN_ACTION_REQ':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.CYCLIC_FIRE_MIN_ACTION_REQ);
+			return true;
+		case 'CYCLIC_FIRE_SHOTS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.CYCLIC_FIRE_SHOTS);
 			return true;
 		default: 
 			return false;

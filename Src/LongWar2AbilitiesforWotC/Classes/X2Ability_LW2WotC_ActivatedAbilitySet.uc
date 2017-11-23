@@ -109,6 +109,8 @@ static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
 
+	Templates.AddItem(ShootAnyone());
+
 	//Templates.AddItem(AddDoubleTapAbility());
 	//Templates.AddItem(DoubleTap2ndShot()); //Additional Ability
 	Templates.AddItem(WalkFire());
@@ -148,7 +150,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Interference());
 	Templates.AddItem(RescueProtocol());
 	Templates.AddItem(Airdrop());
-	Templates.AddItem(ShootAnyone());
+	Templates.AddItem(CyclicFire());
 
 	return Templates;
 }
@@ -1167,3 +1169,72 @@ static function X2AbilityTemplate Airdrop()
 
 	return Template;
 }
+
+// Perk name:		Cyclic Fire
+// Perk effect:		Special Shot: Fire multiple shots at a target in a single attack. All shots have aim penalties. Cooldown-based.
+// Localized text:	"Special Shot: Fire <Ability:CYCLIC_FIRE_SHOTS> shots at a target in a single attack. Requires <Ability:CYCLIC_FIRE_MIN_ACTION_REQ> actions and all shots have aim penalties. <Ability:CYCLIC_FIRE_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_CyclicFire", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate CyclicFire()
+{
+	local X2AbilityTemplate 				Template;
+	local EActionPointCost					ActionPointCost;
+	local X2Condition_UnitInventory			NoShotgunsCondition;
+	local X2Condition_UnitInventory			NoSniperRiflesCondition;
+	local X2AbilityToHitCalc_StandardAim	ToHitCalc;
+	local X2Effect_Knockback				KnockbackEffect;
+	local X2AbilityMultiTarget_BurstFire	BurstFireMultiTarget;
+	local X2Effect_Shredder					WeaponDamageEffect;
+
+	// Action point cost will be one or two, depending on config
+	ActionPointCost = eCost_SingleConsumeAll;
+	if(default.CYCLIC_FIRE_MIN_ACTION_REQ == 2)
+	{
+		ActionPointCost = eCost_DoubleConsumeAll;
+	}
+
+	// Create template with helper function - normally we could pass in none for the effect and let the function give this ability template the default weapon damage effect
+	// However, the game will not display the damage numbers for the additional hits properly unless the first shot and the following burst shots use the same instance of of the damage effect
+	Template = Attack('LW2WotC_CyclicFire', "img:///UILibrary_LW_PerkPack.LW_AbilityCyclicFire", false, class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect(), class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY, ActionPointCost, default.CYCLIC_FIRE_AMMO, true);
+
+    // Do not allow this ability to be used with Shotguns
+    NoShotgunsCondition = new class'X2Condition_UnitInventory';
+	NoShotgunsCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	NoShotgunsCondition.ExcludeWeaponCategory = 'shotgun';
+	Template.AbilityShooterConditions.AddItem(NoShotgunsCondition);
+
+    // Do not allow this ability to be used with Sniper Rifles
+	NoSniperRiflesCondition = new class'X2Condition_UnitInventory';
+	NoSniperRiflesCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	NoSniperRiflesCondition.ExcludeWeaponCategory = 'sniper_rifle';
+	Template.AbilityShooterConditions.AddItem(NoSniperRiflesCondition);
+
+	// Configurable ability cooldown
+	AddCooldown(Template, default.CYCLIC_FIRE_COOLDOWN);
+ 	
+ 	// Configurable aim penalty
+	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
+	ToHitCalc.BuiltInHitMod = -default.CYCLIC_FIRE_AIM_MALUS;
+	Template.AbilityToHitCalc = ToHitCalc;
+	Template.AbilityToHitOwnerOnMissCalc = ToHitCalc;
+
+	// Knockback effect on kill
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	// Add the burst fire effect. This is for the additional shots after the first, hence the -1
+	BurstFireMultiTarget = new class'X2AbilityMultiTarget_BurstFire';
+    BurstFireMultiTarget.NumExtraShots = default.CYCLIC_FIRE_SHOTS-1;
+    Template.AbilityMultiTargetStyle = BurstFireMultiTarget;
+
+	// Assign the same weapon damage effect instance to both types of shots, so that damage numbers appear properly
+	// The extra burst fire shots are considered multi-target, so we need to add the effect to it separately for those shots to do damage
+	WeaponDamageEffect = new class'X2Effect_Shredder';
+	Template.AddTargetEffect(WeaponDamageEffect);
+	Template.AddMultiTargetEffect(WeaponDamageEffect);
+	Template.AddTargetEffect(default.WeaponUpgradeMissDamage);
+	Template.AddMultiTargetEffect(default.WeaponUpgradeMissDamage);
+
+    return Template;
+}
+
