@@ -370,6 +370,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'IRON_SKIN_MELEE_DAMAGE_REDUCTION':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.IRON_SKIN_MELEE_DAMAGE_REDUCTION);
 			return true;
+		case 'COMBAT_AWARENESS_BONUS_ARMOR':
+			OutString = string(class'X2Effect_LW2WotC_CombatAwareness'.default.COMBAT_AWARENESS_BONUS_ARMOR);
+			return true;
+		case 'COMBAT_AWARENESS_BONUS_DEFENSE':
+			OutString = string(class'X2Effect_LW2WotC_CombatAwareness'.default.COMBAT_AWARENESS_BONUS_DEFENSE);
+			return true;
 		default: 
 			return false;
 	}

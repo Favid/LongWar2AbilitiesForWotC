@@ -93,7 +93,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(BroadcastCombatRush()); //Additional Ability
 	//Templates.AddItem(AddEmergencyLifeSupportAbility());
 	//Templates.AddItem(AddSmartMacrophagesAbility());
-	//Templates.AddItem(AddIronSkinAbility());
 	//Templates.AddItem(AddShadowstrike_LWAbility());
 	//Templates.AddItem(AddSoulStealTriggered2());
 	//Templates.AddItem(AddTrojan());
@@ -123,6 +122,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Flashbanger());
 	Templates.AddItem(Evasive());
 	Templates.AddItem(IronSkin());
+	Templates.AddItem(CombatAwareness());
 
 	return Templates;
 }
@@ -1133,4 +1133,19 @@ static function X2AbilityTemplate IronSkin()
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_IronSkin', "img:///UILibrary_LW_PerkPack.LW_AbilityIronSkin", false, IronSkinEffect);
+}
+
+// Perk name:		Combat Awareness
+// Perk effect:		"Grants bonus defense and bonus armor when in overwatch."
+// Localized text:	"Grants <Ability:COMBAT_AWARENESS_BONUS_DEFENSE> defense <Ability:COMBAT_AWARENESS_BONUS_ARMOR> armor point when in overwatch."
+// Config:			(AbilityName="LW2WotC_CombatAwareness")
+static function X2AbilityTemplate CombatAwareness()
+{
+	local X2Effect_LW2WotC_CombatAwareness	DefenseEffect;
+
+	// Effect that gives armor while you have reserve action points
+	DefenseEffect = new class'X2Effect_LW2WotC_CombatAwareness';
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_CombatAwareness', "img:///UILibrary_LW_PerkPack.LW_AbilityThreatAssesment", false, DefenseEffect);
 }
