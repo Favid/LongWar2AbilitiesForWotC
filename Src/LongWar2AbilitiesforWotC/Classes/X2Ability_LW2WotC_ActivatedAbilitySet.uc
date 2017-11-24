@@ -128,7 +128,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddAreaSuppressionAbility());
 	//Templates.AddItem(AreaSuppressionShot_LW()); //Additional Ability
 	//Templates.AddItem(AddGhostwalkerAbility()); 
-	//Templates.AddItem(AddKubikuriAbility());
 	//Templates.AddItem(KubikuriDamage());
 	//Templates.AddItem(AddIronCurtainAbility());
 	//Templates.AddItem(IronCurtainShot()); //Additional Ability

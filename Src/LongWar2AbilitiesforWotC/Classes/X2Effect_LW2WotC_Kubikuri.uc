@@ -12,7 +12,8 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
 {
     local XComGameState_Item SourceWeapon;
     local XComGameState_Unit TargetUnit;
-    local StateObjectReference AbilityRef;
+    local StateObjectReference AlientRulerPassiveRef;
+    local StateObjectReference ChosenPassiveRef;
 
     //`LOG ("Kubikuri testing");
 
@@ -29,8 +30,10 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
                 TargetUnit = XComGameState_Unit(TargetDamageable);
                 if(TargetUnit != none)
                 {
-                    AbilityRef = TargetUnit.FindAbility('AlienRulerPassive');
-                    if (AbilityRef.ObjectID != 0)
+                    AlientRulerPassiveRef = TargetUnit.FindAbility('AlienRulerPassive');
+                    ChosenPassiveRef = TargetUnit.FindAbility('ChosenImmunities');
+
+                    if (AlientRulerPassiveRef.ObjectID != 0 || ChosenPassiveRef.ObjectID != 0)
                     {
                         return (CurrentDamage * 2);
                     }
