@@ -88,7 +88,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(LockdownBonuses()); //Additional Ability
 	//Templates.AddItem(PurePassive('Mayhem', "img:///UILibrary_LW_PerkPack.LW_AbilityMayhem", false, 'eAbilitySource_Perk'));
 	//Templates.AddItem(MayhemBonuses()); // AdditionalAbility;
-	//Templates.AddItem(AddCombatAwarenessAbility());
 	//Templates.AddItem(AddCombatRushAbility());
 	//Templates.AddItem(BroadcastCombatRush()); //Additional Ability
 	//Templates.AddItem(AddEmergencyLifeSupportAbility());
@@ -123,6 +122,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Evasive());
 	Templates.AddItem(IronSkin());
 	Templates.AddItem(CombatAwareness());
+	Templates.AddItem(CombatRush());
 
 	return Templates;
 }
@@ -1136,7 +1136,7 @@ static function X2AbilityTemplate IronSkin()
 }
 
 // Perk name:		Combat Awareness
-// Perk effect:		"Grants bonus defense and bonus armor when in overwatch."
+// Perk effect:		Grants bonus defense and bonus armor when in overwatch.
 // Localized text:	"Grants <Ability:COMBAT_AWARENESS_BONUS_DEFENSE> defense <Ability:COMBAT_AWARENESS_BONUS_ARMOR> armor point when in overwatch."
 // Config:			(AbilityName="LW2WotC_CombatAwareness")
 static function X2AbilityTemplate CombatAwareness()
@@ -1148,4 +1148,101 @@ static function X2AbilityTemplate CombatAwareness()
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_CombatAwareness', "img:///UILibrary_LW_PerkPack.LW_AbilityThreatAssesment", false, DefenseEffect);
+}
+
+// Perk name:		Combat Rush
+// Perk effect:		When you kill an enemy, nearby allies temporarily receive bonuses to aim, critical chance and mobility. Has an activation cooldown.
+// Localized text:	"When you kill an enemy, nearby allies temporarily receive bonuses to aim, critical chance and mobility. Five-turn cooldown."
+// Config:			(AbilityName="LW2WotC_CombatRush")
+static function X2AbilityTemplate CombatRush()
+{
+	local X2Effect_PersistentStatChange Effect;
+	local X2AbilityTemplate Template;
+	local X2AbilityMultiTarget_Radius RadiusMultiTarget;
+	local X2Condition_UnitProperty AllyCondition;
+
+	// Create the template using a helper function. This ability triggers when we kill another unit.
+	Template = SelfTargetTrigger('LW2WotC_CombatRush', "img:///UILibrary_LW_PerkPack.LW_AbilityAdrenalNeurosympathy", true, none, 'KillMail');
+
+	// Trigger abilities don't appear as passives. Add a passive ability icon.
+	AddIconPassive(Template);
+
+	// The ability effects all nearby units that meet the conditions on the multitarget effect.
+	RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+	RadiusMultiTarget.NumTargetsRequired = 1; 
+	RadiusMultiTarget.bIgnoreBlockingCover = true; 
+	RadiusMultiTarget.bAllowDeadMultiTargetUnits = false; 
+	RadiusMultiTarget.bExcludeSelfAsTargetIfWithinRadius = true;
+	RadiusMultiTarget.bUseWeaponRadius = false; 
+	RadiusMultiTarget.ftargetradius = default.COMBAT_RUSH_RADIUS * 1.5; 
+	Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+	
+	// Effect only works on allies
+	AllyCondition = new class'X2Condition_UnitProperty';
+	AllyCondition.RequireSquadmates = true;
+	AllyCondition.ExcludeAlien = true;
+	AllyCondition.ExcludeRobotic = true;
+	AllyCondition.ExcludeHostileToSource = true;
+	AllyCondition.ExcludeFriendlyToSource = false;
+	Template.AbilityMultiTargetConditions.AddItem(AllyCondition);
+
+	// Create a persistent stat change effect
+	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.EffectName = 'LW2WotC_CombatRush';
+
+	// Configurable bonuses and duration
+	Effect.AddPersistentStatChange (eStat_Offense, float(default.COMBAT_RUSH_AIM_BONUS));
+	Effect.AddPersistentStatChange (eStat_CritChance, float(default.COMBAT_RUSH_CRIT_BONUS));
+	Effect.AddPersistentStatChange (eStat_Mobility, float(default.COMBAT_RUSH_MOBILITY_BONUS));
+	Effect.AddPersistentStatChange (eStat_Defense, float(default.COMBAT_RUSH_DEFENSE_BONUS));
+	Effect.AddPersistentStatChange (eStat_Dodge, float(default.COMBAT_RUSH_DODGE_BONUS));
+	Effect.BuildPersistentEffect(default.COMBAT_RUSH_DURATION, false, true, false, eGameRule_PlayerTurnEnd);
+	Effect.SetDisplayInfo (ePerkBuff_Bonus,Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,, Template.AbilitySourceName); 
+	Effect.DuplicateResponse = eDupe_Refresh;
+
+	// The effect only applies to living, friendly targets
+	Effect.TargetConditions.AddItem(default.LivingFriendlyTargetProperty);
+
+	// Allies affected will get a flyover and an animation
+	Effect.VisualizationFn = CombatRush_Visualization;
+
+	// The multitargets are also affected by the persistent effect we created
+	Template.AddMultiTargetEffect(Effect);
+
+	// Configurable cooldown
+	AddCooldown(Template, default.COMBAT_RUSH_COOLDOWN);
+
+	return Template;
+}
+
+// Allies that are affected by Combat Rush will get a flyover and an animation
+simulated static function CombatRush_Visualization(XComGameState VisualizeGameState, out VisualizationActionMetadata ActionMetadata, const name EffectApplyResult)
+{
+	local X2Action_PlaySoundAndFlyOver	SoundAndFlyOver;
+	local X2AbilityTemplate             AbilityTemplate;
+	local XComGameStateContext_Ability  Context;
+	local AbilityInputContext           AbilityContext;
+	local EWidgetColor					MessageColor;
+	local XComGameState_Unit			SourceUnit;
+	local bool							bGoodAbility;
+    local X2Action_PlayAnimation			PlayAnimationAction;
+
+	Context = XComGameStateContext_Ability(VisualizeGameState.GetContext());
+	AbilityContext = Context.InputContext;
+	AbilityTemplate = class'XComGameState_Ability'.static.GetMyTemplateManager().FindAbilityTemplate(AbilityContext.AbilityTemplateName);
+	
+	SourceUnit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(AbilityContext.SourceObject.ObjectID));
+
+	bGoodAbility = SourceUnit.IsFriendlyToLocalPlayer();
+	MessageColor = bGoodAbility ? eColor_Good : eColor_Bad;
+
+	if (EffectApplyResult == 'AA_Success' && XGUnit(ActionMetadata.VisualizeActor).IsAlive())
+	{
+		PlayAnimationAction = X2Action_PlayAnimation(class'X2Action_PlayAnimation'.static.AddToVisualizationTree(ActionMetadata, VisualizeGameState.GetContext(), false, ActionMetadata.LastActionAdded));
+	    PlayAnimationAction.Params.AnimName = 'HL_SignalAngryA';
+		PlayAnimationAction.bFinishAnimationWait = true;
+
+		SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyOver'.static.AddToVisualizationTree(ActionMetadata, VisualizeGameState.GetContext(), false, ActionMetadata.LastActionAdded));
+		SoundAndFlyOver.SetSoundAndFlyOverParameters(None, AbilityTemplate.LocFlyOverText, '', MessageColor, AbilityTemplate.IconImage);
+	}
 }
