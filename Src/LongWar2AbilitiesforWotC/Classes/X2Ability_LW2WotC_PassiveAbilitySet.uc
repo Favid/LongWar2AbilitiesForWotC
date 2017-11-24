@@ -88,8 +88,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(LockdownBonuses()); //Additional Ability
 	//Templates.AddItem(PurePassive('Mayhem', "img:///UILibrary_LW_PerkPack.LW_AbilityMayhem", false, 'eAbilitySource_Perk'));
 	//Templates.AddItem(MayhemBonuses()); // AdditionalAbility;
-	//Templates.AddItem(AddEvasiveAbility());
-	//Templates.AddItem(RemoveEvasive()); // Additional Ability
 	//Templates.AddItem(AddCombatAwarenessAbility());
 	//Templates.AddItem(AddCombatRushAbility());
 	//Templates.AddItem(BroadcastCombatRush()); //Additional Ability
@@ -124,6 +122,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(CoupDeGrace());
 	Templates.AddItem(BoostedCores());
 	Templates.AddItem(Flashbanger());
+	Templates.AddItem(Evasive());
 
 	return Templates;
 }
@@ -1066,7 +1065,56 @@ static function X2AbilityTemplate Flashbanger()
 	ItemEffect = new class'XMBEffect_AddUtilityItem';
 	ItemEffect.DataName = 'FlashbangGrenade';
 
+	// Create the template using a helper function
 	Template = Passive('LW2WotC_Flashbanger', "img:///UILibrary_PerkIcons.UIPerk_grenade_flash", true, ItemEffect);
+
+	return Template;
+}
+
+// Perk name:		Evasive
+// Perk effect:		Start each mission with 100 bonus dodge. The bonus is removed after you take damage for the first time.
+// Localized text:	"Start each mission with 100 bonus dodge. The bonus is removed after you take damage for the first time."
+// Config:			(AbilityName="LW2WotC_Evasive")
+static function X2AbilityTemplate Evasive()
+{
+	local X2AbilityTemplate					Template;	
+	local X2Effect_PersistentStatChange		DodgeBonus;
+
+	// Effect grants 100 dodge, which should be enough to always guarentee a dodge
+	DodgeBonus = new class'X2Effect_PersistentStatChange';
+	DodgeBonus.EffectName='LW2WotC_Evasive_Passive';
+	DodgeBonus.AddPersistentStatChange (eStat_Dodge, float (100));
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_Evasive', "img:///UILibrary_LW_PerkPack.LW_AbilityEvasive", true, DodgeBonus);
+
+	// Add a secondary ability that will remove the Evasive effect when taking damage
+	AddSecondaryAbility(Template, EvasiveRemover(), false);
+
+	return Template;
+}
+
+// The part of Evasive that removes the dodge bonus after taking damage
+static function X2AbilityTemplate EvasiveRemover()
+{
+	local X2AbilityTemplate				Template;	
+	local X2Effect_RemoveEffects		RemoveEffect;
+	local X2Condition_UnitEffects		Condition;
+
+	// Removes the Evasive dodge bonus, with a flyover
+	RemoveEffect = new class'X2Effect_RemoveEffects';
+	RemoveEffect.EffectNamesToRemove.AddItem('LW2WotC_Evasive_Passive');
+
+	// Create the template using a helper function - the effects of this ability will activate when damage is taken
+	Template = SelfTargetTrigger('LW2WotC_Evasive_Remover', "img:///UILibrary_LW_PerkPack.LW_AbilityEvasive", false, RemoveEffect, 'UnitTakeEffectDamage');
+
+	// Show a flyover when Evasive is being removed
+	Template.bShowActivation = true;
+
+	// Prevents this ability from triggering if you've already lost the Evasive bonus
+	Condition = new class'X2Condition_UnitEffects';
+    Condition.AddRequireEffect('LW2WotC_Evasive_Passive', 'AA_EvasiveEffectPresent');
+	AddTriggerTargetCondition(Template, Condition);
 
 	return Template;
 }

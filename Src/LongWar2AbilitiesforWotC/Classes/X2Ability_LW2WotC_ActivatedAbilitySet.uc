@@ -115,7 +115,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(DoubleTap2ndShot()); //Additional Ability
 	Templates.AddItem(WalkFire());
 	Templates.AddItem(PrecisionShot());
-	//Templates.AddItem(AddCyclicFireAbility());
 	Templates.AddItem(TrenchGun());
 	Templates.AddItem(SlugShot());
 	//Templates.AddItem(AddClutchShotAbility());
@@ -128,7 +127,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddAreaSuppressionAbility());
 	//Templates.AddItem(AreaSuppressionShot_LW()); //Additional Ability
 	//Templates.AddItem(AddGhostwalkerAbility()); 
-	//Templates.AddItem(KubikuriDamage());
 	//Templates.AddItem(AddIronCurtainAbility());
 	//Templates.AddItem(IronCurtainShot()); //Additional Ability
 	//Templates.AddItem(AddAbsorptionFieldsAbility());
