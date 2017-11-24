@@ -403,10 +403,11 @@ static function X2AbilityTemplate Fleche()
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
 
-	if (!default.NO_MELEE_ATTACKS_WHEN_ON_FIRE)
-	{
-		SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
-	}
+	// NOTE: Mimicing LW2 functionality where Fleche is disabling while burning. Uncomment code below if you want it to follow the same logic as other melee attacks
+	// if (!default.NO_MELEE_ATTACKS_WHEN_ON_FIRE)
+	// {
+	// 	SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
+	// }
 
 	Template.AddShooterEffectExclusions(SkipExclusions);
 
