@@ -367,6 +367,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'KUBIKURI_COOLDOWN':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.KUBIKURI_COOLDOWN);
 			return true;
+		case 'IRON_SKIN_MELEE_DAMAGE_REDUCTION':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.IRON_SKIN_MELEE_DAMAGE_REDUCTION);
+			return true;
 		default: 
 			return false;
 	}

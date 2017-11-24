@@ -98,7 +98,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddSoulStealTriggered2());
 	//Templates.AddItem(AddTrojan());
 	//Templates.AddItem(AddTrojanVirus());
-	//Templates.AddItem(AddFlashbanger());
 	//Templates.AddItem(AddSavior());
 	//Templates.AddItem(AddBastion());
 	//Templates.AddItem(AddBastionPassive());
@@ -123,6 +122,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(BoostedCores());
 	Templates.AddItem(Flashbanger());
 	Templates.AddItem(Evasive());
+	Templates.AddItem(IronSkin());
 
 	return Templates;
 }
@@ -1117,4 +1117,20 @@ static function X2AbilityTemplate EvasiveRemover()
 	AddTriggerTargetCondition(Template, Condition);
 
 	return Template;
+}
+
+// Perk name:		Iron Skin
+// Perk effect:		Incoming melee damage is reduced.
+// Localized text:	"Incoming melee damage is reduced by <Ability:IRON_SKIN_MELEE_DAMAGE_REDUCTION>."
+// Config:			(AbilityName="LW2WotC_IronSkin")
+static function X2AbilityTemplate IronSkin()
+{
+	local X2Effect_LW2WotC_MeleeDamageAdjust	IronSkinEffect;
+
+	// Effect that reduces incoming melee damage
+	IronSkinEffect = new class'X2Effect_LW2WotC_MeleeDamageAdjust';
+	IronSkinEffect.DamageMod = -default.IRON_SKIN_MELEE_DAMAGE_REDUCTION;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_IronSkin', "img:///UILibrary_LW_PerkPack.LW_AbilityIronSkin", false, IronSkinEffect);
 }
