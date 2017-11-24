@@ -129,7 +129,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AreaSuppressionShot_LW()); //Additional Ability
 	//Templates.AddItem(AddGhostwalkerAbility()); 
 	//Templates.AddItem(AddKubikuriAbility());
-	//Templates.AddItem(KubikiriDamage());
+	//Templates.AddItem(KubikuriDamage());
 	//Templates.AddItem(AddIronCurtainAbility());
 	//Templates.AddItem(IronCurtainShot()); //Additional Ability
 	//Templates.AddItem(AddAbsorptionFieldsAbility());
@@ -151,6 +151,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(RescueProtocol());
 	Templates.AddItem(Airdrop());
 	Templates.AddItem(CyclicFire());
+	Templates.AddItem(Kubikuri());
 
 	return Templates;
 }
@@ -1238,3 +1239,63 @@ static function X2AbilityTemplate CyclicFire()
     return Template;
 }
 
+// Perk name:		Kubikuri
+// Perk effect:		
+// Localized text:	
+// Config:			(AbilityName="LW2WotC_Kubikuri", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate Kubikuri()
+{
+	local X2AbilityTemplate					Template;
+	local EActionPointCost        			ActionPointCost;
+	local X2Effect_Knockback				KnockbackEffect;
+	local X2Condition_UnitStatCheck			TargetHPCondition;
+
+	// Action point cost will be one or two, depending on config
+	ActionPointCost = eCost_SingleConsumeAll;
+	if(default.KUBIKURI_MIN_ACTION_REQ == 2)
+	{
+		ActionPointCost = eCost_DoubleConsumeAll;
+	}
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_Kubikuri', "img:///UILibrary_LW_PerkPack.LW_AbilityKubikuri", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, ActionPointCost, default.KUBIKURI_AMMO_COST, true);
+
+	// Specific voice line
+	Template.ActivationSpeech = 'Reaper';
+
+	// Can only target enemies that have taken damage
+	TargetHPCondition = new class 'X2Condition_UnitStatCheck';
+	TargetHPCondition.AddCheckStat(eStat_HP,default.KUBIKURI_MAX_HP_PCT,eCheck_LessThanOrEqual,,,true);
+	Template.AbilityTargetConditions.AddItem(TargetHPCondition);
+
+	// Knockback effect on kill
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	// Configurable cooldown
+	AddCooldown(Template, default.KUBIKURI_COOLDOWN);
+
+	// Add a secondary ability to provide bonuses on the shot
+	AddSecondaryAbility(Template, KubikuriShotBonuses());
+
+	return Template;
+}
+
+// This is part of the Kubikuri effect, above
+static function X2AbilityTemplate KubikuriShotBonuses()
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_LW2WotC_Kubikuri	DamageEffect;
+
+	// Effect granting the damage bonus on crit
+	DamageEffect = new class'X2Effect_LW2WotC_Kubikuri';
+
+	// Create template with helper function
+	Template = Passive('LW2WotC_Kubikuri_Bonuses', "img:///UILibrary_LW_PerkPack.LW_AbilityKubikuri", false, DamageEffect);
+
+	// Kubikuri will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
+
+	return Template;
+}

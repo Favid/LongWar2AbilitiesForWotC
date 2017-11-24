@@ -361,6 +361,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'CYCLIC_FIRE_SHOTS':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.CYCLIC_FIRE_SHOTS);
 			return true;
+		case 'KUBIKURI_MIN_ACTION_REQ':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.KUBIKURI_MIN_ACTION_REQ);
+			return true;
+		case 'KUBIKURI_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.KUBIKURI_COOLDOWN);
+			return true;
 		default: 
 			return false;
 	}
