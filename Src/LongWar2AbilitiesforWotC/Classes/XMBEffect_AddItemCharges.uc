@@ -51,7 +51,7 @@ var array<EInventorySlot> ApplyToSlots;		// The slot, or slots, to add charges t
 // only give extra uses to certain items.
 function int GetItemChargeModifier(XComGameState NewGameState, XComGameState_Unit NewUnit, XComGameState_Item ItemIter)
 {
-	if (ItemIter.Quantity == 0)
+	if (ItemIter.Quantity == 0 && ItemIter.Ammo == 0)
 		return 0;
 
 	if (ApplyToNames.Length > 0 && ApplyToNames.Find(ItemIter.GetMyTemplateName()) == INDEX_NONE)
