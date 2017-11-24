@@ -388,6 +388,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'COMBAT_RUSH_COOLDOWN':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_RUSH_COOLDOWN);
 			return true;
+		case 'FULL_KIT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.FULL_KIT_BONUS);
+			return true;
 		default: 
 			return false;
 	}

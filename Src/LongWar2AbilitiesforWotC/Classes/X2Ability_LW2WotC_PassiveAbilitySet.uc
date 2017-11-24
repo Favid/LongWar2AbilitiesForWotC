@@ -45,6 +45,8 @@ var config int COUP_DE_GRACE_HIT_BONUS;
 var config int COUP_DE_GRACE_CRIT_BONUS;
 var config int COUP_DE_GRACE_DAMAGE_BONUS;
 var config bool COUP_DE_GRACE_HALF_FOR_DISORIENTED;
+var config int FULL_KIT_BONUS;
+var config array<name> FULL_KIT_ITEMS;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -88,8 +90,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(LockdownBonuses()); //Additional Ability
 	//Templates.AddItem(PurePassive('Mayhem', "img:///UILibrary_LW_PerkPack.LW_AbilityMayhem", false, 'eAbilitySource_Perk'));
 	//Templates.AddItem(MayhemBonuses()); // AdditionalAbility;
-	//Templates.AddItem(AddCombatRushAbility());
-	//Templates.AddItem(BroadcastCombatRush()); //Additional Ability
 	//Templates.AddItem(AddEmergencyLifeSupportAbility());
 	//Templates.AddItem(AddSmartMacrophagesAbility());
 	//Templates.AddItem(AddShadowstrike_LWAbility());
@@ -123,6 +123,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(IronSkin());
 	Templates.AddItem(CombatAwareness());
 	Templates.AddItem(CombatRush());
+	Templates.AddItem(FullKit());
+
 
 	return Templates;
 }
@@ -1245,4 +1247,21 @@ simulated static function CombatRush_Visualization(XComGameState VisualizeGameSt
 		SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyOver'.static.AddToVisualizationTree(ActionMetadata, VisualizeGameState.GetContext(), false, ActionMetadata.LastActionAdded));
 		SoundAndFlyOver.SetSoundAndFlyOverParameters(None, AbilityTemplate.LocFlyOverText, '', MessageColor, AbilityTemplate.IconImage);
 	}
+}
+
+// Perk name:		Full Kit
+// Perk effect:		Grants additional charges per grenade item in a utility slot.
+// Localized text:	"Grants +<Ability:FULL_KIT_BONUS> charge per grenade item in a utility slot."
+// Config:			(AbilityName="LW2WotC_FullKit")
+static function X2AbilityTemplate FullKit()
+{
+	local XMBEffect_AddItemCharges BonusItemEffect;
+
+	// The number of charges and the items that are affected are gotten from the config
+	BonusItemEffect = new class'XMBEffect_AddItemCharges';
+	BonusItemEffect.PerItemBonus = default.FULL_KIT_BONUS;
+	BonusItemEffect.ApplyToNames = default.FULL_KIT_ITEMS;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_FullKit', "img:///UILibrary_LW_PerkPack.LW_AbilityFullKit", false, BonusItemEffect);
 }
