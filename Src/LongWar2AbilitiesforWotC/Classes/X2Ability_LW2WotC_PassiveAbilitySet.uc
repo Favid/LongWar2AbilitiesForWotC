@@ -100,7 +100,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddBastion());
 	//Templates.AddItem(AddBastionPassive());
 	//Templates.AddItem(AddBastionCleanse());
-	//Templates.AddItem(AddFullKit());
 	//Templates.AddItem(AddStingGrenades());
 	//Templates.AddItem(AddFieldSurgeon());
 

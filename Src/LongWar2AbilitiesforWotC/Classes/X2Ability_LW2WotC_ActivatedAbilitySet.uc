@@ -149,6 +149,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Airdrop());
 	Templates.AddItem(CyclicFire());
 	Templates.AddItem(Kubikuri());
+	Templates.AddItem(Ghostwalker());
 
 	return Templates;
 }
@@ -379,6 +380,9 @@ static function X2AbilityTemplate RapidDeployment()
 	// Create activated ability that adds the refund effect
 	Template = SelfTargetActivated('LW2WotC_RapidDeployment', "img:///UILibrary_LW_PerkPack.LW_AbilityRapidDeployment", true, Effect,, eCost_Free);
 	AddCooldown(Template, default.RAPID_DEPLOYMENT_COOLDOWN);
+
+	// Cannot be used while burning, etc.
+	Template.AddShooterEffectExclusions();
 
 	return Template;
 }
@@ -1296,4 +1300,81 @@ static function X2AbilityTemplate KubikuriShotBonuses()
 	HidePerkIcon(Template);
 
 	return Template;
+}
+
+// Perk name:		Ghostwalker
+// Perk effect:		Activate this ability to reduce enemy detection range against you by almost 25% for the rest of your turn as well as the following turn. Cooldown-based."
+// Localized text:	"Activate this ability to reduce enemy detection range against you by almost 25% for the rest of your turn as well as the following turn. <Ability:GHOSTWALKER_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_Ghostwalker")
+static function X2AbilityTemplate Ghostwalker()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_PersistentStatChange		StealthyEffect;
+	local XMBCondition_Concealed			ConcealedCondition;
+
+	// The reduced detection radius effect that occurs when the ability is activated
+	StealthyEffect = new class'X2Effect_PersistentStatChange';
+	StealthyEffect.BuildPersistentEffect(default.GHOSTWALKER_DURATION, false, true, false, eGameRule_PlayerTurnBegin);
+	StealthyEffect.AddPersistentStatChange(eStat_DetectionModifier, default.GHOSTWALKER_DETECTION_RANGE_REDUCTION);
+
+	// Show a flyover over the target unit when the effect is added
+	StealthyEffect.VisualizationFn = EffectFlyOver_Visualization;
+
+	// Create template with a helper function
+	Template = SelfTargetActivated('LW2WotC_Ghostwalker', "img:///UILibrary_LW_PerkPack.LW_AbilityGhostwalker", true, StealthyEffect, default.AUTO_PRIORITY, eCost_Free);
+
+	// Cannot be used while burning, etc.
+	Template.AddShooterEffectExclusions();
+
+	// Custom voice line
+	Template.ActivationSpeech = 'ActivateConcealment';
+	
+	// Can only be used while conealed
+	ConcealedCondition = new class'XMBCondition_Concealed';
+	Template.AbilityTargetConditions.AddItem(ConcealedCondition);
+
+	// Configurable cooldown
+	AddCooldown(Template, default.GHOSTWALKER_COOLDOWN);
+
+	return Template;
+
+	// 
+
+	// `CREATE_X2ABILITY_TEMPLATE(Template, 'Ghostwalker');	
+	// Template.AbilitySourceName = 'eAbilitySource_Perk';
+	// Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityGhostwalker";
+	// Template.Hostility = eHostility_Neutral;
+	// Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	// Template.AbilityToHitCalc = default.DeadEye;
+ //    Template.AbilityTargetStyle = default.SelfTarget;
+	// Template.bCrossClassEligible = true;
+	// Template.bDisplayInUITooltip = true;
+	// Template.bDisplayInUITacticalText = true;
+	// Template.bShowActivation = true;
+	// Template.bSkipFireAction = true;
+	// Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	// Template.AddShooterEffectExclusions();
+
+	// Template.AbilityCosts.AddItem(default.FreeActionCost);
+
+	// Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	// Template.ActivationSpeech = 'ActivateConcealment';
+	
+	// ConcealedCondition = new class'X2Condition_RequireConcealed';
+	// Template.AbilityTargetConditions.AddItem(ConcealedCondition);
+
+	// Cooldown = new class'X2AbilityCooldown';
+ //    Cooldown.iNumTurns = default.GHOSTWALKER_COOLDOWN;
+ //    Template.AbilityCooldown = Cooldown; 
+	
+	// StealthyEffect = new class'X2Effect_PersistentStatChange';
+	// StealthyEffect.BuildPersistentEffect(default.GHOSTWALKER_DURATION,false,true,false,eGameRule_PlayerTurnBegin);
+	// StealthyEffect.SetDisplayInfo (ePerkBuff_Bonus,Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,, Template.AbilitySourceName); 
+	// StealthyEffect.AddPersistentStatChange(eStat_DetectionModifier, default.GHOSTWALKER_DETECTION_RANGE_REDUCTION);
+	// Template.AddTargetEffect(StealthyEffect);
+
+	// Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	// Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	// return Template;
 }

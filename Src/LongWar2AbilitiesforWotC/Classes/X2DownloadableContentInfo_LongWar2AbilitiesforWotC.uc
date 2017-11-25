@@ -391,6 +391,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'FULL_KIT_BONUS':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.FULL_KIT_BONUS);
 			return true;
+		case 'GHOSTWALKER_DURATION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.GHOSTWALKER_DURATION);
+			return true;
+		case 'GHOSTWALKER_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.GHOSTWALKER_COOLDOWN);
+			return true;
 		default: 
 			return false;
 	}
