@@ -47,6 +47,8 @@ var config int COUP_DE_GRACE_DAMAGE_BONUS;
 var config bool COUP_DE_GRACE_HALF_FOR_DISORIENTED;
 var config int FULL_KIT_BONUS;
 var config array<name> FULL_KIT_ITEMS;
+var config int PROTECTOR_BONUS_CHARGES;
+var config int HEAVY_ORDNANCE_BONUS_CHARGES;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -96,7 +98,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddSoulStealTriggered2());
 	//Templates.AddItem(AddTrojan());
 	//Templates.AddItem(AddTrojanVirus());
-	//Templates.AddItem(AddSavior());
 	//Templates.AddItem(AddBastion());
 	//Templates.AddItem(AddBastionPassive());
 	//Templates.AddItem(AddBastionCleanse());
@@ -124,7 +125,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(CombatRush());
 	Templates.AddItem(FullKit());
 	Templates.AddItem(Savior());
-
+	Templates.AddItem(HeavyOrdnance());
+	Templates.AddItem(Protector());
 
 	return Templates;
 }
@@ -1281,4 +1283,38 @@ static function X2AbilityTemplate Savior()
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_Savior', "img:///UILibrary_LW_PerkPack.LW_AbilitySavior", true, SaviorEffect);
+}
+
+// Perk name:		Heavy Ordnance
+// Perk effect:		Any damaging grenade in your grenade-only slot gains bonus uses.
+// Localized text:	"Any damaging grenade in your grenade-only slot gains <Ability:HEAVY_ORDNANCE_BONUS_CHARGES> bonus use."
+// Config:			(AbilityName="LW2WotC_HeavyOrdnance")
+static function X2AbilityTemplate HeavyOrdnance()
+{
+	local X2Effect_LW2WotC_AddGrenadeSlotCharges BonusItemEffect;
+
+	// Applies to all damaging grenades
+	BonusItemEffect = new class'X2Effect_LW2WotC_AddGrenadeSlotCharges';
+	BonusItemEffect.PerItemBonus = default.HEAVY_ORDNANCE_BONUS_CHARGES;
+	BonusItemEffect.bDamagingGrenadesOnly = true;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_HeavyOrdnance', "img:///UILibrary_PerkIcons.UIPerk_aceinthehole", false, BonusItemEffect);
+}
+
+// Perk name:		Protector
+// Perk effect:		Any non-damaging grenade in your grenade-only slot gains bonus uses.
+// Localized text:	"Any non-damaging grenade in your grenade-only slot gains <Ability:PROTECTOR_BONUS_CHARGES> bonus use."
+// Config:			(AbilityName="LW2WotC_Protector")
+static function X2AbilityTemplate Protector()
+{
+	local X2Effect_LW2WotC_AddGrenadeSlotCharges BonusItemEffect;
+
+	// Applies to all non-damaging grenades
+	BonusItemEffect = new class'X2Effect_LW2WotC_AddGrenadeSlotCharges';
+	BonusItemEffect.PerItemBonus = default.PROTECTOR_BONUS_CHARGES;
+	BonusItemEffect.bNonDamagingGrenadesOnly = true;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_Protector', "img:///UILibrary_LW_PerkPack.LW_AbilityProtector", false, BonusItemEffect);
 }

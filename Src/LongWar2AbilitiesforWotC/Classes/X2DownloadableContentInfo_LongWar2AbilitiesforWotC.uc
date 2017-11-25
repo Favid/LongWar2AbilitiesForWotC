@@ -400,6 +400,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'SAVIOR_BONUS_HEAL_AMMOUNT':
 			OutString = string(class'X2Effect_LW2WotC_Savior'.default.SAVIOR_BONUS_HEAL_AMMOUNT);
 			return true;
+		case 'HEAVY_ORDNANCE_BONUS_CHARGES':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.HEAVY_ORDNANCE_BONUS_CHARGES);
+			return true;
+		case 'PROTECTOR_BONUS_CHARGES':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.PROTECTOR_BONUS_CHARGES);
+			return true;
 		default: 
 			return false;
 	}
