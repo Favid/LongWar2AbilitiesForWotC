@@ -1242,8 +1242,8 @@ static function X2AbilityTemplate CyclicFire()
 }
 
 // Perk name:		Kubikuri
-// Perk effect:		
-// Localized text:	
+// Perk effect:		Special shot against most enemies who have taken any damage: Any critical hit kills them, but regular hits do half damage. Cooldown-based.
+// Localized text:	"Special shot against most enemies who have taken any damage: Any critical hit kills them, but regular hits do half damage. Requires <Ability:KUBIKURI_MIN_ACTION_REQ> actions and has a <Ability:KUBIKURI_COOLDOWN> turn cooldown."
 // Config:			(AbilityName="LW2WotC_Kubikuri", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate Kubikuri()
 {
@@ -1337,44 +1337,4 @@ static function X2AbilityTemplate Ghostwalker()
 	AddCooldown(Template, default.GHOSTWALKER_COOLDOWN);
 
 	return Template;
-
-	// 
-
-	// `CREATE_X2ABILITY_TEMPLATE(Template, 'Ghostwalker');	
-	// Template.AbilitySourceName = 'eAbilitySource_Perk';
-	// Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityGhostwalker";
-	// Template.Hostility = eHostility_Neutral;
-	// Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
-	// Template.AbilityToHitCalc = default.DeadEye;
- //    Template.AbilityTargetStyle = default.SelfTarget;
-	// Template.bCrossClassEligible = true;
-	// Template.bDisplayInUITooltip = true;
-	// Template.bDisplayInUITacticalText = true;
-	// Template.bShowActivation = true;
-	// Template.bSkipFireAction = true;
-	// Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-	// Template.AddShooterEffectExclusions();
-
-	// Template.AbilityCosts.AddItem(default.FreeActionCost);
-
-	// Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-	// Template.ActivationSpeech = 'ActivateConcealment';
-	
-	// ConcealedCondition = new class'X2Condition_RequireConcealed';
-	// Template.AbilityTargetConditions.AddItem(ConcealedCondition);
-
-	// Cooldown = new class'X2AbilityCooldown';
- //    Cooldown.iNumTurns = default.GHOSTWALKER_COOLDOWN;
- //    Template.AbilityCooldown = Cooldown; 
-	
-	// StealthyEffect = new class'X2Effect_PersistentStatChange';
-	// StealthyEffect.BuildPersistentEffect(default.GHOSTWALKER_DURATION,false,true,false,eGameRule_PlayerTurnBegin);
-	// StealthyEffect.SetDisplayInfo (ePerkBuff_Bonus,Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,, Template.AbilitySourceName); 
-	// StealthyEffect.AddPersistentStatChange(eStat_DetectionModifier, default.GHOSTWALKER_DETECTION_RANGE_REDUCTION);
-	// Template.AddTargetEffect(StealthyEffect);
-
-	// Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	// Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-
-	// return Template;
 }
