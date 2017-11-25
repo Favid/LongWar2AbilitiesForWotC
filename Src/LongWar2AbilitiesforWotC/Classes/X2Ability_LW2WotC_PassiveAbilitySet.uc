@@ -1266,6 +1266,7 @@ static function X2AbilityTemplate FullKit()
 	BonusItemEffect = new class'XMBEffect_AddItemCharges';
 	BonusItemEffect.PerItemBonus = default.FULL_KIT_BONUS;
 	BonusItemEffect.ApplyToNames = default.FULL_KIT_ITEMS;
+	BonusItemEffect.ApplyToSlots.AddItem(eInvSlot_Utility);
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_FullKit', "img:///UILibrary_LW_PerkPack.LW_AbilityFullKit", false, BonusItemEffect);
