@@ -123,6 +123,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(CombatAwareness());
 	Templates.AddItem(CombatRush());
 	Templates.AddItem(FullKit());
+	Templates.AddItem(Savior());
 
 
 	return Templates;
@@ -1263,4 +1264,21 @@ static function X2AbilityTemplate FullKit()
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_FullKit', "img:///UILibrary_LW_PerkPack.LW_AbilityFullKit", false, BonusItemEffect);
+}
+
+
+// Perk name:		Savior
+// Perk effect:		Healing abilities restore additional hit points.
+// Localized text:	"Healing abilities restore <Ability:SAVIOR_BONUS_HEAL_AMMOUNT> additional hit points."
+// Config:			(AbilityName="LW2WotC_Savior")
+static function X2AbilityTemplate Savior()
+{
+	local X2Effect_LW2WotC_Savior				SaviorEffect;
+
+	// This effect will add a listener to the soldier that listens for them to apply a heal.
+	// When the heal is applied XComGameState_Effect_LW2WotC_Savior.OnMedkitHeal() is called to increase the potency of the heal.
+	SaviorEffect = new class 'X2Effect_LW2WotC_Savior';
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_Savior', "img:///UILibrary_LW_PerkPack.LW_AbilitySavior", true, SaviorEffect);
 }

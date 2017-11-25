@@ -397,6 +397,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'GHOSTWALKER_COOLDOWN':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.GHOSTWALKER_COOLDOWN);
 			return true;
+		case 'SAVIOR_BONUS_HEAL_AMMOUNT':
+			OutString = string(class'X2Effect_LW2WotC_Savior'.default.SAVIOR_BONUS_HEAL_AMMOUNT);
+			return true;
 		default: 
 			return false;
 	}
