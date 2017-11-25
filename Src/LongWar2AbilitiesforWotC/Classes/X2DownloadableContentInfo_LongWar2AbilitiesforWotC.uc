@@ -406,6 +406,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'PROTECTOR_BONUS_CHARGES':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.PROTECTOR_BONUS_CHARGES);
 			return true;
+		case 'HEAT_WARHEADS_PIERCE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.HEAT_WARHEADS_PIERCE);
+			return true;
+		case 'HEAT_WARHEADS_SHRED':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.HEAT_WARHEADS_SHRED);
+			return true;
 		default: 
 			return false;
 	}

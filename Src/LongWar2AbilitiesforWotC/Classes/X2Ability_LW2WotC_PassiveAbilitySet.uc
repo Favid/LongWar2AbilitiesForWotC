@@ -49,6 +49,8 @@ var config int FULL_KIT_BONUS;
 var config array<name> FULL_KIT_ITEMS;
 var config int PROTECTOR_BONUS_CHARGES;
 var config int HEAVY_ORDNANCE_BONUS_CHARGES;
+var config int HEAT_WARHEADS_PIERCE;
+var config int HEAT_WARHEADS_SHRED;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -127,6 +129,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Savior());
 	Templates.AddItem(HeavyOrdnance());
 	Templates.AddItem(Protector());
+	Templates.AddItem(HEATWarheads());
 
 	return Templates;
 }
@@ -1317,4 +1320,21 @@ static function X2AbilityTemplate Protector()
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_Protector', "img:///UILibrary_LW_PerkPack.LW_AbilityProtector", false, BonusItemEffect);
+}
+
+// Perk name:		HEAT Warheads
+// Perk effect:		Your grenades now pierce and shred some armor.
+// Localized text:	"Your grenades now pierce up to <Ability:HEAT_WARHEADS_PIERCE> points of armor and shred <Ability:HEAT_WARHEADS_SHRED> additional point of armor."
+// Config:			(AbilityName="LW2WotC_HEATWarheads")
+static function X2AbilityTemplate HEATWarheads()
+{
+	local X2Effect_LW2WotC_HEATGrenades			HEATEffect;
+
+	// Effect granting bonus pierce and shred to grenades
+	HEATEffect = new class 'X2Effect_LW2WotC_HEATGrenades';
+	HEATEffect.Pierce = default.HEAT_WARHEADS_PIERCE;
+	HEATEffect.Shred = default.HEAT_WARHEADS_SHRED;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_HEATWarheads', "img:///UILibrary_LW_PerkPack.LW_AbilityHEATWarheads", false, HEATEffect);
 }
