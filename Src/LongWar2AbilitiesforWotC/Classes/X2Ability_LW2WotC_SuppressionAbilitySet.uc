@@ -27,8 +27,8 @@ static function array<X2DataTemplate> CreateTemplates()
 }
 
 // Perk name:       Danger Zone
-// Perk effect:     
-// Localized text:  
+// Perk effect:     Area Suppression suppresses enemies in a 5-tile radius.
+// Localized text:  "Area Suppression suppresses enemies in a 5-tile radius."
 // Config:          (AbilityName="LW2WotC_DangerZone", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate DangerZone()
 {
@@ -36,13 +36,13 @@ static function X2AbilityTemplate DangerZone()
 
     Template = PurePassive('LW2WotC_DangerZone', "img:///UILibrary_LW_PerkPack.LW_AbilityDangerZone", false, 'eAbilitySource_Perk');
     Template.bCrossClassEligible = false;
-    
+
     return Template;
 }
 
 // Perk name:       Lockdown
-// Perk effect:     
-// Localized text:  
+// Perk effect:     Gain a bonus to hit against enemies who attempt to move when suppressed.
+// Localized text:  "Gain +<Ability:LOCKDOWN_TOHIT_BONUS> to hit against enemies who attempt to move when suppressed."
 // Config:          (AbilityName="LW2WotC_Lockdown", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate Lockdown()
 {
@@ -78,8 +78,8 @@ static function X2AbilityTemplate LockdownBonuses()
 }
 
 // Perk name:       Mayhem
-// Perk effect:     
-// Localized text:  
+// Perk effect:     Gain bonus damage against enemies who attempt to move when suppressed.
+// Localized text:  "Gain <Ability:MAYHEM_DAMAGE_BONUS_PCT>% bonus damage against enemies who attempt to move when suppressed."
 // Config:          (AbilityName="LW2WotC_Mayhem", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate Mayhem()
 {
@@ -114,8 +114,8 @@ static function X2AbilityTemplate MayhemBonuses()
 }
 
 // Perk name:       Suppression
-// Perk effect:     
-// Localized text:  
+// Perk effect:     Fire a barrage that pins down a target, grants reaction fire against it if it moves, restricts the use of many abilities, and imposing a penalty to the target's aim.
+// Localized text:  "Fire a barrage that pins down a target, grants reaction fire against it if it moves, restricts the use of many abilities, and imposing a <Ability:SUPPRESSIONPENALTY/> penalty to the target's aim."
 // Config:          (AbilityName="LW2WotC_Suppression", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate Suppression()
 {
@@ -366,9 +366,9 @@ static function Name GetSuppressAnimName(XComUnitPawn UnitPawn)
     return '';
 }
 
-// Perk name:       AreaSuppression
-// Perk effect:     
-// Localized text:  
+// Perk name:       Area Suppression
+// Perk effect:     Fire a barrage that pins down multiple targets within a 4-tile radius, granting reaction fire against anyone that moves, and imposing a penalty to all targets' aim until suppression is removed. Cannot be used when concealed.
+// Localized text:  "Fire a barrage that pins down multiple targets within a 4-tile radius, granting reaction fire against anyone that moves, and imposing a <Ability:SUPPRESSIONPENALTY/> penalty to all targets' aim until suppression is removed. Cannot be used when concealed."
 // Config:          (AbilityName="LW2WotC_AreaSuppression", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
 static function X2AbilityTemplate AreaSuppression()
 {
