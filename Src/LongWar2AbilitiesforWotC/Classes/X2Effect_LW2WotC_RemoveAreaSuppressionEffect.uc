@@ -4,7 +4,7 @@
 //  PURPOSE: Adds conditional to RemoveEffects to only remove the effect once ammo is depleted
 //--------------------------------------------------------------------------------------- 
 
-class X2Effect_RemoveAreaSuppressionEffect extends X2Effect_RemoveEffects;
+class X2Effect_LW2WotC_RemoveAreaSuppressionEffect extends X2Effect_RemoveEffects;
 
 simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffectParameters, XComGameState_BaseObject kNewTargetState, XComGameState NewGameState, XComGameState_Effect NewEffectState)
 {

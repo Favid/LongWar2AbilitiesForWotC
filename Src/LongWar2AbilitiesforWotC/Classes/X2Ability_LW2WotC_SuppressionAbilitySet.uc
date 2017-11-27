@@ -13,40 +13,111 @@ static function array<X2DataTemplate> CreateTemplates()
 {
     local array<X2DataTemplate> Templates;
 
-
-    Templates.AddItem(AddSuppressionAbility_LW());
-    Templates.AddItem(SuppressionShot_LW()); //Additional Ability
-    Templates.AddItem(AddAreaSuppressionAbility());
-    Templates.AddItem(AreaSuppressionShot_LW()); //Additional Ability
-    Templates.AddItem(AddLockdownAbility());
-    Templates.AddItem(AddDangerZoneAbility());
+    Templates.AddItem(Suppression());
+    Templates.AddItem(SuppressionShot()); //Additional Ability
+    Templates.AddItem(AreaSuppression());
+    Templates.AddItem(AreaSuppressionShot()); //Additional Ability
+    Templates.AddItem(Lockdown());
+    Templates.AddItem(DangerZone());
     Templates.AddItem(LockdownBonuses()); //Additional Ability
-    Templates.AddItem(PurePassive('Mayhem', "img:///UILibrary_LW_PerkPack.LW_AbilityMayhem", false, 'eAbilitySource_Perk'));
+    Templates.AddItem(Mayhem());
     Templates.AddItem(MayhemBonuses()); // AdditionalAbility;
 
     return Templates;
 }
 
-static function X2AbilityTemplate AddDangerZoneAbility()
+// Perk name:       Danger Zone
+// Perk effect:     
+// Localized text:  
+// Config:          (AbilityName="LW2WotC_DangerZone", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate DangerZone()
 {
     local X2AbilityTemplate                 Template;   
 
-    Template = PurePassive('DangerZone', "img:///UILibrary_LW_PerkPack.LW_AbilityDangerZone", false, 'eAbilitySource_Perk');
+    Template = PurePassive('LW2WotC_DangerZone', "img:///UILibrary_LW_PerkPack.LW_AbilityDangerZone", false, 'eAbilitySource_Perk');
+    Template.bCrossClassEligible = false;
+    
+    return Template;
+}
+
+// Perk name:       Lockdown
+// Perk effect:     
+// Localized text:  
+// Config:          (AbilityName="LW2WotC_Lockdown", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate Lockdown()
+{
+    local X2AbilityTemplate                 Template;   
+
+    Template = PurePassive('LW2WotC_Lockdown', "img:///UILibrary_LW_PerkPack.LW_AbilityLockdown", false, 'eAbilitySource_Perk');
+    Template.bCrossClassEligible = false;
+
+    return Template;
+}
+
+// This is an additional ability granted by LW2WotC_Suppression and LW2WotC_AreaSuppression
+// It checks if the suppressor has the LW2WotC_Lockdown passive. If they do, then when a suppression shot is taken, that shot is given an aim bonus
+static function X2AbilityTemplate LockdownBonuses()
+{
+    local X2Effect_LW2WotC_Lockdown         AimEffect;
+    local X2AbilityTemplate                 Template;
+
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Lockdown_Bonuses');
+    Template.AbilityToHitCalc = default.DeadEye;
+    Template.AbilityTargetStyle = default.SelfTarget;
+    Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+    Template.AbilitySourceName = 'eAbilitySource_Perk';
+    Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+    Template.bDisplayInUITooltip = false;
+    Template.bIsASuppressionEffect = true;
+    //  Effect code checks whether unit has Lockdown before providing aim and damage bonuses
+    AimEffect = new class'X2Effect_LW2WotC_Lockdown';
+    AimEffect.BuildPersistentEffect(1,true,false,false,eGameRule_PlayerTurnBegin);
+    Template.AddTargetEffect(AimEffect);
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    return Template;
+}
+
+// Perk name:       Mayhem
+// Perk effect:     
+// Localized text:  
+// Config:          (AbilityName="LW2WotC_Mayhem", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate Mayhem()
+{
+    local X2AbilityTemplate                 Template;
+
+    Template = PurePassive('LW2WotC_Mayhem', "img:///UILibrary_LW_PerkPack.LW_AbilityMayhem", false, 'eAbilitySource_Perk');
     Template.bCrossClassEligible = false;
     return Template;
 }
 
-
-static function X2AbilityTemplate AddLockdownAbility()
+// This is an additional ability granted by LW2WotC_Suppression and LW2WotC_AreaSuppression
+// It checks if the suppressor has the LW2WotC_Mayhem passive. If they do, then when a suppression shot is taken, that shot is given a damage bonus
+static function X2AbilityTemplate MayhemBonuses()
 {
+    local X2Effect_LW2WotC_Mayhem           DamageEffect;
     local X2AbilityTemplate                 Template;   
 
-    Template = PurePassive('Lockdown', "img:///UILibrary_LW_PerkPack.LW_AbilityLockdown", false, 'eAbilitySource_Perk');
-    Template.bCrossClassEligible = false;
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Mayhem_Bonuses');
+    Template.AbilityToHitCalc = default.DeadEye;
+    Template.AbilityTargetStyle = default.SelfTarget;
+    Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+    Template.AbilitySourceName = 'eAbilitySource_Perk';
+    Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+    Template.bDisplayInUITooltip = false;
+    Template.bIsASuppressionEffect = true;
+    //  Effect code checks whether unit has Mayhem before providing aim and damage bonuses
+    DamageEffect = new class'X2Effect_LW2WotC_Mayhem';
+    DamageEffect.BuildPersistentEffect(1,true,false,false,eGameRule_PlayerTurnBegin);
+    Template.AddTargetEffect(DamageEffect);
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
     return Template;
 }
 
-static function X2AbilityTemplate AddSuppressionAbility_LW()
+// Perk name:       Suppression
+// Perk effect:     
+// Localized text:  
+// Config:          (AbilityName="LW2WotC_Suppression", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate Suppression()
 {
     local X2AbilityTemplate                 Template;   
     local X2AbilityCost_Ammo                AmmoCost;
@@ -57,7 +128,7 @@ static function X2AbilityTemplate AddSuppressionAbility_LW()
     local name                              WeaponCategory;
     local X2Condition_UnitEffects           SuppressedCondition;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'Suppression_LW');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Suppression');
     Template.AbilitySourceName = 'eAbilitySource_Perk';
     Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
     Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_LIEUTENANT_PRIORITY;
@@ -113,9 +184,9 @@ static function X2AbilityTemplate AddSuppressionAbility_LW()
     Template.AddTargetEffect(SuppressionEffect);
     Template.AddMultiTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
     
-    Template.AdditionalAbilities.AddItem('SuppressionShot_LW');
-    Template.AdditionalAbilities.AddItem('LockdownBonuses');
-    Template.AdditionalAbilities.AddItem('MayhemBonuses');
+    Template.AdditionalAbilities.AddItem('LW2WotC_SuppressionShot');
+    Template.AdditionalAbilities.AddItem('LW2WotC_Lockdown_Bonuses');
+    Template.AdditionalAbilities.AddItem('LW2WotC_Mayhem_Bonuses');
 
     Template.bIsASuppressionEffect = true;
     //Template.AbilityConfirmSound = "TacticalUI_ActivateAbility";
@@ -133,8 +204,8 @@ static function X2AbilityTemplate AddSuppressionAbility_LW()
     return Template;    
 }
 
-
-static function X2AbilityTemplate SuppressionShot_LW()
+// Ability for the shot that fires from LW2WotC_Suppression
+static function X2AbilityTemplate SuppressionShot()
 {
     local X2AbilityTemplate                 Template;   
     local X2AbilityCost_ReserveActionPoints ReserveActionPointCost;
@@ -145,7 +216,7 @@ static function X2AbilityTemplate SuppressionShot_LW()
     local X2Effect_RemoveEffects            RemoveSuppression;
     local X2Effect                          ShotEffect;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'SuppressionShot_LW');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_SuppressionShot');
 
     Template.bDontDisplayInAbilitySummary = true;
     ReserveActionPointCost = new class'X2AbilityCost_ReserveActionPoints';
@@ -295,7 +366,11 @@ static function Name GetSuppressAnimName(XComUnitPawn UnitPawn)
     return '';
 }
 
-static function X2AbilityTemplate AddAreaSuppressionAbility()
+// Perk name:       AreaSuppression
+// Perk effect:     
+// Localized text:  
+// Config:          (AbilityName="LW2WotC_AreaSuppression", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate AreaSuppression()
 {
     local X2AbilityTemplate                             Template;
     local X2AbilityCost_Ammo                            AmmoCost;
@@ -303,13 +378,13 @@ static function X2AbilityTemplate AddAreaSuppressionAbility()
     local X2AbilityMultiTarget_Radius                   RadiusMultiTarget;
     local X2Effect_ReserveActionPoints                  ReserveActionPointsEffect;
     local X2Condition_UnitInventory                     InventoryCondition, InventoryCondition2;
-    local X2Effect_LW2WotC_AreaSuppression                      SuppressionEffect;
+    local X2Effect_LW2WotC_AreaSuppression              SuppressionEffect;
     local X2AbilityTarget_Single                        PrimaryTarget;
     local AbilityGrantedBonusRadius                     DangerZoneBonus;
     local X2Condition_UnitProperty                      ShooterCondition;
     local X2Condition_UnitEffects                       SuppressedCondition;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'AreaSuppression');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_AreaSuppression');
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AreaSuppression";
     Template.AbilitySourceName = 'eAbilitySource_Perk';
     Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
@@ -377,7 +452,7 @@ static function X2AbilityTemplate AddAreaSuppressionAbility()
     RadiusMultiTarget.bUseWeaponRadius = false;
     RadiusMultiTarget.ftargetradius = default.AREA_SUPPRESSION_RADIUS;
     
-    DangerZoneBonus.RequiredAbility = 'DangerZone';
+    DangerZoneBonus.RequiredAbility = 'LW2WotC_DangerZone';
     DangerZoneBonus.fBonusRadius = default.DANGER_ZONE_BONUS_RADIUS;
     RadiusMultiTarget.AbilityBonusRadii.AddItem (DangerZoneBonus);
     Template.AbilityMultiTargetStyle = RadiusMultiTarget;
@@ -397,11 +472,11 @@ static function X2AbilityTemplate AddAreaSuppressionAbility()
     Template.AddMultiTargetEffect(SuppressionEffect);
     Template.AddMultiTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
     
-    Template.AdditionalAbilities.AddItem('AreaSuppressionShot_LW');
-    Template.AdditionalAbilities.AddItem('LockdownBonuses');
-    Template.AdditionalAbilities.AddItem('MayhemBonuses');
+    Template.AdditionalAbilities.AddItem('LW2WotC_AreaSuppressionShot');
+    Template.AdditionalAbilities.AddItem('LW2WotC_Lockdown_Bonuses');
+    Template.AdditionalAbilities.AddItem('LW2WotC_Mayhem_Bonuses');
 
-    Template.TargetingMethod = class'X2TargetingMethod_AreaSuppression';
+    Template.TargetingMethod = class'X2TargetingMethod_LW2WotC_AreaSuppression';
 
     Template.BuildVisualizationFn = AreaSuppressionBuildVisualization_LW;
     Template.BuildAppliedVisualizationSyncFn = AreaSuppressionBuildVisualizationSync;
@@ -487,8 +562,8 @@ simulated function AreaSuppressionBuildVisualizationSync(name EffectName, XComGa
     }
 }
 
-
-static function X2AbilityTemplate AreaSuppressionShot_LW()
+// Ability for the shot that fires from LW2WotC_AreaSuppression
+static function X2AbilityTemplate AreaSuppressionShot()
 {
     local X2AbilityTemplate                 Template;   
     local X2AbilityCost_ReserveActionPoints ReserveActionPointCost;
@@ -496,11 +571,11 @@ static function X2AbilityTemplate AreaSuppressionShot_LW()
     local X2Condition_Visibility            TargetVisibilityCondition;
     local X2AbilityTrigger_Event            Trigger;
     local X2Condition_UnitEffectsWithAbilitySource TargetEffectCondition;
-    local X2Effect_RemoveAreaSuppressionEffect  RemoveAreaSuppression;
+    local X2Effect_LW2WotC_RemoveAreaSuppressionEffect  RemoveAreaSuppression;
     local X2Effect                          ShotEffect;
     local X2AbilityCost_Ammo                AmmoCost;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'AreaSuppressionShot_LW');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_AreaSuppressionShot');
 
     Template.bDontDisplayInAbilitySummary = true;
     ReserveActionPointCost = new class'X2AbilityCost_ReserveActionPoints';
@@ -533,7 +608,7 @@ static function X2AbilityTemplate AreaSuppressionShot_LW()
     Template.bAllowAmmoEffects = true;
 
     // this handles the logic for removing just from the target (if should continue), or removing from all targets if running out of ammo
-    RemoveAreaSuppression = new class'X2Effect_RemoveAreaSuppressionEffect';
+    RemoveAreaSuppression = new class'X2Effect_LW2WotC_RemoveAreaSuppressionEffect';
     RemoveAreaSuppression.EffectNamesToRemove.AddItem(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName);
     RemoveAreaSuppression.bCheckSource =  true;
     RemoveAreaSuppression.SetupEffectOnShotContextResult(true, true);
@@ -571,47 +646,4 @@ static function X2AbilityTemplate AreaSuppressionShot_LW()
     Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 
     return Template;    
-}
-
-
-static function X2AbilityTemplate LockdownBonuses()
-{
-    local X2Effect_LockdownDamage           DamageEffect;
-    local X2AbilityTemplate                 Template;   
-
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'LockdownBonuses');
-    Template.AbilityToHitCalc = default.DeadEye;
-    Template.AbilityTargetStyle = default.SelfTarget;
-    Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-    Template.AbilitySourceName = 'eAbilitySource_Perk';
-    Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
-    Template.bDisplayInUITooltip = false;
-    Template.bIsASuppressionEffect = true;
-    //  Effect code checks whether unit has Lockdown before providing aim and damage bonuses
-    DamageEffect = new class'X2Effect_LockdownDamage';
-    DamageEffect.BuildPersistentEffect(1,true,false,false,eGameRule_PlayerTurnBegin);
-    Template.AddTargetEffect(DamageEffect);
-    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-    return Template;
-}
-
-static function X2AbilityTemplate MayhemBonuses()
-{
-    local X2Effect_Mayhem                   DamageEffect;
-    local X2AbilityTemplate                 Template;   
-
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'MayhemBonuses');
-    Template.AbilityToHitCalc = default.DeadEye;
-    Template.AbilityTargetStyle = default.SelfTarget;
-    Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-    Template.AbilitySourceName = 'eAbilitySource_Perk';
-    Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
-    Template.bDisplayInUITooltip = false;
-    Template.bIsASuppressionEffect = true;
-    //  Effect code checks whether unit has Mayhem before providing aim and damage bonuses
-    DamageEffect = new class'X2Effect_Mayhem';
-    DamageEffect.BuildPersistentEffect(1,true,false,false,eGameRule_PlayerTurnBegin);
-    Template.AddTargetEffect(DamageEffect);
-    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-    return Template;
 }

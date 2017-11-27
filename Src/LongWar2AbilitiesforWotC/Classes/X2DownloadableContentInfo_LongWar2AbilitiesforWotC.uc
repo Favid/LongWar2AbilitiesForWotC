@@ -412,6 +412,12 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'HEAT_WARHEADS_SHRED':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.HEAT_WARHEADS_SHRED);
 			return true;
+		case 'MAYHEM_DAMAGE_BONUS_PCT':
+			OutString = string(int(class'X2Effect_LW2WotC_Mayhem'.default.MAYHEM_DAMAGE_BONUS_PCT));
+			return true;
+		case 'LOCKDOWN_TOHIT_BONUS':
+			OutString = getLockdownAimBonusString(class'X2Effect_LW2WotC_Lockdown'.default.LOCKDOWN_TOHIT_BONUS);
+			return true;
 		default: 
 			return false;
 	}
@@ -500,4 +506,14 @@ private static function string getFlechePerTileDamageBonusString(float bonusDama
 	{
 		return Repl(string(TempFloat), "0", "");
 	}
+}
+
+private static function string getLockdownAimBonusString(int BaseAimBonus)
+{
+	local int AfterReactionModAimBonus;
+
+	// multiplies config value by *.70 (reaction fire aim mod) and rounds down
+	AfterReactionModAimBonus = int(BaseAimBonus * 0.70f);
+
+	return string(AfterReactionModAimBonus);
 }

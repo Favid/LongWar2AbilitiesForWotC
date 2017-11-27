@@ -1,4 +1,4 @@
-class X2TargetingMethod_AreaSuppression extends X2TargetingMethod_TopDown;
+class X2TargetingMethod_LW2WotC_AreaSuppression extends X2TargetingMethod_TopDown;
 
 function Update(float DeltaTime)
 {

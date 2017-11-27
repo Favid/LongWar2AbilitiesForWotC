@@ -3,7 +3,7 @@
 //  AUTHOR:  John Lumpkin (Pavonis Interactive)
 //  PURPOSE: Sets up to hit bonuses for Lockdown
 //---------------------------------------------------------------------------------------
-class X2Effect_LockdownDamage extends X2Effect_ModifyReactionFire config (LW_SoldierSkills);
+class X2Effect_LW2WotC_Lockdown extends X2Effect_ModifyReactionFire config (LW_SoldierSkills);
 
 var config int LOCKDOWN_TOHIT_BONUS;
 
@@ -12,12 +12,12 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
     local XComGameState_Item SourceWeapon;
     local ShotModifierInfo ShotInfo;
 
-    if(AbilityState.GetMyTemplateName() == 'SuppressionShot_LW' || AbilityState.GetMyTemplateName() == 'AreaSuppressionShot_LW')
+    if(AbilityState.GetMyTemplateName() == 'LW2WotC_SuppressionShot' || AbilityState.GetMyTemplateName() == 'LW2WotC_AreaSuppressionShot')
     {
         SourceWeapon = AbilityState.GetSourceWeapon();    
         if (SourceWeapon != none && Target != none)
         {
-            if (Attacker.HasSoldierAbility('Lockdown'))
+            if (Attacker.HasSoldierAbility('LW2WotC_Lockdown'))
             {
                 ShotInfo.ModType = eHit_Success;
                 ShotInfo.Reason = FriendlyName;

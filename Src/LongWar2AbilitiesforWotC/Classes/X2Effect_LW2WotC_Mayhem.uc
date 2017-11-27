@@ -1,4 +1,4 @@
-class X2Effect_Mayhem extends X2Effect_Persistent config(LW_SoldierSkills);
+class X2Effect_LW2WotC_Mayhem extends X2Effect_Persistent config(LW_SoldierSkills);
 
 var config float MAYHEM_DAMAGE_BONUS_PCT;
 
@@ -7,7 +7,7 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
     local XComGameState_Item SourceWeapon;
     local XComGameState_Unit TargetUnit;
 
-    if(AbilityState.GetMyTemplateName() == 'SuppressionShot_LW' || AbilityState.GetMyTemplateName() == 'AreaSuppressionShot_LW')
+    if(AbilityState.GetMyTemplateName() == 'LW2WotC_SuppressionShot' || AbilityState.GetMyTemplateName() == 'LW2WotC_AreaSuppressionShot')
     {
         if(AppliedData.AbilityResultContext.HitResult == eHit_Success)
         {
@@ -17,7 +17,7 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
                 TargetUnit = XComGameState_Unit(TargetDamageable);
                 if(TargetUnit != none)
                 {
-                    if (Attacker.HasSoldierAbility('Mayhem'))
+                    if (Attacker.HasSoldierAbility('LW2WotC_Mayhem'))
                     {
                         return int (CurrentDamage * (default.MAYHEM_DAMAGE_BONUS_PCT / 100));
                     }
