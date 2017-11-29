@@ -37,13 +37,6 @@ var config int CLUTCH_SHOT_CHARGES;
 var config int GUNSLINGER_COOLDOWN;
 var config int GUNSLINGER_TILES_RANGE;
 var config int STEADY_WEAPON_AIM_BONUS;
-var config int AREA_SUPPRESSION_AMMO_COST;
-var config int AREA_SUPPRESSION_MAX_SHOTS;
-var config int AREA_SUPPRESSION_SHOT_AMMO_COST;
-var config float AREA_SUPPRESSION_RADIUS;
-var config int SUPPRESSION_LW_SHOT_AIM_BONUS;
-var config int AREA_SUPPRESSION_LW_SHOT_AIM_BONUS;
-var config array<name> SUPPRESSION_LW_INVALID_WEAPON_CATEGORIES;
 var config int INTERFERENCE_CV_CHARGES;
 var config int INTERFERENCE_MG_CHARGES;
 var config int INTERFERENCE_BM_CHARGES;
@@ -122,11 +115,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddGunslingerAbility());
 	//Templates.AddItem(GunslingerShot()); //Additional Ability
 	//Templates.AddItem(AddSteadyWeaponAbility());
-	//Templates.AddItem(AddSuppressionAbility_LW());
-	//Templates.AddItem(SuppressionShot_LW()); //Additional Ability
-	//Templates.AddItem(AddAreaSuppressionAbility());
-	//Templates.AddItem(AreaSuppressionShot_LW()); //Additional Ability
-	//Templates.AddItem(AddGhostwalkerAbility()); 
 	//Templates.AddItem(AddIronCurtainAbility());
 	//Templates.AddItem(IronCurtainShot()); //Additional Ability
 	//Templates.AddItem(AddAbsorptionFieldsAbility());

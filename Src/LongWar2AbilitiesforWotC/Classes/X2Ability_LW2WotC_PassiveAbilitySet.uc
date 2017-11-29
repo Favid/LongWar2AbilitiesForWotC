@@ -9,7 +9,6 @@ var config int CENTERMASS_DAMAGE;
 var config int LETHAL_DAMAGE;
 var config int RESILIENCE_CRITDEF_BONUS;
 var config int GRAZING_FIRE_SUCCESS_CHANCE;
-var config float DANGER_ZONE_BONUS_RADIUS;
 var config int DAMAGE_CONTROL_DURATION; 
 var config int DAMAGE_CONTROL_ABLATIVE_HP;
 var config int DAMAGE_CONTROL_BONUS_ARMOR;
@@ -89,12 +88,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(LockOn());
 	Templates.AddItem(Sentinel());
 	Templates.AddItem(RapidReaction());
-	//Templates.AddItem(AddLockdownAbility());
-	//Templates.AddItem(AddDangerZoneAbility());
-	//Templates.AddItem(LockdownBonuses()); //Additional Ability
-	//Templates.AddItem(PurePassive('Mayhem', "img:///UILibrary_LW_PerkPack.LW_AbilityMayhem", false, 'eAbilitySource_Perk'));
-	//Templates.AddItem(MayhemBonuses()); // AdditionalAbility;
-	//Templates.AddItem(AddEmergencyLifeSupportAbility());
 	//Templates.AddItem(AddSmartMacrophagesAbility());
 	//Templates.AddItem(AddShadowstrike_LWAbility());
 	//Templates.AddItem(AddSoulStealTriggered2());
@@ -130,6 +123,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(HeavyOrdnance());
 	Templates.AddItem(Protector());
 	Templates.AddItem(HEATWarheads());
+	Templates.AddItem(EmergencyLifeSupport());
 
 	return Templates;
 }
@@ -1338,4 +1332,24 @@ static function X2AbilityTemplate HEATWarheads()
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_HEATWarheads', "img:///UILibrary_LW_PerkPack.LW_AbilityHEATWarheads", false, HEATEffect);
+}
+
+// Perk name:		Emergency Life Support
+// Perk effect:		Emergency Life Support ensures the first killing blow in a mission will not lead to instant death. It also extends the time before the soldier bleeds out and dies.
+// Localized text:	"Emergency Life Support ensures the first killing blow in a mission will not lead to instant death. It also extends the time before the soldier bleeds out and dies."
+// Config:			(AbilityName="LW2WotC_EmergencyLifeSupport")
+static function X2AbilityTemplate EmergencyLifeSupport()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_LW2WotC_EmergencyLifeSupport		LifeSupportEffect;
+
+	// Effect that listenes for the UnitBleedingOut event and catches it, ensuring that the unit bleeds out on their first death that mission
+	LifeSupportEffect = new class'X2Effect_LW2WotC_EmergencyLifeSupport';
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_EmergencyLifeSupport', "img:///UILibrary_LW_PerkPack.LW_AbilityEmergencyLifeSupport", false, LifeSupportEffect);
+	// Template.bShowActivation = true;
+	// Template.bSkipFireAction = true;
+
+	return Template;
 }
