@@ -124,6 +124,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Protector());
 	Templates.AddItem(HEATWarheads());
 	Templates.AddItem(EmergencyLifeSupport());
+	Templates.AddItem(SmartMacrophages());
+	Templates.AddItem(FieldSurgeon());
 
 	return Templates;
 }
@@ -1348,8 +1350,48 @@ static function X2AbilityTemplate EmergencyLifeSupport()
 
 	// Create the template using a helper function
 	Template = Passive('LW2WotC_EmergencyLifeSupport', "img:///UILibrary_LW_PerkPack.LW_AbilityEmergencyLifeSupport", false, LifeSupportEffect);
-	// Template.bShowActivation = true;
-	// Template.bSkipFireAction = true;
 
 	return Template;
+}
+
+// Perk name:		Smart Macrophages
+// Perk effect:		Heals injuries after a battle, lowering wound recovery time, and confers immunity to poison and acid.
+// Localized text:	"Heals injuries after a battle, lowering wound recovery time, and confers immunity to poison and acid."
+// Config:			(AbilityName="LW2WotC_SmartMacrophages")
+static function X2AbilityTemplate SmartMacrophages()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_DamageImmunity				DamageImmunity;
+	local X2Effect_LW2WotC_SmartMacrophages		MacrophagesEffect;
+
+	// Effect to reduce wound time
+	MacrophagesEffect = new class'X2Effect_LW2WotC_SmartMacrophages';
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_SmartMacrophages', "img:///UILibrary_LW_PerkPack.LW_AbilitySmartMacrophages", false, MacrophagesEffect);
+
+	// Grants immunity to acid, poison, and chryssalid poison
+	DamageImmunity = new class'X2Effect_DamageImmunity'; 
+	DamageImmunity.ImmuneTypes.AddItem('Acid');
+	DamageImmunity.ImmuneTypes.AddItem('Poison');
+	DamageImmunity.ImmuneTypes.AddItem(class'X2Item_DefaultDamageTypes'.default.ParthenogenicPoisonType);
+	DamageImmunity.BuildPersistentEffect(1, true, false, true);
+	Template.AddTargetEffect(DamageImmunity);
+
+	return Template;
+}
+
+// Perk name:		Field Surgeon
+// Perk effect:		Reduce wound recovery times for most soldiers.
+// Localized text:	"Reduce wound recovery times for most soldiers."
+// Config:			(AbilityName="LW2WotC_FieldSurgeon")
+static function X2AbilityTemplate FieldSurgeon()
+{
+	local X2Effect_LW2WotC_FieldSurgeon		FieldSurgeonEffect;
+
+	// Effect to reduce wound time
+	FieldSurgeonEffect = new class'X2Effect_LW2WotC_FieldSurgeon';
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_FieldSurgeon', "img:///UILibrary_LW_PerkPack.LW_AbilityFieldSurgeon", true, FieldSurgeonEffect);
 }
