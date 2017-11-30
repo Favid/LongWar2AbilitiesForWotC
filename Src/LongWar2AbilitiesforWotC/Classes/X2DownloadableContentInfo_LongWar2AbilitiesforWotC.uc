@@ -26,7 +26,7 @@ static event OnPostTemplatesCreated()
 	PatchAbilitiesForLightEmUp();
 	PatchSmokeGrenades();
 
-	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.5");
+	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.6");
 }
 
 /// <summary>
