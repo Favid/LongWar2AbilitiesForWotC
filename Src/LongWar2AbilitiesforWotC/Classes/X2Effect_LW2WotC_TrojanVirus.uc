@@ -33,8 +33,9 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
         `LOG("Trojan: Failed to find Trojan Component when registering listener");
         return;
     }
+
     //set priority lower than default 50 to trigger after Effect Tick effects have been processed
-    EventMgr.RegisterForEvent(ListenerObj, 'PlayerTurnBegun', TrojanEffectState.PostEffectTickCheck, ELD_OnStateSubmitted, 25,,true);
+    EventMgr.RegisterForEvent(ListenerObj, 'UnitGroupTurnBegun', TrojanEffectState.PostEffectTickCheck, ELD_OnStateSubmitted, 25,,true);
 }
 
 simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParameters, XComGameState NewGameState, bool bCleansed, XComGameState_Effect RemovedEffectState)
@@ -58,6 +59,7 @@ simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParame
 
     NewGameState.RemoveStateObject(EffectComponent.ObjectID);
 }
+
 static function XComGameState_Effect_LW2WotC_Trojan GetEffectComponent(XComGameState_Effect Effect)
 {
     if (Effect != none) 
