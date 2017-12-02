@@ -469,6 +469,15 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'STING_GRENADE_STUN_CHANCE':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.STING_GRENADE_STUN_CHANCE);
 			return true;
+		case 'IMPACT_FIELDS_DAMAGE_REDUCTION_PCT':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IMPACT_FIELDS_DAMAGE_REDUCTION_PCT);
+			return true;
+		case 'IMPACT_FIELDS_DURATION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IMPACT_FIELDS_DURATION);
+			return true;
+		case 'IMPACT_FIELDS_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IMPACT_FIELDS_COOLDOWN);
+			return true;
 		default: 
 			return false;
 	}

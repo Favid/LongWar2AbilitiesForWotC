@@ -56,9 +56,6 @@ var config int IRON_CURTAIN_TILE_WIDTH;
 var config int IRON_CURTAIN_MOB_DAMAGE_DURATION;
 var config int IRON_CURTAIN_MOBILITY_DAMAGE;
 var config int IRON_CURTAIN_DAMAGE_MODIFIER;
-var config int ABSORPTION_FIELDS_COOLDOWN;
-var config int ABSORPTION_FIELDS_ACTION_POINTS;
-var config int ABSORPTION_FIELDS_DURATION;
 var config int BODY_SHIELD_DEF_BONUS;
 var config int BODY_SHIELD_ENEMY_CRIT_MALUS;
 var config int BODY_SHIELD_COOLDOWN;
@@ -98,6 +95,9 @@ var config float KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT;
 var config int RESCUE_CV_CHARGES;
 var config int RESCUE_MG_CHARGES;
 var config int RESCUE_BM_CHARGES;
+var config int IMPACT_FIELDS_COOLDOWN;
+var config int IMPACT_FIELDS_DURATION;
+var config int IMPACT_FIELDS_DAMAGE_REDUCTION_PCT;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -138,6 +138,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Ghostwalker());
 	Templates.AddItem(IronCurtain());
 	Templates.AddItem(BodyShield());
+	Templates.AddItem(ImpactFields());
 
 	return Templates;
 }
@@ -1524,6 +1525,36 @@ static function X2AbilityTemplate BodyShield()
 
 	// Configurable cooldown
 	AddCooldown(Template, default.BODY_SHIELD_COOLDOWN);
+
+	return Template;
+}
+
+// Perk name:		Impact Fields
+// Perk effect:		"Activate a force field that reduces incoming damage for a few turns. Cooldown-based.
+// Localized text:	"Activate a force field that reduces incoming damage by <Ability:IMPACT_FIELDS_DAMAGE_REDUCTION_PCT>% for <Ability:IMPACT_FIELDS_DURATION> turns. <Ability:IMPACT_FIELDS_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_ImpactFields")
+static function X2AbilityTemplate ImpactFields()
+{
+	local X2AbilityTemplate 						Template;
+	local X2Effect_LW2WotC_ReduceDamageByPercent	ReduceDamageEffect;
+	local array<name>                       		SkipExclusions;
+
+	// Effect that reduces damage taken
+	ReduceDamageEffect = new class'X2Effect_LW2WotC_ReduceDamageByPercent';
+	ReduceDamageEffect.EffectName='LW2WotC_ImpactFields';
+	ReduceDamageEffect.DamageReductionPercent = default.IMPACT_FIELDS_DAMAGE_REDUCTION_PCT;
+	ReduceDamageEffect.BuildPersistentEffect(default.IMPACT_FIELDS_DURATION, false, true, false, eGameRule_PlayerTurnBegin);
+	ReduceDamageEffect.VisualizationFn = EffectFlyOver_Visualization;
+
+	// Create the template as a helper function. This is an activated ability that costs one action, but does not end the turn
+	Template = SelfTargetActivated('LW2WotC_ImpactFields', "img:///UILibrary_LW_PerkPack.LW_AbilityAbsorptionFields", false, ReduceDamageEffect, default.AUTO_PRIORITY, eCost_Single);
+
+	// Configurable cooldown
+	AddCooldown(Template, default.IMPACT_FIELDS_COOLDOWN);
+
+	// Cannot be used while burning, etc. Disorient is okay though
+	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
+	Template.AddShooterEffectExclusions(SkipExclusions);
 
 	return Template;
 }
