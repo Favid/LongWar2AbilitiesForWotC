@@ -55,6 +55,7 @@ var config int IRON_CURTAIN_AMMO_COST;
 var config int IRON_CURTAIN_TILE_WIDTH;
 var config int IRON_CURTAIN_MOB_DAMAGE_DURATION;
 var config int IRON_CURTAIN_MOBILITY_DAMAGE;
+var config int IRON_CURTAIN_DAMAGE_MODIFIER;
 var config int ABSORPTION_FIELDS_COOLDOWN;
 var config int ABSORPTION_FIELDS_ACTION_POINTS;
 var config int ABSORPTION_FIELDS_DURATION;
@@ -138,6 +139,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(CyclicFire());
 	Templates.AddItem(Kubikuri());
 	Templates.AddItem(Ghostwalker());
+	Templates.AddItem(IronCurtain());
 
 	return Templates;
 }
@@ -1323,6 +1325,172 @@ static function X2AbilityTemplate Ghostwalker()
 
 	// Configurable cooldown
 	AddCooldown(Template, default.GHOSTWALKER_COOLDOWN);
+
+	return Template;
+}
+
+// Perk name:		Iron Curtain
+// Perk effect:		Special shot that does reduced damage but reduces target mobility for the following turns. Cone-based attack with primary weapon. Cooldown-based.
+// Localized text:	"Special shot that does <Ability:IRON_CURTAIN_DAMAGE_MODIFIER> damage but reduces target mobility for the following <Ability:IRON_CURTAIN_MOB_DAMAGE_DURATION> turns. Cone-based attack with primary weapon. <Ability:IRON_CURTAIN_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_IronCurtain")
+static function X2AbilityTemplate IronCurtain()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityCost_Ammo                AmmoCost;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2AbilityTarget_Cursor            CursorTarget;
+	local X2AbilityMultiTarget_Cone         ConeMultiTarget;
+	local X2Condition_UnitProperty          UnitPropertyCondition;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local X2AbilityCooldown                 Cooldown;
+	local X2Condition_UnitInventory			NoShotgunsCondition;
+    local X2Condition_UnitInventory			NoSniperRiflesCondition;
+	local X2Effect_PersistentStatChange		MobilityDamageEffect;
+	local X2Effect_Shredder					RegularDamage;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_IronCurtain');	
+
+	// Boilerplate setup
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityIronCurtain";
+    Template.ActivationSpeech = 'SaturationFire';
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.Hostility = eHostility_Offensive;
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AbilityTargetConditions.AddItem(default.LivingTargetUnitOnlyProperty);
+	Template.bDisplayInUITooltip = true;
+    Template.bDisplayInUITacticalText = true;
+    Template.DisplayTargetHitChance = true;
+	Template.bShowActivation = true;
+	Template.bSkipFireAction = false;
+
+	// Applies holotargeting and ammo effects
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
+	Template.AssociatedPassives.AddItem('HoloTargeting');
+	Template.bAllowAmmoEffects = true;
+
+	// Configurable action point cost
+	ActionPointCost = new class 'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = default.IRON_CURTAIN_MIN_ACTION_REQ;
+	ActionPointCost.bConsumeAllPoints = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	// Configurable ammo cost
+	AmmoCost = new class'X2AbilityCost_Ammo';	
+	AmmoCost.iAmmo = default.IRON_CURTAIN_AMMO_COST;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	// Configurable cooldown
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = default.IRON_CURTAIN_COOLDOWN;
+	Template.AbilityCooldown = Cooldown;
+
+	// Standard multitarget aim calculation
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bMultiTargetOnly = false; 
+	StandardAim.bGuaranteedHit = false;
+	StandardAim.bOnlyMultiHitWithSuccess = false; 
+	Template.AbilityToHitCalc = StandardAim;
+	Template.AbilityToHitOwnerOnMissCalc = StandardAim;
+	Template.bOverrideAim = false;
+
+	// Cursor targeting for a cone attack
+	CursorTarget = new class'X2AbilityTarget_Cursor';
+	CursorTarget.bRestrictToWeaponRange=true;
+	Template.AbilityTargetStyle = CursorTarget;
+	Template.bFragileDamageOnly = false;
+	Template.bCheckCollision = true; 
+	Template.TargetingMethod = class'X2TargetingMethod_Cone';
+
+	// Details for the size of the cone
+	ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+	ConeMultiTarget.bExcludeSelfAsTargetIfWithinRadius = true;
+	ConeMultiTarget.ConeEndDiameter = default.IRON_CURTAIN_TILE_WIDTH * class'XComWorldData'.const.WORLD_StepSize;
+	ConeMultiTarget.bUseWeaponRangeForLength = true;
+	ConeMultiTarget.fTargetRadius = 99;     //  large number to handle weapon range - targets will get filtered according to cone constraints
+	ConeMultiTarget.bIgnoreBlockingCover = false;
+	Template.AbilityMultiTargetStyle = ConeMultiTarget;
+
+	// Cannot be used while burning, disoriented, etc.
+	Template.AddShooterEffectExclusions();
+
+	// Can hit allies. Cannot hit the dead
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeDead = true;
+	UnitPropertyCondition.ExcludeFriendlyToSource = false;
+	Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
+	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
+	
+	// Cannot be used with shotguns
+	NoShotgunsCondition = new class'X2Condition_UnitInventory';
+	NoShotgunsCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	NoShotgunsCondition.ExcludeWeaponCategory = 'shotgun';
+	Template.AbilityShooterConditions.AddItem(NoShotgunsCondition);
+
+	// Cannot be used with sniper rifles
+	NoSniperRiflesCondition = new class'X2Condition_UnitInventory';
+	NoSniperRiflesCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	NoSniperRiflesCondition.ExcludeWeaponCategory = 'sniper_rifle';
+	Template.AbilityShooterConditions.AddItem(NoSniperRiflesCondition);
+
+	// Effect that applies the damage
+	RegularDamage = new class'X2Effect_Shredder';
+	RegularDamage.bApplyOnHit = true;
+	RegularDamage.bApplyOnMiss = false;
+	RegularDamage.bIgnoreBaseDamage = false;
+	Template.AddTargetEffect(RegularDamage);
+	Template.AddMultiTargetEffect(RegularDamage);
+	
+	// Effect that applies the mobility penalty
+	MobilityDamageEffect = new class 'X2Effect_PersistentStatChange';
+	MobilityDamageEffect.BuildPersistentEffect (default.IRON_CURTAIN_MOB_DAMAGE_DURATION, false, false, false, eGameRule_PlayerTurnEnd);
+	MobilityDamageEffect.SetDisplayInfo(ePerkBuff_Penalty,Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,, Template.AbilitySourceName);
+	MobilityDamageEffect.AddPersistentStatChange (eStat_Mobility, -default.IRON_CURTAIN_MOBILITY_DAMAGE);
+	MobilityDamageEffect.DuplicateResponse = eDupe_Allow;
+	MobilityDamageEffect.EffectName = 'IronCurtainEffect';
+	MobilityDamageEffect.VisualizationFn = EffectFlyOver_Visualization;
+	Template.AddTargetEffect(MobilityDamageEffect);
+	Template.AddMultiTargetEffect(MobilityDamageEffect);
+
+	// Typical visualization
+	Template.CinescriptCameraType = "StandardGunFiring";
+	Template.bUsesFiringCamera = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	// Add a secondary ability to provide bonuses on the shot
+	AddSecondaryAbility(Template, IronCurtainBonuses());
+
+	return Template;
+}
+
+// This is part of the Iron Curtain effect, above
+static function X2AbilityTemplate IronCurtainBonuses()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_ConditionalBonus Effect;
+	local XMBCondition_AbilityName Condition;
+
+	// Create a conditional bonus effect
+	Effect = new class'XMBEffect_ConditionalBonus';
+	Effect.EffectName = 'LW2WotC_IronCurtain_Bonuses';
+
+	// The bonus reduces damage by a percentage
+	Effect.AddPercentDamageModifier(-1 * default.IRON_CURTAIN_DAMAGE_MODIFIER);
+
+	// The bonus only applies to the Iron Curtain ability
+	Condition = new class'XMBCondition_AbilityName';
+	Condition.IncludeAbilityNames.AddItem('LW2WotC_IronCurtain');
+	Effect.AbilityTargetConditions.AddItem(Condition);
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_IronCurtain_Bonuses', "img:///UILibrary_LW_PerkPack.LW_AbilityIronCurtain", false, Effect);
+
+	// Iron Curtain will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
 
 	return Template;
 }

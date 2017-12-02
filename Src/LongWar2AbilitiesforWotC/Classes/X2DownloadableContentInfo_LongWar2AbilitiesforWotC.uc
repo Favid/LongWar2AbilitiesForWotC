@@ -418,6 +418,18 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'LOCKDOWN_TOHIT_BONUS':
 			OutString = getLockdownAimBonusString(class'X2Effect_LW2WotC_Lockdown'.default.LOCKDOWN_TOHIT_BONUS);
 			return true;
+		case 'IRON_CURTAIN_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IRON_CURTAIN_COOLDOWN);
+			return true;
+		case 'IRON_CURTAIN_MOB_DAMAGE_DURATION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IRON_CURTAIN_MOB_DAMAGE_DURATION);
+			return true;
+		case 'IRON_CURTAIN_MOBILITY_DAMAGE':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IRON_CURTAIN_MOBILITY_DAMAGE);
+			return true;
+		case 'IRON_CURTAIN_DAMAGE_MODIFIER':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IRON_CURTAIN_DAMAGE_MODIFIER);
+			return true;
 		default: 
 			return false;
 	}
