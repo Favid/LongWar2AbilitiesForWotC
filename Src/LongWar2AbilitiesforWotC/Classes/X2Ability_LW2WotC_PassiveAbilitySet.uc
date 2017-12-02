@@ -1399,9 +1399,9 @@ static function X2AbilityTemplate FieldSurgeon()
 	return Passive('LW2WotC_FieldSurgeon', "img:///UILibrary_LW_PerkPack.LW_AbilityFieldSurgeon", true, FieldSurgeonEffect);
 }
 
-// Perk name:		Field Surgeon
-// Perk effect:		
-// Localized text:	
+// Perk name:		Trojan
+// Perk effect:		Enemy units that are hacked take damage and lose their actions on the turn the hack effect ends.
+// Localized text:	"Enemy units that are hacked take damage and lose their actions on the turn the hack effect ends."
 // Config:			(AbilityName="LW2WotC_Trojan", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
 static function X2AbilityTemplate Trojan()
 {

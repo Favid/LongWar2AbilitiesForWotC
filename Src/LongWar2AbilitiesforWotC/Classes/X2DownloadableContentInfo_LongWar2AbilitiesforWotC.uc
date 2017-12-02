@@ -430,6 +430,15 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'IRON_CURTAIN_DAMAGE_MODIFIER':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IRON_CURTAIN_DAMAGE_MODIFIER);
 			return true;
+		case 'BODY_SHIELD_DEF_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.BODY_SHIELD_DEF_BONUS);
+			return true;
+		case 'BODY_SHIELD_ENEMY_CRIT_MALUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.BODY_SHIELD_ENEMY_CRIT_MALUS);
+			return true;
+		case 'BODY_SHIELD_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.BODY_SHIELD_COOLDOWN);
+			return true;
 		default: 
 			return false;
 	}

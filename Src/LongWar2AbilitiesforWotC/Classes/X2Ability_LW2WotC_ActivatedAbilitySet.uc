@@ -116,10 +116,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddGunslingerAbility());
 	//Templates.AddItem(GunslingerShot()); //Additional Ability
 	//Templates.AddItem(AddSteadyWeaponAbility());
-	//Templates.AddItem(AddIronCurtainAbility());
-	//Templates.AddItem(IronCurtainShot()); //Additional Ability
 	//Templates.AddItem(AddAbsorptionFieldsAbility());
-	//Templates.AddItem(AddBodyShieldAbility());
 	//Templates.AddItem(AddMindMergeAbility());
 	//Templates.AddItem(AddSoulMergeAbility());
 	//Templates.AddItem(AddSnapShot());
@@ -140,6 +137,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Kubikuri());
 	Templates.AddItem(Ghostwalker());
 	Templates.AddItem(IronCurtain());
+	Templates.AddItem(BodyShield());
 
 	return Templates;
 }
@@ -1491,6 +1489,41 @@ static function X2AbilityTemplate IronCurtainBonuses()
 
 	// Iron Curtain will show up as an active ability, so hide the icon for the passive damage effect
 	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Perk name:		Body Shield
+// Perk effect:		A targeted enemy receives reduced aim and critical chance against the soldier. Cooldown-based.
+// Localized text:	"A targeted enemy receives -<Ability:BODY_SHIELD_DEF_BONUS> aim and -<Ability:BODY_SHIELD_ENEMY_CRIT_MALUS> critical chance against the soldier. <Ability:BODY_SHIELD_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_BodyShield")
+static function X2AbilityTemplate BodyShield()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_LW2WotC_BodyShield		BodyShieldEffect;
+
+	// Effect on the target that reduces their aim and crit against the user
+	BodyShieldEffect = new class'X2Effect_LW2WotC_BodyShield';
+	BodyShieldEffect.BodyShieldDefBonus = default.BODY_SHIELD_DEF_BONUS;
+	BodyShieldEffect.BodyShieldCritMalus = default.BODY_SHIELD_ENEMY_CRIT_MALUS;
+	BodyShieldEffect.BuildPersistentEffect(default.BODY_SHIELD_DURATION, false, true, false, eGameRule_PlayerTurnEnd);
+	BodyShieldEffect.EffectName='LW2WotC_BodyShield';
+
+	// Create template with a helper function
+	Template = TargetedDebuff('LW2WotC_BodyShield', "img:///UILibrary_LW_PerkPack.LW_AbilityBodyShield", false, BodyShieldEffect, default.AUTO_PRIORITY, eCost_Free);
+
+	// Helper function adds a custom fire animation, but we don't want one for this ability
+	Template.CustomFireAnim = '';
+
+	// Doesn't break concealment or provoke hostile actions
+	Template.Hostility = eHostility_Neutral;
+
+	// Show activation, but don't treat it like a gunshot attack
+	Template.bShowActivation = true;
+	Template.bSkipFireAction = true;
+
+	// Configurable cooldown
+	AddCooldown(Template, default.BODY_SHIELD_COOLDOWN);
 
 	return Template;
 }
