@@ -52,6 +52,7 @@ var config int HEAT_WARHEADS_PIERCE;
 var config int HEAT_WARHEADS_SHRED;
 var config int STING_GRENADE_STUN_CHANCE;
 var config int STING_GRENADE_STUN_LEVEL;
+var config int BLUESCREENBOMB_HACK_DEFENSE_CHANGE;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -127,6 +128,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Trojan());
 	Templates.AddItem(TrojanVirus());
 	Templates.AddItem(StingGrenades());
+	Templates.AddItem(BluescreenBombs());
 
 	return Templates;
 }
@@ -976,6 +978,66 @@ static function X2Effect StingGrenadesEffect()
 	StunnedEffect.TargetConditions.AddItem(Condition);
 
 	return StunnedEffect;
+}
+
+// Perk name:		Bluescreen Bombs
+// Perk effect:		Your flashbang grenades now disorient robotic units and reduce their resistance to hacking.
+// Localized text:	"Your flashbang grenades now disorient robotic units and reduce their resistance to hacking."
+// Config:			(AbilityName="LW2WotC_BluescreenBombs")
+static function X2AbilityTemplate BluescreenBombs()
+{
+	return Passive('LW2WotC_BluescreenBombs', "img:///UILibrary_LW_PerkPack.LW_AbilityBluescreenBombs", false, none);
+}
+
+// This effect is applied to Flashbangs in X2DownloadableContentInfo_LongWar2AbilitiesforWotC.uc
+static function X2Effect BluescreenBombsDisorientEffect()
+{
+	local X2Effect_PersistentStatChange		DisorientEffect;
+	local X2Condition_UnitProperty			UnitCondition;
+	local XMBCondition_SourceAbilities 		Condition;
+
+	// Create the disorient effect
+	DisorientEffect = class'X2StatusEffects'.static.CreateDisorientedStatusEffect(false, 0.0f, false);
+
+	// The vanilla CreateDisorientedStatusEffect() function will not work on robots, so remove those conditions so we can change that
+	DisorientEffect.TargetConditions.Length = 0;
+
+	// This effect will work on robots, but not organics. This is because the disorient effect that is already on the flashbang by default will handle organics
+	UnitCondition = new class'X2Condition_UnitProperty';
+	UnitCondition.ExcludeOrganic = true;
+	UnitCondition.ExcludeFriendlyToSource = true;
+	DisorientEffect.TargetConditions.AddItem(UnitCondition);
+
+	// Only applies if the thrower has Bluescreen Bombs
+	Condition = new class'XMBCondition_SourceAbilities';
+	Condition.AddRequireAbility('LW2WotC_BluescreenBombs', 'AA_UnitIsImmune');
+	DisorientEffect.TargetConditions.AddItem(Condition);
+
+	return DisorientEffect;
+}
+
+//This is an effect which will be added to the existing flashbang/sting grenade item/ability
+static function X2Effect BluescreenBombsHackReductionEffect()
+{
+	local X2Effect_PersistentStatChange		HackDefenseChangeEffect;
+	local XMBCondition_SourceAbilities 		Condition;
+	local X2Condition_UnitProperty			UnitCondition;
+
+	// Create the hack defense reduction effect
+	HackDefenseChangeEffect = class'X2StatusEffects'.static.CreateHackDefenseChangeStatusEffect(default.BLUESCREENBOMB_HACK_DEFENSE_CHANGE);
+
+	// This effect will only work on robots
+	UnitCondition = new class'X2Condition_UnitProperty';
+	UnitCondition.ExcludeOrganic = true;
+	UnitCondition.ExcludeFriendlyToSource = true;
+	HackDefenseChangeEffect.TargetConditions.AddItem(UnitCondition);
+
+	// Only applies if the thrower has Bluescreen Bombs
+	Condition = new class'XMBCondition_SourceAbilities';
+	Condition.AddRequireAbility('LW2WotC_BluescreenBombs', 'AA_UnitIsImmune');
+	HackDefenseChangeEffect.TargetConditions.AddItem(Condition);
+
+	return HackDefenseChangeEffect;
 }
 
 // Perk name:		Grazing Fire

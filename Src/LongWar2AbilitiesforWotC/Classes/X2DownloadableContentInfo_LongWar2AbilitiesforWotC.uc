@@ -26,7 +26,7 @@ static event OnPostTemplatesCreated()
 	PatchAbilitiesForLightEmUp();
 	PatchSmokeGrenades();
 	PatchFlashbang();
-	
+
 	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.6");
 }
 
@@ -83,7 +83,7 @@ private static function PatchSmokeGrenade(name ItemName)
 }
 
 /// <summary>
-/// Patches the Flashbang so that they function with Sting Grenades
+/// Patches the Flashbang so that they function with Sting Grenades and Bluescreen Bombs
 /// </summary>
 private static function PatchFlashbang()
 {
@@ -99,6 +99,12 @@ private static function PatchFlashbang()
 		GrenadeTemplate = X2GrenadeTemplate(Template);
 		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.StingGrenadesEffect());
 		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.StingGrenadesEffect());
+
+		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsDisorientEffect());
+		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsDisorientEffect());
+		
+		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsHackReductionEffect());
+		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsHackReductionEffect());
 	}
 }
 
