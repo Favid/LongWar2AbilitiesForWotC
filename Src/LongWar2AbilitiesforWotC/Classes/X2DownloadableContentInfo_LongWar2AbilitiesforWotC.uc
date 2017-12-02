@@ -25,7 +25,8 @@ static event OnPostTemplatesCreated()
 {
 	PatchAbilitiesForLightEmUp();
 	PatchSmokeGrenades();
-
+	PatchFlashbang();
+	
 	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.6");
 }
 
@@ -78,6 +79,26 @@ private static function PatchSmokeGrenade(name ItemName)
 		GrenadeTemplate = X2GrenadeTemplate(Template);
 		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.DenseSmokeEffect());
 		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.DenseSmokeEffect());
+	}
+}
+
+/// <summary>
+/// Patches the Flashbang so that they function with Sting Grenades
+/// </summary>
+private static function PatchFlashbang()
+{
+    local X2ItemTemplateManager		ItemManager;
+	local array<X2DataTemplate>		TemplateAllDifficulties;
+	local X2DataTemplate			Template;
+	local X2GrenadeTemplate			GrenadeTemplate;
+
+	ItemManager = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
+	ItemManager.FindDataTemplateAllDifficulties('FlashbangGrenade', TemplateAllDifficulties);
+	foreach TemplateAllDifficulties(Template)
+	{
+		GrenadeTemplate = X2GrenadeTemplate(Template);
+		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.StingGrenadesEffect());
+		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.StingGrenadesEffect());
 	}
 }
 
@@ -438,6 +459,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 			return true;
 		case 'BODY_SHIELD_COOLDOWN':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.BODY_SHIELD_COOLDOWN);
+			return true;
+		case 'STING_GRENADE_STUN_CHANCE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.STING_GRENADE_STUN_CHANCE);
 			return true;
 		default: 
 			return false;

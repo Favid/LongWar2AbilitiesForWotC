@@ -50,6 +50,8 @@ var config int PROTECTOR_BONUS_CHARGES;
 var config int HEAVY_ORDNANCE_BONUS_CHARGES;
 var config int HEAT_WARHEADS_PIERCE;
 var config int HEAT_WARHEADS_SHRED;
+var config int STING_GRENADE_STUN_CHANCE;
+var config int STING_GRENADE_STUN_LEVEL;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -90,15 +92,10 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(LockOn());
 	Templates.AddItem(Sentinel());
 	Templates.AddItem(RapidReaction());
-	//Templates.AddItem(AddSmartMacrophagesAbility());
-	//Templates.AddItem(AddShadowstrike_LWAbility());
 	//Templates.AddItem(AddSoulStealTriggered2());
-	//Templates.AddItem(AddTrojan());
-	//Templates.AddItem(AddTrojanVirus());
 	//Templates.AddItem(AddBastion());
 	//Templates.AddItem(AddBastionPassive());
 	//Templates.AddItem(AddBastionCleanse());
-	//Templates.AddItem(AddStingGrenades());
 
     Templates.AddItem(TraverseFire());
     Templates.AddItem(Cutthroat());
@@ -129,6 +126,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(FieldSurgeon());
 	Templates.AddItem(Trojan());
 	Templates.AddItem(TrojanVirus());
+	Templates.AddItem(StingGrenades());
 
 	return Templates;
 }
@@ -943,6 +941,41 @@ static function X2Effect DenseSmokeEffect()
 	Effect.TargetConditions.AddItem(Condition);
 
 	return Effect;
+}
+
+// Perk name:		Sting Grenades
+// Perk effect:		Your flashbang grenades have a chance to stun enemies for one turn in the flashbang's Area of Effect.
+// Localized text:	"Your flashbang grenades have a <Ability:STING_GRENADE_STUN_CHANCE>% chance to stun enemies for one turn in the flashbang's Area of Effect."
+// Config:			(AbilityName="LW2WotC_StingGrenades")
+static function X2AbilityTemplate StingGrenades()
+{
+	return Passive('LW2WotC_StingGrenades', "img:///UILibrary_LW_PerkPack.LW_AbilityStunGrenades", false, none);
+}
+
+// This effect is applied to Flashbangs in X2DownloadableContentInfo_LongWar2AbilitiesforWotC.uc
+static function X2Effect StingGrenadesEffect()
+{
+	local X2Effect_Stunned 					StunnedEffect;
+	local XMBCondition_SourceAbilities 		Condition;
+	local X2Condition_UnitProperty			UnitCondition;
+
+	// Stun effect for sting grenades
+	StunnedEffect = class'X2StatusEffects'.static.CreateStunnedStatusEffect(default.STING_GRENADE_STUN_LEVEL, default.STING_GRENADE_STUN_CHANCE);
+	StunnedEffect.SetDisplayInfo(ePerkBuff_Penalty, class'X2StatusEffects'.default.StunnedFriendlyName, class'X2StatusEffects'.default.StunnedFriendlyDesc, "img:///UILibrary_PerkIcons.UIPerk_stun");
+
+	// Stun effect will only apply to organics
+	UnitCondition = new class'X2Condition_UnitProperty';
+	UnitCondition.ExcludeOrganic = false;
+	UnitCondition.ExcludeFriendlyToSource = false;
+	UnitCondition.ExcludeRobotic = true;
+	StunnedEffect.TargetConditions.AddItem(UnitCondition);
+
+	// Only applies if the thrower has Sting Grenades
+	Condition = new class'XMBCondition_SourceAbilities';
+	Condition.AddRequireAbility('LW2WotC_StingGrenades', 'AA_UnitIsImmune');
+	StunnedEffect.TargetConditions.AddItem(Condition);
+
+	return StunnedEffect;
 }
 
 // Perk name:		Grazing Fire
