@@ -26,6 +26,7 @@ static event OnPostTemplatesCreated()
 	PatchAbilitiesForLightEmUp();
 	PatchSmokeGrenades();
 	PatchFlashbang();
+	PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix();
 
 	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.6");
 }
@@ -83,7 +84,8 @@ private static function PatchSmokeGrenade(name ItemName)
 }
 
 /// <summary>
-/// Patches the Flashbang so that they function with Sting Grenades and Bluescreen Bombs
+/// Patches the Flashbang so that they function with Sting Grenades and Bluescreen Bombs.
+/// Also prevents them from dealing damage with Boosted Cores / Volatile Mix
 /// </summary>
 private static function PatchFlashbang()
 {
@@ -97,15 +99,37 @@ private static function PatchFlashbang()
 	foreach TemplateAllDifficulties(Template)
 	{
 		GrenadeTemplate = X2GrenadeTemplate(Template);
+
+		GrenadeTemplate.bAllowVolatileMix = false;
+
 		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.StingGrenadesEffect());
 		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.StingGrenadesEffect());
 
 		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsDisorientEffect());
 		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsDisorientEffect());
-		
+
 		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsHackReductionEffect());
 		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsHackReductionEffect());
 	}
+}
+
+/// <summary>
+/// Updates grenade abilities to get radius bonus from our new Volatile Mix ability
+/// </summary>
+static function PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix()
+{
+	local X2AbilityTemplateManager			AbilityTemplateManager;
+	local X2AbilityTemplate					ThrowGrenadeAbilityTemplate, LaunchGrenadeAbilityTemplate, ProximityMineAbilityTemplate;
+
+	AbilityTemplateManager = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
+
+	ThrowGrenadeAbilityTemplate = AbilityTemplateManager.FindAbilityTemplate('ThrowGrenade');
+	LaunchGrenadeAbilityTemplate = AbilityTemplateManager.FindAbilityTemplate('LaunchGrenade');
+	ProximityMineAbilityTemplate = AbilityTemplateManager.FindAbilityTemplate('ProximityMineDetonation');
+
+	X2AbilityMultiTarget_Radius(ThrowGrenadeAbilityTemplate.AbilityMultiTargetStyle).AddAbilityBonusRadius('LW2WotC_VolatileMix', 1.0);
+	X2AbilityMultiTarget_Radius(LaunchGrenadeAbilityTemplate.AbilityMultiTargetStyle).AddAbilityBonusRadius('LW2WotC_VolatileMix', 1.0);
+	X2AbilityMultiTarget_Radius(ProximityMineAbilityTemplate.AbilityMultiTargetStyle).AddAbilityBonusRadius('LW2WotC_VolatileMix', 1.0);
 }
 
 /// <summary>

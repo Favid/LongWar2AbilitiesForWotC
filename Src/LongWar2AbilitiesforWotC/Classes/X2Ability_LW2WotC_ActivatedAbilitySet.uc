@@ -116,7 +116,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddGunslingerAbility());
 	//Templates.AddItem(GunslingerShot()); //Additional Ability
 	//Templates.AddItem(AddSteadyWeaponAbility());
-	//Templates.AddItem(AddAbsorptionFieldsAbility());
 	//Templates.AddItem(AddMindMergeAbility());
 	//Templates.AddItem(AddSoulMergeAbility());
 	//Templates.AddItem(AddSnapShot());

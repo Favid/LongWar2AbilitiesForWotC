@@ -112,6 +112,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AlphaMikeFoxtrot());
 	Templates.AddItem(CoupDeGrace());
 	Templates.AddItem(BoostedCores());
+	Templates.AddItem(VolatileMix());
 	Templates.AddItem(Flashbanger());
 	Templates.AddItem(Evasive());
 	Templates.AddItem(IronSkin());
@@ -1146,11 +1147,23 @@ static function X2AbilityTemplate BoostedCores()
 	local X2Effect_VolatileMix				DamageEffect;
 
 	// Effect that grants additional damage to grenades
+	// This is confusing, but X2Effect_VolatileMix grants a damage bonus to grenades, and does not apply a radius bonus
 	DamageEffect = new class'X2Effect_VolatileMix';
 	DamageEffect.BonusDamage = default.BOOSTED_CORES_DAMAGE;
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_BoostedCores', "img:///UILibrary_LW_PerkPack.LW_AbilityHeavyFrags", false, DamageEffect);
+}
+
+// Perk name:		Volatile Mix
+// Perk effect:		
+// Localized text:	
+// Config:			(AbilityName="LW2WotC_VolatileMix")
+static function X2AbilityTemplate VolatileMix()
+{
+	// Create the template using a helper function
+	// The range bonus is actually granted by X2DownloadableContentInfo_LongWar2AbilitiesforWotC.PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix()
+	return Passive('LW2WotC_VolatileMix', "img:///UILibrary_PerkIcons.UIPerk_volatilemix", false, none);
 }
 
 // Perk name:		Flashbanger
