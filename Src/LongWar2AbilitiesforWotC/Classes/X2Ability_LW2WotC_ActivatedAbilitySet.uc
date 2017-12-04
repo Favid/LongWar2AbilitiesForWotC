@@ -5,10 +5,6 @@
 
 class X2Ability_LW2WotC_ActivatedAbilitySet extends XMBAbility config (LW_SoldierSkills);
 
-var config int DOUBLE_TAP_1ST_SHOT_AIM;
-var config int DOUBLE_TAP_2ND_SHOT_AIM;
-var config int DOUBLE_TAP_COOLDOWN;
-var config int DOUBLE_TAP_MIN_ACTION_REQ;
 var config int WALK_FIRE_AIM_BONUS;
 var config int WALK_FIRE_CRIT_MALUS;
 var config int WALK_FIRE_COOLDOWN;
@@ -98,6 +94,9 @@ var config int RESCUE_BM_CHARGES;
 var config int IMPACT_FIELDS_COOLDOWN;
 var config int IMPACT_FIELDS_DURATION;
 var config int IMPACT_FIELDS_DAMAGE_REDUCTION_PCT;
+var config name DOUBLE_TAP_ACTION_POINT_NAME;
+var config array<name> DOUBLE_TAP_ABILITIES;
+var config int DOUBLE_TAP_COOLDOWN;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -105,8 +104,6 @@ static function array<X2DataTemplate> CreateTemplates()
 
 	Templates.AddItem(ShootAnyone());
 
-	//Templates.AddItem(AddDoubleTapAbility());
-	//Templates.AddItem(DoubleTap2ndShot()); //Additional Ability
 	Templates.AddItem(WalkFire());
 	Templates.AddItem(PrecisionShot());
 	Templates.AddItem(TrenchGun());
@@ -138,6 +135,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(IronCurtain());
 	Templates.AddItem(BodyShield());
 	Templates.AddItem(ImpactFields());
+	Templates.AddItem(DoubleTap());
 
 	return Templates;
 }
@@ -1554,6 +1552,58 @@ static function X2AbilityTemplate ImpactFields()
 	// Cannot be used while burning, etc. Disorient is okay though
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
 	Template.AddShooterEffectExclusions(SkipExclusions);
+
+	return Template;
+}
+
+// Perk name:		Double Tap
+// Perk effect:		Activate to fire a standard shot and gain a second action restricted to an additional shot or overwatching.
+// Localized text:	"Activate to fire a standard shot and gain a second action restricted to an additional shot or overwatching."
+// Config:			(AbilityName="LW2WotC_DoubleTap")
+static function X2AbilityTemplate DoubleTap()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_Knockback				KnockbackEffect;
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_DoubleTap', "img:///UILibrary_LW_PerkPack.LW_AbilityDoubleTap", false, none, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_DoubleConsumeAll, 1, true);
+
+	// Knockback effect on kill
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	// Configurable cooldown
+	AddCooldown(Template, default.DOUBLE_TAP_COOLDOWN);
+
+	// Additional ability that grants the double tap action points
+	AddSecondaryAbility(Template, DoubleTapBonus());
+
+	return Template;
+}
+
+// This is part of the Double Tap effect, above
+static function X2AbilityTemplate DoubleTapBonus()
+{
+	local X2Effect_GrantActionPoints Effect;
+	local X2AbilityTemplate Template;
+	local XMBCondition_AbilityName NameCondition;
+
+	// Adds two action points that can only be used for gunshots
+	Effect = new class'X2Effect_GrantActionPoints';
+	Effect.NumActionPoints = 2;
+	Effect.PointType = default.DOUBLE_TAP_ACTION_POINT_NAME;
+
+	// Create a triggered ability that will activate whenever the unit uses an ability that meets the condition
+	Template = SelfTargetTrigger('LW2WotC_DoubleTap_Bonus', "img:///UILibrary_LW_PerkPack.LW_AbilityDoubleTap", false, Effect, 'AbilityActivated');
+
+	// Only activates when Double Tap is used
+	NameCondition = new class'XMBCondition_AbilityName';
+	NameCondition.IncludeAbilityNames.AddItem('LW2WotC_DoubleTap');
+	AddTriggerTargetCondition(Template, NameCondition);
+
+	// Show a flyover when activated
+	Template.bShowActivation = true;
 
 	return Template;
 }

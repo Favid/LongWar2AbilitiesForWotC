@@ -27,6 +27,7 @@ static event OnPostTemplatesCreated()
 	PatchSmokeGrenades();
 	PatchFlashbang();
 	PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix();
+	PatchAbilitiesForDoubleTapActionPoint();
 
 	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.6");
 }
@@ -130,6 +131,42 @@ static function PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix()
 	X2AbilityMultiTarget_Radius(ThrowGrenadeAbilityTemplate.AbilityMultiTargetStyle).AddAbilityBonusRadius('LW2WotC_VolatileMix', 1.0);
 	X2AbilityMultiTarget_Radius(LaunchGrenadeAbilityTemplate.AbilityMultiTargetStyle).AddAbilityBonusRadius('LW2WotC_VolatileMix', 1.0);
 	X2AbilityMultiTarget_Radius(ProximityMineAbilityTemplate.AbilityMultiTargetStyle).AddAbilityBonusRadius('LW2WotC_VolatileMix', 1.0);
+}
+
+/// <summary>
+/// Updates various abilities so that they can be used with the action point granted by Double Tap
+/// </summary>
+static function PatchAbilitiesForDoubleTapActionPoint()
+{
+	local X2AbilityTemplateManager			AbilityTemplateManager;
+	local name 								AbilityName;
+	local X2AbilityTemplate					AbilityTemplate;
+
+	AbilityTemplateManager = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
+	foreach class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.DOUBLE_TAP_ABILITIES(AbilityName)
+	{
+		AbilityTemplate = AbilityTemplateManager.FindAbilityTemplate(AbilityName);
+
+		if(AbilityTemplate != none)
+		{
+			AddDoubleTapActionPoint(AbilityTemplate);
+		}
+	}
+}
+
+static function AddDoubleTapActionPoint(X2AbilityTemplate Template)
+{
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+    local X2AbilityCost                     Cost;
+
+	foreach Template.AbilityCosts(Cost)
+    {
+        ActionPointCost = X2AbilityCost_ActionPoints(Cost);
+        if (ActionPointCost != none)
+        {
+			ActionPointCost.AllowedTypes.AddItem(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.DOUBLE_TAP_ACTION_POINT_NAME);
+		}
+	}
 }
 
 /// <summary>
