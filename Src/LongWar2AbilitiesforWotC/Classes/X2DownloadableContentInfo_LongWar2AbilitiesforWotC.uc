@@ -29,6 +29,11 @@ static event OnPostTemplatesCreated()
 	PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix();
 	PatchAbilitiesForDoubleTapActionPoint();
 
+	if(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SNAPSHOT_REDUCES_AP_COST_FOR_SPECIAL_SHOTS)
+	{
+		PatchAbilitiesForSnapshot();
+	}
+
 	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.6");
 }
 
@@ -165,6 +170,36 @@ static function AddDoubleTapActionPoint(X2AbilityTemplate Template)
         if (ActionPointCost != none)
         {
 			ActionPointCost.AllowedTypes.AddItem(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.DOUBLE_TAP_ACTION_POINT_NAME);
+		}
+	}
+}
+
+/// <summary>
+/// Updates special sniper shots so that they only cost one AP if the user has snapshot.
+/// </summary>
+static function PatchAbilitiesForSnapshot()
+{
+	local X2AbilityTemplateManager			AbilityTemplateManager;
+	local name 								AbilityName;
+	local X2AbilityTemplate					AbilityTemplate;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local int 								i;
+
+	AbilityTemplateManager = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
+	foreach class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SNAPSHOT_REDUCED_AP_COST_SPECIAL_SHOTS(AbilityName)
+	{
+		AbilityTemplate = AbilityTemplateManager.FindAbilityTemplate(AbilityName);
+
+		if(AbilityTemplate != none)
+		{
+			for (i = 0; i < AbilityTemplate.AbilityCosts.length; i++)
+			{
+				ActionPointCost = X2AbilityCost_ActionPoints(AbilityTemplate.AbilityCosts[i]);
+				if (ActionPointCost != none)
+				{
+					AbilityTemplate.AbilityCosts[i] = class'X2Ability_LW2WotC_ActivatedAbilitySet'.static.SnapShotReducedAbilityCost();
+				}
+			}
 		}
 	}
 }

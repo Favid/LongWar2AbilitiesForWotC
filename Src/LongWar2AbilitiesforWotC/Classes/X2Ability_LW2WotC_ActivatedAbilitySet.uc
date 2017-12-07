@@ -97,6 +97,8 @@ var config int IMPACT_FIELDS_DAMAGE_REDUCTION_PCT;
 var config name DOUBLE_TAP_ACTION_POINT_NAME;
 var config array<name> DOUBLE_TAP_ABILITIES;
 var config int DOUBLE_TAP_COOLDOWN;
+var config bool SNAPSHOT_REDUCES_AP_COST_FOR_SPECIAL_SHOTS;
+var config array<name> SNAPSHOT_REDUCED_AP_COST_SPECIAL_SHOTS;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -115,9 +117,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(AddSteadyWeaponAbility());
 	//Templates.AddItem(AddMindMergeAbility());
 	//Templates.AddItem(AddSoulMergeAbility());
-	//Templates.AddItem(AddSnapShot());
-	//Templates.AddItem(SnapShotOverwatch());
-	//Templates.AddItem(AddSnapShotAimModifierAbility());
 	Templates.AddItem(RapidDeployment());
 	Templates.AddItem(Fleche());
 	Templates.AddItem(Slash());
@@ -136,6 +135,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(BodyShield());
 	Templates.AddItem(ImpactFields());
 	Templates.AddItem(DoubleTap());
+	Templates.AddItem(SnapShot());
 
 	return Templates;
 }
@@ -1606,4 +1606,64 @@ static function X2AbilityTemplate DoubleTapBonus()
 	Template.bShowActivation = true;
 
 	return Template;
+}
+
+// Perk name:		Snap Shot
+// Perk effect:		You may take standard shots with your sniper rifle after moving, but you suffer severe range penalties beyond 5 tiles of squadsight range.
+// Localized text:	"You may take standard shots with your sniper rifle after moving, but you suffer severe range penalties beyond 5 tiles of squadsight range."
+// Config:			(AbilityName="LW2WotC_SnapShot", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate SnapShot()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_Knockback				KnockbackEffect;
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_SnapShot', "img:///UILibrary_LW_PerkPack.LW_AbilitySnapShot", false, none, class'UIUtilities_Tactical'.const.STANDARD_SHOT_PRIORITY, eCost_SingleConsumeAll, 1, true);
+
+	// Knockback effect on kill
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	// Only shot SnapShot if StandardShot is not available
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_HideIfOtherAvailable;
+	Template.HideIfAvailable.AddItem('SniperStandardFire');
+
+	// Applies the aim penalty at extreme distances
+	AddSecondaryAbility(Template, SnapShotAimModifier());
+
+	return Template;
+}
+
+// This is part of the SnapShot effect, above
+static function X2AbilityTemplate SnapShotAimModifier()
+{
+	local X2AbilityTemplate 			Template;
+	local X2Effect_LW2WotC_SnapShotAimModifier  Effect;
+
+	// This effect lowers the user's aim at extreme ranges when using SnapShot
+	Effect = new class'X2Effect_LW2WotC_SnapShotAimModifier';
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_SnapShot_AimModifier', "img:///UILibrary_LW_PerkPack.LW_AbilitySnapShot", false, Effect);
+
+	// SnapShot will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Reduces AP cost if user has LW2WotC_SnapShot
+// Applied to various abilities if feature is turned on in the config
+static function X2AbilityCost_LW2WotC_ReducedActionCostByAbility SnapShotReducedAbilityCost()
+{
+	local X2AbilityCost_LW2WotC_ReducedActionCostByAbility AbilityCost;
+
+	AbilityCost = new class'X2AbilityCost_LW2WotC_ReducedActionCostByAbility';
+	AbilityCost.iNumPoints = 0; 
+	AbilityCost.bAddWeaponTypicalCost = true; 
+	AbilityCost.bConsumeAllPoints = true;
+	AbilityCost.AbilitiesThatReduceCost.AddItem('LW2WotC_SnapShot');
+
+	return AbilityCost;
 }

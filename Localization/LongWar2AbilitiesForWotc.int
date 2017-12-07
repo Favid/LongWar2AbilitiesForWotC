@@ -6,3 +6,4 @@ LocTrojanVirusTriggered="<XGParam:StrValue0/!UnitName/> triggered Trojan Virus."
 
 [X2Effect_LW2WotC_Savior]
 strSavior_WorldMessage="Savior: Healed extra <XGParam:IntValue0/> Health."
+
