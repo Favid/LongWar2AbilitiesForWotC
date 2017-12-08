@@ -833,7 +833,6 @@ static function X2AbilityTemplate RunAndGun()
 	ActionRefundCondition.AddCheckValue ('LW2WotC_HitandRunUses', 0, eCheck_Exact,,,'AA_AbilityUnavailable');
 	Template.AbilityShooterConditions.AddItem(ActionRefundCondition); 
 
-
 	return Template;
 }
 
@@ -1527,7 +1526,7 @@ static function X2AbilityTemplate BodyShield()
 }
 
 // Perk name:		Impact Fields
-// Perk effect:		"Activate a force field that reduces incoming damage for a few turns. Cooldown-based.
+// Perk effect:		Activate a force field that reduces incoming damage for a few turns. Cooldown-based.
 // Localized text:	"Activate a force field that reduces incoming damage by <Ability:IMPACT_FIELDS_DAMAGE_REDUCTION_PCT>% for <Ability:IMPACT_FIELDS_DURATION> turns. <Ability:IMPACT_FIELDS_COOLDOWN> turn cooldown."
 // Config:			(AbilityName="LW2WotC_ImpactFields")
 static function X2AbilityTemplate ImpactFields()
@@ -1625,7 +1624,7 @@ static function X2AbilityTemplate SnapShot()
 	KnockbackEffect.KnockbackDistance = 2;
 	Template.AddTargetEffect(KnockbackEffect);
 
-	// Only shot SnapShot if StandardShot is not available
+	// Only show SnapShot if StandardShot is not available
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_HideIfOtherAvailable;
 	Template.HideIfAvailable.AddItem('SniperStandardFire');
 
@@ -1655,6 +1654,7 @@ static function X2AbilityTemplate SnapShotAimModifier()
 
 // Reduces AP cost if user has LW2WotC_SnapShot
 // Applied to various abilities if feature is turned on in the config
+// NOTE: This method may not work with abilities that already have intricate cooldown definitions
 static function X2AbilityCost_LW2WotC_ReducedActionCostByAbility SnapShotReducedAbilityCost()
 {
 	local X2AbilityCost_LW2WotC_ReducedActionCostByAbility AbilityCost;

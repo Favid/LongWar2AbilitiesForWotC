@@ -130,6 +130,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(TrojanVirus());
 	Templates.AddItem(StingGrenades());
 	Templates.AddItem(BluescreenBombs());
+	Templates.AddItem(Whirlwind());
 
 	return Templates;
 }
@@ -1619,4 +1620,68 @@ static function TrojanVirusVisualizationRemoved(XComGameState VisualizeGameState
 
 	MessageAction = X2Action_PlayWorldMessage(class'X2Action_PlayWorldMessage'.static.AddToVisualizationTree(ActionMetadata, VisualizeGameState.GetContext(), false, ActionMetadata.LastActionAdded));
 	MessageAction.AddWorldMessage(`XEXPAND.ExpandString(default.LocTrojanVirusTriggered));
+}
+
+// Perk name:		Whirlwind
+// Perk effect:		If you hit with a melee attack during your turn, gain a bonus move.
+// Localized text:	"If you hit with a melee attack during your turn, gain a bonus move."
+// Config:			(AbilityName="LW2WotC_Whirlwind")
+static function X2AbilityTemplate Whirlwind()
+{
+	local X2Effect_GrantActionPoints Effect;
+	local X2AbilityTemplate Template;
+	local XMBCondition_AbilityCost CostCondition;
+	local X2Condition_UnitEffects ExcludeEffectsCondition;
+	local X2Condition_UnitValue ValueCondition;
+	local X2Condition_UnitValue ReaperCondition;
+	local X2Effect_IncrementUnitValue ValueEffect;
+
+	// Add a single movement action point to the unit
+	Effect = new class'X2Effect_GrantActionPoints';
+	Effect.NumActionPoints = 1;
+	Effect.PointType = class'X2CharacterTemplateManager'.default.MoveActionPoint;
+
+	// Create a triggered ability that will activate whenever the unit uses an ability that meets the conditions
+	Template = SelfTargetTrigger('LW2WotC_Whirlwind', "img:///UILibrary_PerkIcons.UIPerk_riposte", false, Effect, 'AbilityActivated');
+
+	// Add an effect that will increment a counter for the number of times Whirlwind has activated this turn
+	ValueEffect = new class'X2Effect_IncrementUnitValue';
+	ValueEffect.UnitName = 'LW2WotC_Whirlwind_Activations';
+	ValueEffect.NewValueToSet = 1;
+	ValueEffect.CleanupType = eCleanup_BeginTurn;
+	Template.AddTargetEffect(ValueEffect);
+
+	// Requires that the ability costs at least one action point
+	CostCondition = new class'XMBCondition_AbilityCost';
+	CostCondition.bRequireMinimumCost = true;
+	CostCondition.MinimumCost = 1;
+	CostCondition.bRequireMinimumPointsSpent = true;
+	CostCondition.MinimumPointsSpent = 1;
+	AddTriggerTargetCondition(Template, CostCondition);
+    
+	// Only triggers on melee attacks
+	AddTriggerTargetCondition(Template, default.MeleeCondition);
+
+	// Require that Serial isn't active
+	ExcludeEffectsCondition = new class'X2Condition_UnitEffects';
+	ExcludeEffectsCondition.AddExcludeEffect(class'X2Effect_Serial'.default.EffectName, 'AA_UnitIsImmune');
+	AddTriggerShooterCondition(Template, ExcludeEffectsCondition);
+
+	// Require that Reaper wasn't activated
+	ReaperCondition = new class'X2Condition_UnitValue';
+	ReaperCondition.AddCheckValue(class'X2Effect_Reaper'.default.ReaperActivatedName, 1, eCheck_LessThan);
+	AddTriggerShooterCondition(Template, ReaperCondition);
+
+	// Require that Whirlwind hasn't already activated this turn
+	ValueCondition = new class'X2Condition_UnitValue';
+	ValueCondition.AddCheckValue('LW2WotC_Whirlwind_Activations', 1, eCheck_LessThan);
+	AddTriggerShooterCondition(Template, ValueCondition);
+
+	// Trigger abilities don't appear as passives. Add a passive ability icon.
+	AddIconPassive(Template);
+
+	// Show a flyover when Whirlwind is activated
+	Template.bShowActivation = true;
+
+	return Template;
 }
