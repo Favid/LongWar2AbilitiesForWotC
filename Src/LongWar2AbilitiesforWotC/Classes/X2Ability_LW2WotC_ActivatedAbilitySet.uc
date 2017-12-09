@@ -27,9 +27,6 @@ var config int SLUG_SHOT_COOLDOWN;
 var config int SLUG_SHOT_AMMO_COST;
 var config int SLUG_SHOT_MIN_ACTION_REQ;
 var config int SLUG_SHOT_PIERCE;
-var config int CLUTCH_SHOT_MIN_ACTION_REQ;
-var config int CLUTCH_SHOT_AMMO_COST;
-var config int CLUTCH_SHOT_CHARGES;
 var config int GUNSLINGER_COOLDOWN;
 var config int GUNSLINGER_TILES_RANGE;
 var config int STEADY_WEAPON_AIM_BONUS;
@@ -107,6 +104,7 @@ var config int FLUSH_STATEFFECT_DURATION;
 var config int FLUSH_DODGE_REDUCTION;
 var config int FLUSH_DEFENSE_REDUCTION;
 var config int FLUSH_DAMAGE_PERCENT_MALUS;
+var config int CLUTCH_SHOT_CHARGES;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -118,7 +116,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(PrecisionShot());
 	Templates.AddItem(TrenchGun());
 	Templates.AddItem(SlugShot());
-	//Templates.AddItem(AddClutchShotAbility());
 	//Templates.AddItem(AddCommissarAbility());
 	//Templates.AddItem(AddGunslingerAbility());
 	//Templates.AddItem(GunslingerShot()); //Additional Ability
@@ -147,6 +144,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(GhostGrenade());
 	Templates.AddItem(VanishingAct());
 	Templates.AddItem(Flush());
+	Templates.AddItem(ClutchShot());
 
 	return Templates;
 }
@@ -1830,7 +1828,7 @@ static function X2AbilityTemplate Flush()
 	local X2Effect_LW2WotC_FallBack FallBackEffect;
 	local X2Effect_PersistentStatChange NerfEffect;
 	local X2Condition_UnitProperty NotConcealedCondition;
-	
+
 	// Create the template using a helper function
 	Template = Attack('LW2WotC_Flush', "img:///UILibrary_LW_PerkPack.LW_AbilityFlush", false, none, class'UIUtilities_Tactical'.const.CLASS_CORPORAL_PRIORITY - 1, eCost_WeaponConsumeAll, default.FLUSH_AMMO_COST, true);
 
@@ -1896,6 +1894,45 @@ static function X2AbilityTemplate FlushBonuses()
 
 	// Flush will show up as an active ability, so hide the icon for the passive damage effect
 	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Perk name:		Clutch Shot
+// Perk effect:		Once per mission, fire a pistol shot that cannot miss.
+// Localized text:	"Once per mission, fire a pistol shot that cannot miss."
+// Config:			(AbilityName="LW2WotC_ClutchShot", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate ClutchShot()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityToHitCalc_StandardAim    ToHitCalc;
+	local X2Condition_Visibility			VisibilityCondition;
+	local X2Effect_Knockback				KnockbackEffect;
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_ClutchShot', "img:///UILibrary_LW_PerkPack.LW_AbilityClutchShot", false, none, class'UIUtilities_Tactical'.const.CLASS_LIEUTENANT_PRIORITY, eCost_WeaponConsumeAll, 0, true);
+
+	// Squadsight should not apply
+	Template.AbilityTargetConditions.Length = 0;
+	VisibilityCondition = new class'X2Condition_Visibility';
+	VisibilityCondition.bRequireGameplayVisible = true;
+	VisibilityCondition.bAllowSquadsight = false;
+	Template.AbilityTargetConditions.AddItem(VisibilityCondition);
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+
+	// Attack always hits
+	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
+	ToHitCalc.bGuaranteedHit = true;
+	Template.AbilityToHitCalc = ToHitCalc;
+	Template.AbilityToHitOwnerOnMissCalc = ToHitCalc;
+
+	// Knockback effect on kill
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	// Configurable charges
+	AddCharges(Template, default.CLUTCH_SHOT_CHARGES);
 
 	return Template;
 }
