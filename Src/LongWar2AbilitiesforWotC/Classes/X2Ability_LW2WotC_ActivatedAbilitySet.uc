@@ -99,6 +99,7 @@ var config array<name> DOUBLE_TAP_ABILITIES;
 var config int DOUBLE_TAP_COOLDOWN;
 var config bool SNAPSHOT_REDUCES_AP_COST_FOR_SPECIAL_SHOTS;
 var config array<name> SNAPSHOT_REDUCED_AP_COST_SPECIAL_SHOTS;
+var config int VANISHINGACT_CHARGES;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -136,6 +137,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(ImpactFields());
 	Templates.AddItem(DoubleTap());
 	Templates.AddItem(SnapShot());
+	Templates.AddItem(GhostGrenade());
+	Templates.AddItem(VanishingAct());
 
 	return Templates;
 }
@@ -1666,4 +1669,144 @@ static function X2AbilityCost_LW2WotC_ReducedActionCostByAbility SnapShotReduced
 	AbilityCost.AbilitiesThatReduceCost.AddItem('LW2WotC_SnapShot');
 
 	return AbilityCost;
+}
+
+// Perk name:		Ghost Grenade
+// Perk effect:		A specialized smoke grenade that causes the targeted ally to enter concealment.
+// Localized text:	"A specialized smoke grenade that causes the targeted ally to enter concealment."
+// Config:			(AbilityName="LW2WotC_GhostGrenade")
+static function X2AbilityTemplate GhostGrenade()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_AddUtilityItem ItemEffect;
+
+	// Adds a free ghost grenade
+	ItemEffect = new class'XMBEffect_AddUtilityItem';
+	ItemEffect.DataName = 'LW2WotC_GhostGrenade';
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_GhostGrenade', "img:///UILibrary_PerkIcons.UIPerk_ghost", false, ItemEffect);
+
+	return Template;
+}
+
+// This is the ability that the Ghost Grenade item grants
+static function X2AbilityTemplate VanishingAct()
+{
+	local X2AbilityTemplate				Template;
+	local X2AbilityCost_ActionPoints	ActionPointCost;
+	local X2Condition_UnitProperty		TargetProperty, ShooterProperty;
+	local X2Effect_ApplySmokeGrenadeToWorld WeaponEffect;
+	local X2Effect_SmokeGrenade				SmokeEffect;	
+	local X2Effect_RangerStealth		StealthEffect;
+	local X2AbilityMultiTarget_Radius		RadiusMultiTarget;
+	local X2AbilityCharges					Charges;
+	local X2AbilityCost_Charges				ChargeCost;
+	local X2Condition_UnitEffects			NotCarryingCondition;
+
+	// Standard setup for an ability granted by an item
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'VanishingAct');
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_ghost"; 
+	Template.AbilitySourceName = 'eAbilitySource_Item';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+    Template.AbilityTargetStyle = default.SingleTargetWithSelf;
+	Template.bCrossClassEligible = false;
+	Template.bIsPassive = false;
+	Template.bDisplayInUITacticalText = false;
+	Template.bLimitTargetIcons = true;
+	Template.bUseLaunchedGrenadeEffects = true;
+
+	// Costs one action point and ends the turn
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+    ActionPointCost.iNumPoints = 1;
+    ActionPointCost.bConsumeAllPoints = true;
+    Template.AbilityCosts.AddItem(ActionPointCost);
+
+    // Standard active ability actions
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+    Template.AddShooterEffectExclusions();
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
+	
+	// Cannot be used while concealed
+	ShooterProperty = new class'X2Condition_UnitProperty';
+	ShooterProperty.ExcludeConcealed = true;
+	Template.AbilityShooterConditions.AddItem(ShooterProperty);
+
+	// Lots of coniditions for who the ability can target
+	TargetProperty = new class'X2Condition_UnitProperty';
+    TargetProperty.ExcludeDead = true;
+    TargetProperty.ExcludeHostileToSource = true;
+    TargetProperty.ExcludeFriendlyToSource = false;
+    TargetProperty.RequireSquadmates = true;
+	TargetProperty.ExcludeConcealed = true;
+	TargetProperty.ExcludeCivilian = true;
+	TargetProperty.ExcludeImpaired = true;
+	TargetProperty.FailOnNonUnits = true;
+	TargetProperty.IsAdvent = false;
+	TargetProperty.ExcludePanicked = true;
+	TargetProperty.ExcludeAlien = true;
+	TargetProperty.IsBleedingOut = false;
+	TargetProperty.IsConcealed = false;
+	TargetProperty.ExcludeStunned = true;
+	TargetProperty.IsImpaired = false;
+    Template.AbilityTargetConditions.AddItem(TargetProperty);
+	
+	// Cannot target anyone who is carrying someone, burning, or bound
+	NotCarryingCondition = new class'X2Condition_UnitEffects';
+	NotCarryingCondition.AddExcludeEffect(class'X2Ability_CarryUnit'.default.CarryUnitEffectName, 'AA_CarryingUnit');
+	NotCarryingCondition.AddExcludeEffect(class'X2StatusEffects'.default.BurningName, 'AA_UnitIsBurning');
+	NotCarryingCondition.AddExcludeEffect(class'X2AbilityTemplateManager'.default.BoundName, 'AA_UnitIsBound');
+	Template.AbilityTargetConditions.AddItem(NotCarryingCondition);
+
+	// Configurable charges
+	Charges = new class'X2AbilityCharges';
+    Charges.InitialCharges = default.VANISHINGACT_CHARGES;
+    Template.AbilityCharges = Charges;
+    ChargeCost = new class'X2AbilityCost_Charges';
+    ChargeCost.NumCharges = 1;
+    Template.AbilityCosts.AddItem(ChargeCost);
+
+    // Area of effect radius for the smoke
+	RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+	RadiusMultiTarget.bUseWeaponRadius = false;
+	RadiusMultiTarget.bUseSourceWeaponLocation = false;
+	RadiusMultiTarget.fTargetRadius = 2; // meters
+	Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+	
+	// Applies smoke cloud to the world
+	WeaponEffect = new class'X2Effect_ApplySmokeGrenadeToWorld';
+	Template.AddTargetEffect (WeaponEffect);
+
+	// Smoke grenade defense bonus
+	SmokeEffect = new class'X2Effect_SmokeGrenade';
+	SmokeEffect.BuildPersistentEffect(class'X2Effect_ApplySmokeGrenadeToWorld'.default.Duration + 1, false, false, false, eGameRule_PlayerTurnBegin);
+    SmokeEffect.SetDisplayInfo(1, class'X2Item_DefaultGrenades'.default.SmokeGrenadeEffectDisplayName, class'X2Item_DefaultGrenades'.default.SmokeGrenadeEffectDisplayDesc, "img:///UILibrary_PerkIcons.UIPerk_grenade_smoke");
+    SmokeEffect.HitMod = class'X2Item_DefaultGrenades'.default.SMOKEGRENADE_HITMOD;
+    SmokeEffect.DuplicateResponse = eDupe_Refresh;
+	Template.AddTargetEffect (SmokeEffect);
+
+	// Coneals the primary target
+	StealthEffect = new class'X2Effect_RangerStealth';
+    StealthEffect.BuildPersistentEffect(1, true, false, false, 8);
+    StealthEffect.SetDisplayInfo(1, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true);
+    StealthEffect.bRemoveWhenTargetConcealmentBroken = true;
+    Template.AddTargetEffect(StealthEffect);
+    Template.AddTargetEffect(class'X2Effect_Spotted'.static.CreateUnspottedEffect());
+
+    // For the visualization
+	Template.TargetingMethod = class'X2TargetingMethod_OvertheShoulder';
+    Template.CinescriptCameraType = "Grenadier_GrenadeLauncher";
+
+    // Primary target uses the activate concealment voice line
+	Template.TargetHitSpeech = 'ActivateConcealment';
+
+	// More visualization stuff
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	return Template;
 }
