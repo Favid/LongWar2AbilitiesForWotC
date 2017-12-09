@@ -586,6 +586,15 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'FLUSH_COOLDOWN':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLUSH_COOLDOWN);
 			return true;
+		case 'GUNSLINGER_TILES_RANGE':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.GUNSLINGER_TILES_RANGE);
+			return true;
+		case 'GUNSLINGER_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.GUNSLINGER_COOLDOWN);
+			return true;
+		case 'COMMISSAR_HIT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMMISSAR_HIT_BONUS);
+			return true;
 		default: 
 			return false;
 	}

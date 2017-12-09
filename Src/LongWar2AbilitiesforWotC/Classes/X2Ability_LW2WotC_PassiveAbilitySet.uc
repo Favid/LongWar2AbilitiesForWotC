@@ -53,6 +53,7 @@ var config int HEAT_WARHEADS_SHRED;
 var config int STING_GRENADE_STUN_CHANCE;
 var config int STING_GRENADE_STUN_LEVEL;
 var config int BLUESCREENBOMB_HACK_DEFENSE_CHANGE;
+var config int COMMISSAR_HIT_BONUS;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -93,11 +94,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(LockOn());
 	Templates.AddItem(Sentinel());
 	Templates.AddItem(RapidReaction());
-	//Templates.AddItem(AddSoulStealTriggered2());
-	//Templates.AddItem(AddBastion());
-	//Templates.AddItem(AddBastionPassive());
-	//Templates.AddItem(AddBastionCleanse());
-
     Templates.AddItem(TraverseFire());
     Templates.AddItem(Cutthroat());
 	Templates.AddItem(Covert());
@@ -131,6 +127,12 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(StingGrenades());
 	Templates.AddItem(BluescreenBombs());
 	Templates.AddItem(Whirlwind());
+	Templates.AddItem(Commissar());
+
+	//Templates.AddItem(AddSoulStealTriggered2());
+	//Templates.AddItem(AddBastion());
+	//Templates.AddItem(AddBastionPassive());
+	//Templates.AddItem(AddBastionCleanse());
 
 	return Templates;
 }
@@ -1684,4 +1686,26 @@ static function X2AbilityTemplate Whirlwind()
 	Template.bShowActivation = true;
 
 	return Template;
+}
+
+// Perk name:		Commissar
+// Perk effect:		If you hit with a melee attack during your turn, gain a bonus move.
+// Localized text:	"If you hit with a melee attack during your turn, gain a bonus move."
+// Config:			(AbilityName="LW2WotC_Commissar", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Commissar()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_Commissar		DamageModifier;
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_Commissar', "img:///UILibrary_LW_PerkPack.LW_AbilityCommissar", false, none);
+
+	// Grants the aim and damage bonuses against mind controlled soldiers
+	DamageModifier = new class 'X2Effect_LW2WotC_Commissar';
+	DamageModifier.AimBonus = default.COMMISSAR_HIT_BONUS;
+	DamageModifier.BuildPersistentEffect (1, true, true);
+	DamageModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (DamageModifier);
+
+	return Template;		
 }

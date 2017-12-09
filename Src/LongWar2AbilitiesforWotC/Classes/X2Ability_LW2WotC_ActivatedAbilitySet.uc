@@ -27,8 +27,6 @@ var config int SLUG_SHOT_COOLDOWN;
 var config int SLUG_SHOT_AMMO_COST;
 var config int SLUG_SHOT_MIN_ACTION_REQ;
 var config int SLUG_SHOT_PIERCE;
-var config int GUNSLINGER_COOLDOWN;
-var config int GUNSLINGER_TILES_RANGE;
 var config int STEADY_WEAPON_AIM_BONUS;
 var config int INTERFERENCE_CV_CHARGES;
 var config int INTERFERENCE_MG_CHARGES;
@@ -105,6 +103,8 @@ var config int FLUSH_DODGE_REDUCTION;
 var config int FLUSH_DEFENSE_REDUCTION;
 var config int FLUSH_DAMAGE_PERCENT_MALUS;
 var config int CLUTCH_SHOT_CHARGES;
+var config int GUNSLINGER_COOLDOWN;
+var config int GUNSLINGER_TILES_RANGE;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -116,12 +116,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(PrecisionShot());
 	Templates.AddItem(TrenchGun());
 	Templates.AddItem(SlugShot());
-	//Templates.AddItem(AddCommissarAbility());
-	//Templates.AddItem(AddGunslingerAbility());
-	//Templates.AddItem(GunslingerShot()); //Additional Ability
-	//Templates.AddItem(AddSteadyWeaponAbility());
-	//Templates.AddItem(AddMindMergeAbility());
-	//Templates.AddItem(AddSoulMergeAbility());
 	Templates.AddItem(RapidDeployment());
 	Templates.AddItem(Fleche());
 	Templates.AddItem(Slash());
@@ -145,7 +139,14 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(VanishingAct());
 	Templates.AddItem(Flush());
 	Templates.AddItem(ClutchShot());
+	Templates.AddItem(Gunslinger());
+	Templates.AddItem(GunslingerShot());
 
+	//Templates.AddItem(AddCommissarAbility());
+	//Templates.AddItem(AddSteadyWeaponAbility());
+	//Templates.AddItem(AddMindMergeAbility());
+	//Templates.AddItem(AddSoulMergeAbility());
+	
 	return Templates;
 }
 
@@ -1933,6 +1934,186 @@ static function X2AbilityTemplate ClutchShot()
 
 	// Configurable charges
 	AddCharges(Template, default.CLUTCH_SHOT_CHARGES);
+
+	return Template;
+}
+
+// Perk name:		Gunslinger
+// Perk effect:		Take a reaction shot with your pistol against any enemy that moves or attacks within a wide cone of fire. Cooldown-based.
+// Localized text:	"Take a reaction shot with your pistol against any enemy that moves or attacks within <Ability:GUNSLINGER_TILES_RANGE> tiles and a wide cone of fire. <Ability:GUNSLINGER_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_Gunslinger", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Gunslinger()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityCooldown					Cooldown;
+	local X2AbilityCost_Ammo				AmmoCost;
+	local X2AbilityCost_ActionPoints		ActionPointCost;
+	local X2AbilityTarget_Cursor			CursorTarget;
+	local X2AbilityMultiTarget_Cone			ConeMultiTarget;
+	local X2Effect_ReserveActionPoints		ReservePointsEffect;
+	local X2Effect_MarkValidActivationTiles MarkTilesEffect;
+	local X2Condition_UnitEffects           SuppressedCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_Gunslinger');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityGunslinger";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY;
+	Template.Hostility = eHostility_Defensive;
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+	Template.bDisplayInUITooltip = false;
+	Template.bDisplayInUITacticalText = false;
+	Template.Hostility = eHostility_Defensive;
+	Template.AbilityConfirmSound = "Unreal2DSounds_OverWatch";
+	Template.bSkipFireAction = true;
+    Template.bShowActivation = true;
+	Template.ActivationSpeech = 'KillZone';
+	Template.bCrossClassEligible = false;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	AmmoCost.bFreeCost = true;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	ActionPointCost.bConsumeAllPoints = true;   
+	ActionPointCost.bFreeCost = true;    
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	SuppressedCondition = new class'X2Condition_UnitEffects';
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = default.GUNSLINGER_COOLDOWN;
+	Template.AbilityCooldown = Cooldown;
+
+	CursorTarget = new class'X2AbilityTarget_Cursor';
+	CursorTarget.bRestrictToWeaponRange = true;
+	Template.AbilityTargetStyle = CursorTarget;
+	Template.TargetingMethod = class'X2TargetingMethod_Cone';
+
+	ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+	ConeMultiTarget.bUseWeaponRadius = true;
+	ConeMultiTarget.ConeEndDiameter = 48 * class'XComWorldData'.const.WORLD_StepSize;
+	ConeMultiTarget.ConeLength = default.GUNSLINGER_TILES_RANGE * class'XComWorldData'.const.WORLD_StepSize;
+	Template.AbilityMultiTargetStyle = ConeMultiTarget;
+
+	ReservePointsEffect = new class'X2Effect_ReserveActionPoints';
+	ReservePointsEffect.ReserveType = class'X2Ability_SharpshooterAbilitySet'.default.KillZoneReserveType;
+	Template.AddShooterEffect(ReservePointsEffect);
+
+	MarkTilesEffect = new class'X2Effect_MarkValidActivationTiles';
+	MarkTilesEffect.AbilityToMark = 'GunslingerShot';
+	Template.AddShooterEffect(MarkTilesEffect);
+
+	Template.AdditionalAbilities.AddItem('GunslingerShot');
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	return Template;
+}
+
+// The shot fired when a target moves in the Gunslinger area of effect
+static function X2AbilityTemplate GunslingerShot()
+{
+	local X2AbilityTemplate                 Template;
+	local X2AbilityCost_Ammo				AmmoCost;
+	local X2AbilityCost_ReserveActionPoints ReserveActionPointCost;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local X2Condition_AbilityProperty       AbilityCondition;
+	local X2AbilityTarget_Single            SingleTarget;
+	local X2AbilityTrigger_Event	        Trigger;
+	local X2Effect_Persistent               GunslingerEffect;
+	local X2Condition_UnitEffectsWithAbilitySource  GunslingerCondition;
+	local X2Condition_Visibility            TargetVisibilityCondition;
+	local X2Condition_UnitProperty          ShooterCondition;
+	// local X2Condition_RequiredToHitChance	RequiredHitChanceCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'GunslingerShot');	
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_overwatch";
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY;
+	Template.bDisplayInUITooltip = false;
+	Template.bDisplayInUITacticalText = false;
+
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	// RequiredHitChanceCondition = new class'X2Condition_RequiredToHitChance';
+	// RequiredHitChanceCondition.MinimumRequiredHitChance = class'X2Ability_PerkPackAbilitySet2'.default.REQUIRED_TO_HIT_FOR_OVERWATCH;  
+	// Template.AbilityTargetConditions.AddItem(RequiredHitChanceCondition);
+
+	ReserveActionPointCost = new class'X2AbilityCost_ReserveActionPoints';
+	ReserveActionPointCost.iNumPoints = 1;
+	ReserveActionPointCost.bFreeCost = true;
+	ReserveActionPointCost.AllowedTypes.AddItem('KillZone');
+	Template.AbilityCosts.AddItem(ReserveActionPointCost);
+
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bReactionFire = true;
+	Template.AbilityToHitCalc = StandardAim;
+	Template.AbilityToHitOwnerOnMissCalc = StandardAim;
+
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitDisallowMindControlProperty);
+
+	TargetVisibilityCondition = new class'X2Condition_Visibility';
+	TargetVisibilityCondition.bRequireGameplayVisible = true;
+	TargetVisibilityCondition.bRequireBasicVisibility = true;
+	TargetVisibilityCondition.bDisablePeeksOnMovement = true;
+	TargetVisibilityCondition.bAllowSquadsight = false;
+	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
+
+	AbilityCondition = new class'X2Condition_AbilityProperty';
+	AbilityCondition.TargetMustBeInValidTiles = true;
+	Template.AbilityTargetConditions.AddItem(AbilityCondition);
+
+	Template.AbilityTargetConditions.AddItem(class'X2Ability_DefaultAbilitySet'.static.OverwatchTargetEffectsCondition());
+
+	ShooterCondition = new class'X2Condition_UnitProperty';
+	ShooterCondition.ExcludeConcealed = true;
+	Template.AbilityShooterConditions.AddItem(ShooterCondition);
+
+	GunslingerCondition = new class'X2Condition_UnitEffectsWithAbilitySource';
+	GunslingerCondition.AddExcludeEffect('GunslingerTarget', 'AA_UnitIsImmune');
+	Template.AbilityTargetConditions.AddItem(GunslingerCondition);
+
+	GunslingerEffect = new class'X2Effect_Persistent';
+	GunslingerEffect.EffectName = 'GunslingerTarget';
+	GunslingerEffect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);
+	GunslingerEffect.SetupEffectOnShotContextResult(true, true);      //  mark them regardless of whether the shot hit or missed
+	Template.AddTargetEffect(GunslingerEffect);
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	SingleTarget = new class'X2AbilityTarget_Single';
+	SingleTarget.OnlyIncludeTargetsInsideWeaponRange = true;
+	Template.AbilityTargetStyle = SingleTarget;
+
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
+	Template.bAllowAmmoEffects = true;
+
+	Trigger = new class'X2AbilityTrigger_Event';
+	Trigger.EventObserverClass = class'X2TacticalGameRuleset_MovementObserver';
+	Trigger.MethodName = 'InterruptGameState';
+	Template.AbilityTriggers.AddItem(Trigger);
+
+	Trigger = new class'X2AbilityTrigger_Event';
+	Trigger.EventObserverClass = class'X2TacticalGameRuleset_AttackObserver';
+	Trigger.MethodName = 'InterruptGameState';
+	Template.AbilityTriggers.AddItem(Trigger);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 
 	return Template;
 }
