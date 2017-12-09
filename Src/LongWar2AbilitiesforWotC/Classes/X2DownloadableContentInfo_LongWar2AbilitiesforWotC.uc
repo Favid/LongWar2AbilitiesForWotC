@@ -574,6 +574,18 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'IMPACT_FIELDS_COOLDOWN':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IMPACT_FIELDS_COOLDOWN);
 			return true;
+		case 'FLUSH_AIM_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLUSH_AIM_BONUS);
+			return true;
+		case 'FLUSH_DODGE_REDUCTION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLUSH_DODGE_REDUCTION);
+			return true;
+		case 'FLUSH_DEFENSE_REDUCTION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLUSH_DEFENSE_REDUCTION);
+			return true;
+		case 'FLUSH_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLUSH_COOLDOWN);
+			return true;
 		default: 
 			return false;
 	}

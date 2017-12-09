@@ -100,6 +100,13 @@ var config int DOUBLE_TAP_COOLDOWN;
 var config bool SNAPSHOT_REDUCES_AP_COST_FOR_SPECIAL_SHOTS;
 var config array<name> SNAPSHOT_REDUCED_AP_COST_SPECIAL_SHOTS;
 var config int VANISHINGACT_CHARGES;
+var config int FLUSH_COOLDOWN;
+var config int FLUSH_AMMO_COST;
+var config int FLUSH_AIM_BONUS;
+var config int FLUSH_STATEFFECT_DURATION;
+var config int FLUSH_DODGE_REDUCTION;
+var config int FLUSH_DEFENSE_REDUCTION;
+var config int FLUSH_DAMAGE_PERCENT_MALUS;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -139,6 +146,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(SnapShot());
 	Templates.AddItem(GhostGrenade());
 	Templates.AddItem(VanishingAct());
+	Templates.AddItem(Flush());
 
 	return Templates;
 }
@@ -1807,6 +1815,87 @@ static function X2AbilityTemplate VanishingAct()
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	return Template;
+}
+
+// Perk name:		Flush
+// Perk effect:		Special shot with a bonus to hit that does little or no damage but confers defense and dodge penalties and forces target to change position if it hits.
+// Localized text:	"Special shot with a bonus to hit that does little or no damage but confers defense and dodge penalties and forces target to change position if it hits."
+// Config:			(AbilityName="LW2WotC_Flush", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate Flush()
+{
+	local X2AbilityTemplate Template;
+	local X2AbilityToHitCalc_StandardAim ToHitCalc;
+	local X2Effect_LW2WotC_FallBack FallBackEffect;
+	local X2Effect_PersistentStatChange NerfEffect;
+	local X2Condition_UnitProperty NotConcealedCondition;
+	
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_Flush', "img:///UILibrary_LW_PerkPack.LW_AbilityFlush", false, none, class'UIUtilities_Tactical'.const.CLASS_CORPORAL_PRIORITY - 1, eCost_WeaponConsumeAll, default.FLUSH_AMMO_COST, true);
+
+	// Ammo effects are not applied to Flush
+	Template.bAllowAmmoEffects = false;
+
+	// Disallow crits and add an aim bonus
+	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
+	ToHitCalc.BuiltInHitMod = default.FLUSH_AIM_BONUS;
+	ToHitCalc.bAllowCrit = false;
+	Template.AbilityToHitCalc = ToHitCalc;
+	Template.AbilityToHitOwnerOnMissCalc = ToHitCalc;
+
+	// Forces the target to seek new cover
+	FallBackEffect = new class'X2Effect_LW2WotC_FallBack';
+	FallBackEffect.BehaviorTree = 'FlushRoot';
+	Template.AddTargetEffect(FallBackEffect);
+
+	// Effect that lowers the target's defense and mobility - stackable
+	NerfEffect = new class'X2Effect_PersistentStatChange';
+	NerfEffect.BuildPersistentEffect(default.FLUSH_STATEFFECT_DURATION, false, false, true, eGameRule_PlayerTurnBegin);
+	NerfEffect.AddPersistentStatChange(eStat_Dodge, -float(default.FLUSH_DODGE_REDUCTION));
+	NerfEffect.AddPersistentStatChange(eStat_Defense, -float(default.FLUSH_DEFENSE_REDUCTION));
+	NerfEffect.SetDisplayInfo (ePerkBuff_Penalty, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,, Template.AbilitySourceName);
+	NerfEffect.DuplicateResponse = eDupe_Allow;
+	Template.AddTargetEffect(NerfEffect);
+
+	// Cannot be used while concealed
+	NotConcealedCondition = new class'X2Condition_UnitProperty';
+	NotConcealedCondition.ExcludeConcealed = true;
+	Template.AbilityShooterConditions.AddItem(NotConcealedCondition);
+
+	// Add a cooldown.
+	AddCooldown(Template, default.FLUSH_COOLDOWN);
+
+	// Add a secondary ability to provide bonuses on the shot
+	AddSecondaryAbility(Template, FlushBonuses());
+
+	return Template;
+}
+
+// This is part of the Flush effect, above
+static function X2AbilityTemplate FlushBonuses()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_ConditionalBonus Effect;
+	local XMBCondition_AbilityName Condition;
+
+	// Create a conditional bonus effect
+	Effect = new class'XMBEffect_ConditionalBonus';
+	Effect.EffectName = 'LW2WotC_Flush_Bonuses';
+
+	// The bonus reduces damage by a percentage
+	Effect.AddPercentDamageModifier(-1 * default.FLUSH_DAMAGE_PERCENT_MALUS);
+
+	// The bonus only applies to the Flush ability
+	Condition = new class'XMBCondition_AbilityName';
+	Condition.IncludeAbilityNames.AddItem('LW2WotC_Flush');
+	Effect.AbilityTargetConditions.AddItem(Condition);
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_Flush_Bonuses', "img:///UILibrary_LW_PerkPack.LW_AbilityFlush", false, Effect);
+
+	// Flush will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
 
 	return Template;
 }
