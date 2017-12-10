@@ -181,7 +181,7 @@ static function X2AbilityTemplate WalkFire()
     local X2Condition_UnitInventory NoSniperRiflesCondition;
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_WalkFire', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", true, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.WALK_FIRE_AMMO_COST, true);
+	Template = Attack('LW2WotC_WalkFire', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.WALK_FIRE_AMMO_COST, true);
 
 	// Add a cooldown.
 	AddCooldown(Template, default.WALK_FIRE_COOLDOWN);
