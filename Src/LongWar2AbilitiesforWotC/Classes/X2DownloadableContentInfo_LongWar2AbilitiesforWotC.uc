@@ -595,6 +595,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'COMMISSAR_HIT_BONUS':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMMISSAR_HIT_BONUS);
 			return true;
+		case 'STEADY_WEAPON_AIM_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.STEADY_WEAPON_AIM_BONUS);
+			return true;
 		default: 
 			return false;
 	}

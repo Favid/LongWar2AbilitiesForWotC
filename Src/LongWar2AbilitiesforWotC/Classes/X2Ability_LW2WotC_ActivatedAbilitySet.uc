@@ -141,9 +141,9 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(ClutchShot());
 	Templates.AddItem(Gunslinger());
 	Templates.AddItem(GunslingerShot());
+	Templates.AddItem(SteadyWeapon());
 
 	//Templates.AddItem(AddCommissarAbility());
-	//Templates.AddItem(AddSteadyWeaponAbility());
 	//Templates.AddItem(AddMindMergeAbility());
 	//Templates.AddItem(AddSoulMergeAbility());
 	
@@ -2114,6 +2114,58 @@ static function X2AbilityTemplate GunslingerShot()
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	return Template;
+}
+
+// Perk name:		Steady Weapon
+// Perk effect:		Gain bonus aim on your next shot with your primary weapon. Multiple uses will stack bonus. Bonus is lost if you use actions or are wounded.
+// Localized text:	"Gain +<Ability:STEADY_WEAPON_AIM_BONUS> aim on your next shot with your primary weapon. Multiple uses will stack bonus. Bonus is lost if you use actions or are wounded."
+// Config:			(AbilityName="LW2WotC_SteadyWeapon", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate SteadyWeapon()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityCooldown					Cooldown;
+	local X2AbilityCost_ActionPoints		ActionPointCost;
+	local X2Effect_LW2WotC_SteadyWeapon		ToHitModifier;
+	local X2Condition_UnitEffects			SuppressedCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_SteadyWeapon');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilitySteadyWeapon";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.bSkipFireAction=true;
+	Template.bShowActivation=true;
+	Template.AbilityConfirmSound = "Unreal2DSounds_OverWatch";
+	Template.bCrossClassEligible = false;
+	//Template.DefaultKeyBinding = 539;
+	//Template.bNoConfirmationWithHotKey = true;
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = 1;
+	Template.AbilityCooldown = Cooldown;
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	ActionPointCost.bConsumeAllPoints = true;    
+	Template.AbilityCosts.AddItem(ActionPointCost);
+	
+	SuppressedCondition = new class'X2Condition_UnitEffects';
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+
+	Template.AddShooterEffectExclusions();
+	Template.CinescriptCameraType = "Overwatch";
+	ToHitModifier = new class'X2Effect_LW2WotC_SteadyWeapon';
+	ToHitModifier.BuildPersistentEffect(2, false, true, false, eGameRule_UseActionPoint);
+	ToHitModifier.SetDisplayInfo(ePerkBuff_Bonus, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	ToHitModifier.Aim_Bonus = default.STEADY_WEAPON_AIM_BONUS;
+	ToHitModifier.DuplicateResponse=eDupe_Refresh;
+	Template.AddTargetEffect(ToHitModifier);	
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
 	return Template;
 }
