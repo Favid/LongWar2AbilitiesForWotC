@@ -9,7 +9,6 @@ var config int CENTERMASS_DAMAGE;
 var config int LETHAL_DAMAGE;
 var config int RESILIENCE_CRITDEF_BONUS;
 var config int GRAZING_FIRE_SUCCESS_CHANCE;
-var config float DANGER_ZONE_BONUS_RADIUS;
 var config int DAMAGE_CONTROL_DURATION; 
 var config int DAMAGE_CONTROL_ABLATIVE_HP;
 var config int DAMAGE_CONTROL_BONUS_ARMOR;
@@ -45,11 +44,23 @@ var config int COUP_DE_GRACE_HIT_BONUS;
 var config int COUP_DE_GRACE_CRIT_BONUS;
 var config int COUP_DE_GRACE_DAMAGE_BONUS;
 var config bool COUP_DE_GRACE_HALF_FOR_DISORIENTED;
+var config int FULL_KIT_BONUS;
+var config array<name> FULL_KIT_ITEMS;
+var config int PROTECTOR_BONUS_CHARGES;
+var config int HEAVY_ORDNANCE_BONUS_CHARGES;
+var config int HEAT_WARHEADS_PIERCE;
+var config int HEAT_WARHEADS_SHRED;
+var config int STING_GRENADE_STUN_CHANCE;
+var config int STING_GRENADE_STUN_LEVEL;
+var config int BLUESCREENBOMB_HACK_DEFENSE_CHANGE;
+var config int COMMISSAR_HIT_BONUS;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
 var localized string LocDenseSmokeEffect;
 var localized string LocDenseSmokeEffectDescription;
+var localized string LocTrojanVirus;
+var localized string LocTrojanVirusTriggered;
 
 var config bool NO_STANDARD_ATTACKS_WHEN_ON_FIRE;
 var config bool NO_MELEE_ATTACKS_WHEN_ON_FIRE;
@@ -83,32 +94,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(LockOn());
 	Templates.AddItem(Sentinel());
 	Templates.AddItem(RapidReaction());
-	//Templates.AddItem(AddLockdownAbility());
-	//Templates.AddItem(AddDangerZoneAbility());
-	//Templates.AddItem(LockdownBonuses()); //Additional Ability
-	//Templates.AddItem(PurePassive('Mayhem', "img:///UILibrary_LW_PerkPack.LW_AbilityMayhem", false, 'eAbilitySource_Perk'));
-	//Templates.AddItem(MayhemBonuses()); // AdditionalAbility;
-	//Templates.AddItem(AddEvasiveAbility());
-	//Templates.AddItem(RemoveEvasive()); // Additional Ability
-	//Templates.AddItem(AddCombatAwarenessAbility());
-	//Templates.AddItem(AddCombatRushAbility());
-	//Templates.AddItem(BroadcastCombatRush()); //Additional Ability
-	//Templates.AddItem(AddEmergencyLifeSupportAbility());
-	//Templates.AddItem(AddSmartMacrophagesAbility());
-	//Templates.AddItem(AddIronSkinAbility());
-	//Templates.AddItem(AddShadowstrike_LWAbility());
-	//Templates.AddItem(AddSoulStealTriggered2());
-	//Templates.AddItem(AddTrojan());
-	//Templates.AddItem(AddTrojanVirus());
-	//Templates.AddItem(AddFlashbanger());
-	//Templates.AddItem(AddSavior());
-	//Templates.AddItem(AddBastion());
-	//Templates.AddItem(AddBastionPassive());
-	//Templates.AddItem(AddBastionCleanse());
-	//Templates.AddItem(AddFullKit());
-	//Templates.AddItem(AddStingGrenades());
-	//Templates.AddItem(AddFieldSurgeon());
-
     Templates.AddItem(TraverseFire());
     Templates.AddItem(Cutthroat());
 	Templates.AddItem(Covert());
@@ -123,6 +108,31 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(AlphaMikeFoxtrot());
 	Templates.AddItem(CoupDeGrace());
 	Templates.AddItem(BoostedCores());
+	Templates.AddItem(VolatileMix());
+	Templates.AddItem(Flashbanger());
+	Templates.AddItem(Evasive());
+	Templates.AddItem(IronSkin());
+	Templates.AddItem(CombatAwareness());
+	Templates.AddItem(CombatRush());
+	Templates.AddItem(FullKit());
+	Templates.AddItem(Savior());
+	Templates.AddItem(HeavyOrdnance());
+	Templates.AddItem(Protector());
+	Templates.AddItem(HEATWarheads());
+	Templates.AddItem(EmergencyLifeSupport());
+	Templates.AddItem(SmartMacrophages());
+	Templates.AddItem(FieldSurgeon());
+	Templates.AddItem(Trojan());
+	Templates.AddItem(TrojanVirus());
+	Templates.AddItem(StingGrenades());
+	Templates.AddItem(BluescreenBombs());
+	Templates.AddItem(Whirlwind());
+	Templates.AddItem(Commissar());
+
+	//Templates.AddItem(AddSoulStealTriggered2());
+	//Templates.AddItem(AddBastion());
+	//Templates.AddItem(AddBastionPassive());
+	//Templates.AddItem(AddBastionCleanse());
 
 	return Templates;
 }
@@ -939,6 +949,101 @@ static function X2Effect DenseSmokeEffect()
 	return Effect;
 }
 
+// Perk name:		Sting Grenades
+// Perk effect:		Your flashbang grenades have a chance to stun enemies for one turn in the flashbang's Area of Effect.
+// Localized text:	"Your flashbang grenades have a <Ability:STING_GRENADE_STUN_CHANCE>% chance to stun enemies for one turn in the flashbang's Area of Effect."
+// Config:			(AbilityName="LW2WotC_StingGrenades")
+static function X2AbilityTemplate StingGrenades()
+{
+	return Passive('LW2WotC_StingGrenades', "img:///UILibrary_LW_PerkPack.LW_AbilityStunGrenades", false, none);
+}
+
+// This effect is applied to Flashbangs in X2DownloadableContentInfo_LongWar2AbilitiesforWotC.uc
+static function X2Effect StingGrenadesEffect()
+{
+	local X2Effect_Stunned 					StunnedEffect;
+	local XMBCondition_SourceAbilities 		Condition;
+	local X2Condition_UnitProperty			UnitCondition;
+
+	// Stun effect for sting grenades
+	StunnedEffect = class'X2StatusEffects'.static.CreateStunnedStatusEffect(default.STING_GRENADE_STUN_LEVEL, default.STING_GRENADE_STUN_CHANCE);
+	StunnedEffect.SetDisplayInfo(ePerkBuff_Penalty, class'X2StatusEffects'.default.StunnedFriendlyName, class'X2StatusEffects'.default.StunnedFriendlyDesc, "img:///UILibrary_PerkIcons.UIPerk_stun");
+
+	// Stun effect will only apply to organics
+	UnitCondition = new class'X2Condition_UnitProperty';
+	UnitCondition.ExcludeOrganic = false;
+	UnitCondition.ExcludeFriendlyToSource = false;
+	UnitCondition.ExcludeRobotic = true;
+	StunnedEffect.TargetConditions.AddItem(UnitCondition);
+
+	// Only applies if the thrower has Sting Grenades
+	Condition = new class'XMBCondition_SourceAbilities';
+	Condition.AddRequireAbility('LW2WotC_StingGrenades', 'AA_UnitIsImmune');
+	StunnedEffect.TargetConditions.AddItem(Condition);
+
+	return StunnedEffect;
+}
+
+// Perk name:		Bluescreen Bombs
+// Perk effect:		Your flashbang grenades now disorient robotic units and reduce their resistance to hacking.
+// Localized text:	"Your flashbang grenades now disorient robotic units and reduce their resistance to hacking."
+// Config:			(AbilityName="LW2WotC_BluescreenBombs")
+static function X2AbilityTemplate BluescreenBombs()
+{
+	return Passive('LW2WotC_BluescreenBombs', "img:///UILibrary_LW_PerkPack.LW_AbilityBluescreenBombs", false, none);
+}
+
+// This effect is applied to Flashbangs in X2DownloadableContentInfo_LongWar2AbilitiesforWotC.uc
+static function X2Effect BluescreenBombsDisorientEffect()
+{
+	local X2Effect_PersistentStatChange		DisorientEffect;
+	local X2Condition_UnitProperty			UnitCondition;
+	local XMBCondition_SourceAbilities 		Condition;
+
+	// Create the disorient effect
+	DisorientEffect = class'X2StatusEffects'.static.CreateDisorientedStatusEffect(false, 0.0f, false);
+
+	// The vanilla CreateDisorientedStatusEffect() function will not work on robots, so remove those conditions so we can change that
+	DisorientEffect.TargetConditions.Length = 0;
+
+	// This effect will work on robots, but not organics. This is because the disorient effect that is already on the flashbang by default will handle organics
+	UnitCondition = new class'X2Condition_UnitProperty';
+	UnitCondition.ExcludeOrganic = true;
+	UnitCondition.ExcludeFriendlyToSource = true;
+	DisorientEffect.TargetConditions.AddItem(UnitCondition);
+
+	// Only applies if the thrower has Bluescreen Bombs
+	Condition = new class'XMBCondition_SourceAbilities';
+	Condition.AddRequireAbility('LW2WotC_BluescreenBombs', 'AA_UnitIsImmune');
+	DisorientEffect.TargetConditions.AddItem(Condition);
+
+	return DisorientEffect;
+}
+
+//This is an effect which will be added to the existing flashbang/sting grenade item/ability
+static function X2Effect BluescreenBombsHackReductionEffect()
+{
+	local X2Effect_PersistentStatChange		HackDefenseChangeEffect;
+	local XMBCondition_SourceAbilities 		Condition;
+	local X2Condition_UnitProperty			UnitCondition;
+
+	// Create the hack defense reduction effect
+	HackDefenseChangeEffect = class'X2StatusEffects'.static.CreateHackDefenseChangeStatusEffect(default.BLUESCREENBOMB_HACK_DEFENSE_CHANGE);
+
+	// This effect will only work on robots
+	UnitCondition = new class'X2Condition_UnitProperty';
+	UnitCondition.ExcludeOrganic = true;
+	UnitCondition.ExcludeFriendlyToSource = true;
+	HackDefenseChangeEffect.TargetConditions.AddItem(UnitCondition);
+
+	// Only applies if the thrower has Bluescreen Bombs
+	Condition = new class'XMBCondition_SourceAbilities';
+	Condition.AddRequireAbility('LW2WotC_BluescreenBombs', 'AA_UnitIsImmune');
+	HackDefenseChangeEffect.TargetConditions.AddItem(Condition);
+
+	return HackDefenseChangeEffect;
+}
+
 // Perk name:		Grazing Fire
 // Perk effect:		Missed shots with your primary weapon have an additional roll to become a graze.
 // Localized text:	"Missed shots with your primary weapon have an additional roll to become a graze."
@@ -1045,11 +1150,23 @@ static function X2AbilityTemplate BoostedCores()
 	local X2Effect_VolatileMix				DamageEffect;
 
 	// Effect that grants additional damage to grenades
+	// This is confusing, but X2Effect_VolatileMix grants a damage bonus to grenades, and does not apply a radius bonus
 	DamageEffect = new class'X2Effect_VolatileMix';
 	DamageEffect.BonusDamage = default.BOOSTED_CORES_DAMAGE;
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_BoostedCores', "img:///UILibrary_LW_PerkPack.LW_AbilityHeavyFrags", false, DamageEffect);
+}
+
+// Perk name:		Volatile Mix
+// Perk effect:		
+// Localized text:	
+// Config:			(AbilityName="LW2WotC_VolatileMix")
+static function X2AbilityTemplate VolatileMix()
+{
+	// Create the template using a helper function
+	// The range bonus is actually granted by X2DownloadableContentInfo_LongWar2AbilitiesforWotC.PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix()
+	return Passive('LW2WotC_VolatileMix', "img:///UILibrary_PerkIcons.UIPerk_volatilemix", false, none);
 }
 
 // Perk name:		Flashbanger
@@ -1065,7 +1182,530 @@ static function X2AbilityTemplate Flashbanger()
 	ItemEffect = new class'XMBEffect_AddUtilityItem';
 	ItemEffect.DataName = 'FlashbangGrenade';
 
+	// Create the template using a helper function
 	Template = Passive('LW2WotC_Flashbanger', "img:///UILibrary_PerkIcons.UIPerk_grenade_flash", true, ItemEffect);
 
 	return Template;
+}
+
+// Perk name:		Evasive
+// Perk effect:		Start each mission with 100 bonus dodge. The bonus is removed after you take damage for the first time.
+// Localized text:	"Start each mission with 100 bonus dodge. The bonus is removed after you take damage for the first time."
+// Config:			(AbilityName="LW2WotC_Evasive")
+static function X2AbilityTemplate Evasive()
+{
+	local X2AbilityTemplate					Template;	
+	local X2Effect_PersistentStatChange		DodgeBonus;
+
+	// Effect grants 100 dodge, which should be enough to always guarentee a dodge
+	DodgeBonus = new class'X2Effect_PersistentStatChange';
+	DodgeBonus.EffectName='LW2WotC_Evasive_Passive';
+	DodgeBonus.AddPersistentStatChange (eStat_Dodge, float (100));
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_Evasive', "img:///UILibrary_LW_PerkPack.LW_AbilityEvasive", true, DodgeBonus);
+
+	// Add a secondary ability that will remove the Evasive effect when taking damage
+	AddSecondaryAbility(Template, EvasiveRemover(), false);
+
+	return Template;
+}
+
+// The part of Evasive that removes the dodge bonus after taking damage
+static function X2AbilityTemplate EvasiveRemover()
+{
+	local X2AbilityTemplate				Template;	
+	local X2Effect_RemoveEffects		RemoveEffect;
+	local X2Condition_UnitEffects		Condition;
+
+	// Removes the Evasive dodge bonus, with a flyover
+	RemoveEffect = new class'X2Effect_RemoveEffects';
+	RemoveEffect.EffectNamesToRemove.AddItem('LW2WotC_Evasive_Passive');
+
+	// Create the template using a helper function - the effects of this ability will activate when damage is taken
+	Template = SelfTargetTrigger('LW2WotC_Evasive_Remover', "img:///UILibrary_LW_PerkPack.LW_AbilityEvasive", false, RemoveEffect, 'UnitTakeEffectDamage');
+
+	// Show a flyover when Evasive is being removed
+	Template.bShowActivation = true;
+
+	// Prevents this ability from triggering if you've already lost the Evasive bonus
+	Condition = new class'X2Condition_UnitEffects';
+    Condition.AddRequireEffect('LW2WotC_Evasive_Passive', 'AA_EvasiveEffectPresent');
+	AddTriggerTargetCondition(Template, Condition);
+
+	return Template;
+}
+
+// Perk name:		Iron Skin
+// Perk effect:		Incoming melee damage is reduced.
+// Localized text:	"Incoming melee damage is reduced by <Ability:IRON_SKIN_MELEE_DAMAGE_REDUCTION>."
+// Config:			(AbilityName="LW2WotC_IronSkin")
+static function X2AbilityTemplate IronSkin()
+{
+	local X2Effect_LW2WotC_MeleeDamageAdjust	IronSkinEffect;
+
+	// Effect that reduces incoming melee damage
+	IronSkinEffect = new class'X2Effect_LW2WotC_MeleeDamageAdjust';
+	IronSkinEffect.DamageMod = -default.IRON_SKIN_MELEE_DAMAGE_REDUCTION;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_IronSkin', "img:///UILibrary_LW_PerkPack.LW_AbilityIronSkin", false, IronSkinEffect);
+}
+
+// Perk name:		Combat Awareness
+// Perk effect:		Grants bonus defense and bonus armor when in overwatch.
+// Localized text:	"Grants <Ability:COMBAT_AWARENESS_BONUS_DEFENSE> defense <Ability:COMBAT_AWARENESS_BONUS_ARMOR> armor point when in overwatch."
+// Config:			(AbilityName="LW2WotC_CombatAwareness")
+static function X2AbilityTemplate CombatAwareness()
+{
+	local X2Effect_LW2WotC_CombatAwareness	DefenseEffect;
+
+	// Effect that gives armor while you have reserve action points
+	DefenseEffect = new class'X2Effect_LW2WotC_CombatAwareness';
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_CombatAwareness', "img:///UILibrary_LW_PerkPack.LW_AbilityThreatAssesment", false, DefenseEffect);
+}
+
+// Perk name:		Combat Rush
+// Perk effect:		When you kill an enemy, nearby allies temporarily receive bonuses to aim, critical chance and mobility. Has an activation cooldown.
+// Localized text:	"When you kill an enemy, nearby allies temporarily receive bonuses to aim, critical chance and mobility. Five-turn cooldown."
+// Config:			(AbilityName="LW2WotC_CombatRush")
+static function X2AbilityTemplate CombatRush()
+{
+	local X2Effect_PersistentStatChange Effect;
+	local X2AbilityTemplate Template;
+	local X2AbilityMultiTarget_Radius RadiusMultiTarget;
+	local X2Condition_UnitProperty AllyCondition;
+
+	// Create the template using a helper function. This ability triggers when we kill another unit.
+	Template = SelfTargetTrigger('LW2WotC_CombatRush', "img:///UILibrary_LW_PerkPack.LW_AbilityAdrenalNeurosympathy", true, none, 'KillMail');
+
+	// Trigger abilities don't appear as passives. Add a passive ability icon.
+	AddIconPassive(Template);
+
+	// The ability effects all nearby units that meet the conditions on the multitarget effect.
+	RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+	RadiusMultiTarget.NumTargetsRequired = 1; 
+	RadiusMultiTarget.bIgnoreBlockingCover = true; 
+	RadiusMultiTarget.bAllowDeadMultiTargetUnits = false; 
+	RadiusMultiTarget.bExcludeSelfAsTargetIfWithinRadius = true;
+	RadiusMultiTarget.bUseWeaponRadius = false; 
+	RadiusMultiTarget.ftargetradius = default.COMBAT_RUSH_RADIUS * 1.5; 
+	Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+	
+	// Effect only works on allies
+	AllyCondition = new class'X2Condition_UnitProperty';
+	AllyCondition.RequireSquadmates = true;
+	AllyCondition.ExcludeAlien = true;
+	AllyCondition.ExcludeRobotic = true;
+	AllyCondition.ExcludeHostileToSource = true;
+	AllyCondition.ExcludeFriendlyToSource = false;
+	Template.AbilityMultiTargetConditions.AddItem(AllyCondition);
+
+	// Create a persistent stat change effect
+	Effect = new class'X2Effect_PersistentStatChange';
+	Effect.EffectName = 'LW2WotC_CombatRush';
+
+	// Configurable bonuses and duration
+	Effect.AddPersistentStatChange (eStat_Offense, float(default.COMBAT_RUSH_AIM_BONUS));
+	Effect.AddPersistentStatChange (eStat_CritChance, float(default.COMBAT_RUSH_CRIT_BONUS));
+	Effect.AddPersistentStatChange (eStat_Mobility, float(default.COMBAT_RUSH_MOBILITY_BONUS));
+	Effect.AddPersistentStatChange (eStat_Defense, float(default.COMBAT_RUSH_DEFENSE_BONUS));
+	Effect.AddPersistentStatChange (eStat_Dodge, float(default.COMBAT_RUSH_DODGE_BONUS));
+	Effect.BuildPersistentEffect(default.COMBAT_RUSH_DURATION, false, true, false, eGameRule_PlayerTurnEnd);
+	Effect.SetDisplayInfo (ePerkBuff_Bonus,Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,, Template.AbilitySourceName); 
+	Effect.DuplicateResponse = eDupe_Refresh;
+
+	// The effect only applies to living, friendly targets
+	Effect.TargetConditions.AddItem(default.LivingFriendlyTargetProperty);
+
+	// Allies affected will get a flyover and an animation
+	Effect.VisualizationFn = CombatRush_Visualization;
+
+	// The multitargets are also affected by the persistent effect we created
+	Template.AddMultiTargetEffect(Effect);
+
+	// Configurable cooldown
+	AddCooldown(Template, default.COMBAT_RUSH_COOLDOWN);
+
+	return Template;
+}
+
+// Allies that are affected by Combat Rush will get a flyover and an animation
+simulated static function CombatRush_Visualization(XComGameState VisualizeGameState, out VisualizationActionMetadata ActionMetadata, const name EffectApplyResult)
+{
+	local X2Action_PlaySoundAndFlyOver	SoundAndFlyOver;
+	local X2AbilityTemplate             AbilityTemplate;
+	local XComGameStateContext_Ability  Context;
+	local AbilityInputContext           AbilityContext;
+	local EWidgetColor					MessageColor;
+	local XComGameState_Unit			SourceUnit;
+	local bool							bGoodAbility;
+    local X2Action_PlayAnimation			PlayAnimationAction;
+
+	Context = XComGameStateContext_Ability(VisualizeGameState.GetContext());
+	AbilityContext = Context.InputContext;
+	AbilityTemplate = class'XComGameState_Ability'.static.GetMyTemplateManager().FindAbilityTemplate(AbilityContext.AbilityTemplateName);
+	
+	SourceUnit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(AbilityContext.SourceObject.ObjectID));
+
+	bGoodAbility = SourceUnit.IsFriendlyToLocalPlayer();
+	MessageColor = bGoodAbility ? eColor_Good : eColor_Bad;
+
+	if (EffectApplyResult == 'AA_Success' && XGUnit(ActionMetadata.VisualizeActor).IsAlive())
+	{
+		PlayAnimationAction = X2Action_PlayAnimation(class'X2Action_PlayAnimation'.static.AddToVisualizationTree(ActionMetadata, VisualizeGameState.GetContext(), false, ActionMetadata.LastActionAdded));
+	    PlayAnimationAction.Params.AnimName = 'HL_SignalAngryA';
+		PlayAnimationAction.bFinishAnimationWait = true;
+
+		SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyOver'.static.AddToVisualizationTree(ActionMetadata, VisualizeGameState.GetContext(), false, ActionMetadata.LastActionAdded));
+		SoundAndFlyOver.SetSoundAndFlyOverParameters(None, AbilityTemplate.LocFlyOverText, '', MessageColor, AbilityTemplate.IconImage);
+	}
+}
+
+// Perk name:		Full Kit
+// Perk effect:		Grants additional charges per grenade item in a utility slot.
+// Localized text:	"Grants +<Ability:FULL_KIT_BONUS> charge per grenade item in a utility slot."
+// Config:			(AbilityName="LW2WotC_FullKit")
+static function X2AbilityTemplate FullKit()
+{
+	local XMBEffect_AddItemCharges BonusItemEffect;
+
+	// The number of charges and the items that are affected are gotten from the config
+	BonusItemEffect = new class'XMBEffect_AddItemCharges';
+	BonusItemEffect.PerItemBonus = default.FULL_KIT_BONUS;
+	BonusItemEffect.ApplyToNames = default.FULL_KIT_ITEMS;
+	BonusItemEffect.ApplyToSlots.AddItem(eInvSlot_Utility);
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_FullKit', "img:///UILibrary_LW_PerkPack.LW_AbilityFullKit", false, BonusItemEffect);
+}
+
+
+// Perk name:		Savior
+// Perk effect:		Healing abilities restore additional hit points.
+// Localized text:	"Healing abilities restore <Ability:SAVIOR_BONUS_HEAL_AMMOUNT> additional hit points."
+// Config:			(AbilityName="LW2WotC_Savior")
+static function X2AbilityTemplate Savior()
+{
+	local X2Effect_LW2WotC_Savior				SaviorEffect;
+
+	// This effect will add a listener to the soldier that listens for them to apply a heal.
+	// When the heal is applied XComGameState_Effect_LW2WotC_Savior.OnMedkitHeal() is called to increase the potency of the heal.
+	SaviorEffect = new class 'X2Effect_LW2WotC_Savior';
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_Savior', "img:///UILibrary_LW_PerkPack.LW_AbilitySavior", true, SaviorEffect);
+}
+
+// Perk name:		Heavy Ordnance
+// Perk effect:		Any damaging grenade in your grenade-only slot gains bonus uses.
+// Localized text:	"Any damaging grenade in your grenade-only slot gains <Ability:HEAVY_ORDNANCE_BONUS_CHARGES> bonus use."
+// Config:			(AbilityName="LW2WotC_HeavyOrdnance")
+static function X2AbilityTemplate HeavyOrdnance()
+{
+	local X2Effect_LW2WotC_AddGrenadeSlotCharges BonusItemEffect;
+
+	// Applies to all damaging grenades
+	BonusItemEffect = new class'X2Effect_LW2WotC_AddGrenadeSlotCharges';
+	BonusItemEffect.PerItemBonus = default.HEAVY_ORDNANCE_BONUS_CHARGES;
+	BonusItemEffect.bDamagingGrenadesOnly = true;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_HeavyOrdnance', "img:///UILibrary_PerkIcons.UIPerk_aceinthehole", false, BonusItemEffect);
+}
+
+// Perk name:		Protector
+// Perk effect:		Any non-damaging grenade in your grenade-only slot gains bonus uses.
+// Localized text:	"Any non-damaging grenade in your grenade-only slot gains <Ability:PROTECTOR_BONUS_CHARGES> bonus use."
+// Config:			(AbilityName="LW2WotC_Protector")
+static function X2AbilityTemplate Protector()
+{
+	local X2Effect_LW2WotC_AddGrenadeSlotCharges BonusItemEffect;
+
+	// Applies to all non-damaging grenades
+	BonusItemEffect = new class'X2Effect_LW2WotC_AddGrenadeSlotCharges';
+	BonusItemEffect.PerItemBonus = default.PROTECTOR_BONUS_CHARGES;
+	BonusItemEffect.bNonDamagingGrenadesOnly = true;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_Protector', "img:///UILibrary_LW_PerkPack.LW_AbilityProtector", false, BonusItemEffect);
+}
+
+// Perk name:		HEAT Warheads
+// Perk effect:		Your grenades now pierce and shred some armor.
+// Localized text:	"Your grenades now pierce up to <Ability:HEAT_WARHEADS_PIERCE> points of armor and shred <Ability:HEAT_WARHEADS_SHRED> additional point of armor."
+// Config:			(AbilityName="LW2WotC_HEATWarheads")
+static function X2AbilityTemplate HEATWarheads()
+{
+	local X2Effect_LW2WotC_HEATGrenades			HEATEffect;
+
+	// Effect granting bonus pierce and shred to grenades
+	HEATEffect = new class 'X2Effect_LW2WotC_HEATGrenades';
+	HEATEffect.Pierce = default.HEAT_WARHEADS_PIERCE;
+	HEATEffect.Shred = default.HEAT_WARHEADS_SHRED;
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_HEATWarheads', "img:///UILibrary_LW_PerkPack.LW_AbilityHEATWarheads", false, HEATEffect);
+}
+
+// Perk name:		Emergency Life Support
+// Perk effect:		Emergency Life Support ensures the first killing blow in a mission will not lead to instant death. It also extends the time before the soldier bleeds out and dies.
+// Localized text:	"Emergency Life Support ensures the first killing blow in a mission will not lead to instant death. It also extends the time before the soldier bleeds out and dies."
+// Config:			(AbilityName="LW2WotC_EmergencyLifeSupport")
+static function X2AbilityTemplate EmergencyLifeSupport()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_LW2WotC_EmergencyLifeSupport		LifeSupportEffect;
+
+	// Effect that listenes for the UnitBleedingOut event and catches it, ensuring that the unit bleeds out on their first death that mission
+	LifeSupportEffect = new class'X2Effect_LW2WotC_EmergencyLifeSupport';
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_EmergencyLifeSupport', "img:///UILibrary_LW_PerkPack.LW_AbilityEmergencyLifeSupport", false, LifeSupportEffect);
+
+	return Template;
+}
+
+// Perk name:		Smart Macrophages
+// Perk effect:		Heals injuries after a battle, lowering wound recovery time, and confers immunity to poison and acid.
+// Localized text:	"Heals injuries after a battle, lowering wound recovery time, and confers immunity to poison and acid."
+// Config:			(AbilityName="LW2WotC_SmartMacrophages")
+static function X2AbilityTemplate SmartMacrophages()
+{
+	local X2AbilityTemplate						Template;
+	local X2Effect_DamageImmunity				DamageImmunity;
+	local X2Effect_LW2WotC_SmartMacrophages		MacrophagesEffect;
+
+	// Effect to reduce wound time
+	MacrophagesEffect = new class'X2Effect_LW2WotC_SmartMacrophages';
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_SmartMacrophages', "img:///UILibrary_LW_PerkPack.LW_AbilitySmartMacrophages", false, MacrophagesEffect);
+
+	// Grants immunity to acid, poison, and chryssalid poison
+	DamageImmunity = new class'X2Effect_DamageImmunity'; 
+	DamageImmunity.ImmuneTypes.AddItem('Acid');
+	DamageImmunity.ImmuneTypes.AddItem('Poison');
+	DamageImmunity.ImmuneTypes.AddItem(class'X2Item_DefaultDamageTypes'.default.ParthenogenicPoisonType);
+	DamageImmunity.BuildPersistentEffect(1, true, false, true);
+	Template.AddTargetEffect(DamageImmunity);
+
+	return Template;
+}
+
+// Perk name:		Field Surgeon
+// Perk effect:		Reduce wound recovery times for most soldiers.
+// Localized text:	"Reduce wound recovery times for most soldiers."
+// Config:			(AbilityName="LW2WotC_FieldSurgeon")
+static function X2AbilityTemplate FieldSurgeon()
+{
+	local X2Effect_LW2WotC_FieldSurgeon		FieldSurgeonEffect;
+
+	// Effect to reduce wound time
+	FieldSurgeonEffect = new class'X2Effect_LW2WotC_FieldSurgeon';
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_FieldSurgeon', "img:///UILibrary_LW_PerkPack.LW_AbilityFieldSurgeon", true, FieldSurgeonEffect);
+}
+
+// Perk name:		Trojan
+// Perk effect:		Enemy units that are hacked take damage and lose their actions on the turn the hack effect ends.
+// Localized text:	"Enemy units that are hacked take damage and lose their actions on the turn the hack effect ends."
+// Config:			(AbilityName="LW2WotC_Trojan", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Trojan()
+{
+	local X2AbilityTemplate			Template;
+	local X2Effect_LW2WotC_Trojan			TrojanEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Trojan');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityTrojan";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.bIsPassive = true;
+	TrojanEffect = new class 'X2Effect_LW2WotC_Trojan';
+	TrojanEffect.BuildPersistentEffect (1, true, false);
+	TrojanEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (TrojanEffect);
+	Template.bCrossClassEligible = false;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.AdditionalAbilities.AddItem('LW2WotC_TrojanVirus');
+
+	return Template;
+}
+
+// This ability is what gets triggered by a successful hack, and places the LW2WotC_TrojanVirus effect on the hacked unit
+static function X2AbilityTemplate TrojanVirus()
+{
+	local X2AbilityTemplate                 Template;		
+	local X2AbilityCost_ActionPoints        ActionPointCost;	
+	local X2Condition_UnitProperty          ShooterPropertyCondition;	
+	local X2Condition_UnitProperty          TargetUnitPropertyCondition;	
+	//local X2Condition_Visibility            TargetVisibilityCondition;
+	local X2AbilityTarget_Single            SingleTarget;
+	local X2AbilityTrigger_Placeholder		UseTrigger;
+	local X2Effect_LW2WotC_TrojanVirus				TrojanVirusEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_TrojanVirus');
+	
+	// Triggered for free
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.bFreeCost = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+	
+	// Can't evaluate stimuli while dead
+	ShooterPropertyCondition = new class'X2Condition_UnitProperty';	
+	ShooterPropertyCondition.ExcludeDead = true;                    	
+	Template.AbilityShooterConditions.AddItem(ShooterPropertyCondition);
+
+	// No triggering on dead, or friendlies
+	TargetUnitPropertyCondition = new class'X2Condition_UnitProperty';	
+	TargetUnitPropertyCondition.ExcludeDead = true;                    	
+	TargetUnitPropertyCondition.ExcludeFriendlyToSource = false;	
+	Template.AbilityTargetConditions.AddItem(TargetUnitPropertyCondition);
+
+	// Note: No visibility requirement (matches intrusion protocol)
+	// These must be the same or you can hack a robot and not have trojan apply.
+
+	// Always applied when triggered
+	Template.AbilityToHitCalc = default.DeadEye;
+
+	// Single target ability
+	SingleTarget = new class'X2AbilityTarget_Single';
+	Template.AbilityTargetStyle = SingleTarget;
+
+	// Triggered by persistent effect from Trojan
+	UseTrigger = new class'X2AbilityTrigger_Placeholder';
+	Template.AbilityTriggers.AddItem(UseTrigger);
+	
+	// The main effect
+	TrojanVirusEffect = new class 'X2Effect_LW2WotC_TrojanVirus';
+	// TrojanVirusEffect.BuildPersistentEffect (1, true, false /*Remove on Source Death*/,, eGameRule_PlayerTurnBegin);
+	TrojanVirusEffect.BuildPersistentEffect (1, true, false /*Remove on Source Death*/,, eGameRule_UnitGroupTurnBegin);
+	TrojanVirusEffect.bTickWhenApplied = false;
+	TrojanVirusEffect.EffectRemovedVisualizationFn = TrojanVirusVisualizationRemoved;
+	Template.AddTargetEffect (TrojanVirusEffect);
+
+	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_overwatch";
+	Template.Hostility = eHostility_Neutral;
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//Template.BuildVisualizationFn = none; // no visualization on application on purpose -- it would be fighting with the hacking stuff
+
+	return Template;	
+}
+
+// Plays Trojan Virus flyover and message when the effect is removed (which is when the meaningful effects are triggered)
+static function TrojanVirusVisualizationRemoved(XComGameState VisualizeGameState, out VisualizationActionMetadata ActionMetadata, const name EffectApplyResult)
+{
+	local XComGameState_Unit UnitState;
+	local X2Action_PlaySoundAndFlyOver SoundAndFlyOver;
+	local XGParamTag kTag;
+	local X2Action_PlayWorldMessage MessageAction;
+
+	UnitState = XComGameState_Unit(ActionMetadata.StateObject_NewState);
+	if (UnitState == none)
+		return;
+
+	SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyOver'.static.AddToVisualizationTree(ActionMetadata, VisualizeGameState.GetContext(), false, ActionMetadata.LastActionAdded));
+	SoundAndFlyOver.SetSoundAndFlyOverParameters(None, default.LocTrojanVirus, '', eColor_Bad, class'UIUtilities_Image'.const.UnitStatus_Haywire, 1.0);
+
+	kTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
+	kTag.StrValue0 = UnitState.GetFullName();
+
+	MessageAction = X2Action_PlayWorldMessage(class'X2Action_PlayWorldMessage'.static.AddToVisualizationTree(ActionMetadata, VisualizeGameState.GetContext(), false, ActionMetadata.LastActionAdded));
+	MessageAction.AddWorldMessage(`XEXPAND.ExpandString(default.LocTrojanVirusTriggered));
+}
+
+// Perk name:		Whirlwind
+// Perk effect:		If you hit with a melee attack during your turn, gain a bonus move.
+// Localized text:	"If you hit with a melee attack during your turn, gain a bonus move."
+// Config:			(AbilityName="LW2WotC_Whirlwind")
+static function X2AbilityTemplate Whirlwind()
+{
+	local X2Effect_GrantActionPoints Effect;
+	local X2AbilityTemplate Template;
+	local XMBCondition_AbilityCost CostCondition;
+	local X2Condition_UnitEffects ExcludeEffectsCondition;
+	local X2Condition_UnitValue ValueCondition;
+	local X2Condition_UnitValue ReaperCondition;
+	local X2Effect_IncrementUnitValue ValueEffect;
+
+	// Add a single movement action point to the unit
+	Effect = new class'X2Effect_GrantActionPoints';
+	Effect.NumActionPoints = 1;
+	Effect.PointType = class'X2CharacterTemplateManager'.default.MoveActionPoint;
+
+	// Create a triggered ability that will activate whenever the unit uses an ability that meets the conditions
+	Template = SelfTargetTrigger('LW2WotC_Whirlwind', "img:///UILibrary_PerkIcons.UIPerk_riposte", false, Effect, 'AbilityActivated');
+
+	// Add an effect that will increment a counter for the number of times Whirlwind has activated this turn
+	ValueEffect = new class'X2Effect_IncrementUnitValue';
+	ValueEffect.UnitName = 'LW2WotC_Whirlwind_Activations';
+	ValueEffect.NewValueToSet = 1;
+	ValueEffect.CleanupType = eCleanup_BeginTurn;
+	Template.AddTargetEffect(ValueEffect);
+
+	// Requires that the ability costs at least one action point
+	CostCondition = new class'XMBCondition_AbilityCost';
+	CostCondition.bRequireMinimumCost = true;
+	CostCondition.MinimumCost = 1;
+	CostCondition.bRequireMinimumPointsSpent = true;
+	CostCondition.MinimumPointsSpent = 1;
+	AddTriggerTargetCondition(Template, CostCondition);
+    
+	// Only triggers on melee attacks
+	AddTriggerTargetCondition(Template, default.MeleeCondition);
+
+	// Require that Serial isn't active
+	ExcludeEffectsCondition = new class'X2Condition_UnitEffects';
+	ExcludeEffectsCondition.AddExcludeEffect(class'X2Effect_Serial'.default.EffectName, 'AA_UnitIsImmune');
+	AddTriggerShooterCondition(Template, ExcludeEffectsCondition);
+
+	// Require that Reaper wasn't activated
+	ReaperCondition = new class'X2Condition_UnitValue';
+	ReaperCondition.AddCheckValue(class'X2Effect_Reaper'.default.ReaperActivatedName, 1, eCheck_LessThan);
+	AddTriggerShooterCondition(Template, ReaperCondition);
+
+	// Require that Whirlwind hasn't already activated this turn
+	ValueCondition = new class'X2Condition_UnitValue';
+	ValueCondition.AddCheckValue('LW2WotC_Whirlwind_Activations', 1, eCheck_LessThan);
+	AddTriggerShooterCondition(Template, ValueCondition);
+
+	// Trigger abilities don't appear as passives. Add a passive ability icon.
+	AddIconPassive(Template);
+
+	// Show a flyover when Whirlwind is activated
+	Template.bShowActivation = true;
+
+	return Template;
+}
+
+// Perk name:		Commissar
+// Perk effect:		If you hit with a melee attack during your turn, gain a bonus move.
+// Localized text:	"If you hit with a melee attack during your turn, gain a bonus move."
+// Config:			(AbilityName="LW2WotC_Commissar", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Commissar()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2Effect_LW2WotC_Commissar		DamageModifier;
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_Commissar', "img:///UILibrary_LW_PerkPack.LW_AbilityCommissar", false, none);
+
+	// Grants the aim and damage bonuses against mind controlled soldiers
+	DamageModifier = new class 'X2Effect_LW2WotC_Commissar';
+	DamageModifier.AimBonus = default.COMMISSAR_HIT_BONUS;
+	DamageModifier.BuildPersistentEffect (1, true, true);
+	DamageModifier.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	Template.AddTargetEffect (DamageModifier);
+
+	return Template;		
 }

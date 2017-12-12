@@ -25,8 +25,16 @@ static event OnPostTemplatesCreated()
 {
 	PatchAbilitiesForLightEmUp();
 	PatchSmokeGrenades();
+	PatchFlashbang();
+	PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix();
+	PatchAbilitiesForDoubleTapActionPoint();
 
-	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.4");
+	if(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SNAPSHOT_REDUCES_AP_COST_FOR_SPECIAL_SHOTS)
+	{
+		PatchAbilitiesForSnapshot();
+	}
+
+	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.6");
 }
 
 /// <summary>
@@ -78,6 +86,121 @@ private static function PatchSmokeGrenade(name ItemName)
 		GrenadeTemplate = X2GrenadeTemplate(Template);
 		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.DenseSmokeEffect());
 		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.DenseSmokeEffect());
+	}
+}
+
+/// <summary>
+/// Patches the Flashbang so that they function with Sting Grenades and Bluescreen Bombs.
+/// Also prevents them from dealing damage with Boosted Cores / Volatile Mix
+/// </summary>
+private static function PatchFlashbang()
+{
+    local X2ItemTemplateManager		ItemManager;
+	local array<X2DataTemplate>		TemplateAllDifficulties;
+	local X2DataTemplate			Template;
+	local X2GrenadeTemplate			GrenadeTemplate;
+
+	ItemManager = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
+	ItemManager.FindDataTemplateAllDifficulties('FlashbangGrenade', TemplateAllDifficulties);
+	foreach TemplateAllDifficulties(Template)
+	{
+		GrenadeTemplate = X2GrenadeTemplate(Template);
+
+		GrenadeTemplate.bAllowVolatileMix = false;
+
+		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.StingGrenadesEffect());
+		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.StingGrenadesEffect());
+
+		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsDisorientEffect());
+		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsDisorientEffect());
+
+		GrenadeTemplate.ThrownGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsHackReductionEffect());
+		GrenadeTemplate.LaunchedGrenadeEffects.AddItem(class'X2Ability_LW2WotC_PassiveAbilitySet'.static.BluescreenBombsHackReductionEffect());
+	}
+}
+
+/// <summary>
+/// Updates grenade abilities to get radius bonus from our new Volatile Mix ability
+/// </summary>
+static function PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix()
+{
+	local X2AbilityTemplateManager			AbilityTemplateManager;
+	local X2AbilityTemplate					ThrowGrenadeAbilityTemplate, LaunchGrenadeAbilityTemplate, ProximityMineAbilityTemplate;
+
+	AbilityTemplateManager = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
+
+	ThrowGrenadeAbilityTemplate = AbilityTemplateManager.FindAbilityTemplate('ThrowGrenade');
+	LaunchGrenadeAbilityTemplate = AbilityTemplateManager.FindAbilityTemplate('LaunchGrenade');
+	ProximityMineAbilityTemplate = AbilityTemplateManager.FindAbilityTemplate('ProximityMineDetonation');
+
+	X2AbilityMultiTarget_Radius(ThrowGrenadeAbilityTemplate.AbilityMultiTargetStyle).AddAbilityBonusRadius('LW2WotC_VolatileMix', 1.0);
+	X2AbilityMultiTarget_Radius(LaunchGrenadeAbilityTemplate.AbilityMultiTargetStyle).AddAbilityBonusRadius('LW2WotC_VolatileMix', 1.0);
+	X2AbilityMultiTarget_Radius(ProximityMineAbilityTemplate.AbilityMultiTargetStyle).AddAbilityBonusRadius('LW2WotC_VolatileMix', 1.0);
+}
+
+/// <summary>
+/// Updates various abilities so that they can be used with the action point granted by Double Tap
+/// </summary>
+static function PatchAbilitiesForDoubleTapActionPoint()
+{
+	local X2AbilityTemplateManager			AbilityTemplateManager;
+	local name 								AbilityName;
+	local X2AbilityTemplate					AbilityTemplate;
+
+	AbilityTemplateManager = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
+	foreach class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.DOUBLE_TAP_ABILITIES(AbilityName)
+	{
+		AbilityTemplate = AbilityTemplateManager.FindAbilityTemplate(AbilityName);
+
+		if(AbilityTemplate != none)
+		{
+			AddDoubleTapActionPoint(AbilityTemplate);
+		}
+	}
+}
+
+static function AddDoubleTapActionPoint(X2AbilityTemplate Template)
+{
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+    local X2AbilityCost                     Cost;
+
+	foreach Template.AbilityCosts(Cost)
+    {
+        ActionPointCost = X2AbilityCost_ActionPoints(Cost);
+        if (ActionPointCost != none)
+        {
+			ActionPointCost.AllowedTypes.AddItem(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.DOUBLE_TAP_ACTION_POINT_NAME);
+		}
+	}
+}
+
+/// <summary>
+/// Updates special sniper shots so that they only cost one AP if the user has snapshot.
+/// </summary>
+static function PatchAbilitiesForSnapshot()
+{
+	local X2AbilityTemplateManager			AbilityTemplateManager;
+	local name 								AbilityName;
+	local X2AbilityTemplate					AbilityTemplate;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local int 								i;
+
+	AbilityTemplateManager = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
+	foreach class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SNAPSHOT_REDUCED_AP_COST_SPECIAL_SHOTS(AbilityName)
+	{
+		AbilityTemplate = AbilityTemplateManager.FindAbilityTemplate(AbilityName);
+
+		if(AbilityTemplate != none)
+		{
+			for (i = 0; i < AbilityTemplate.AbilityCosts.length; i++)
+			{
+				ActionPointCost = X2AbilityCost_ActionPoints(AbilityTemplate.AbilityCosts[i]);
+				if (ActionPointCost != none)
+				{
+					AbilityTemplate.AbilityCosts[i] = class'X2Ability_LW2WotC_ActivatedAbilitySet'.static.SnapShotReducedAbilityCost();
+				}
+			}
+		}
 	}
 }
 
@@ -349,6 +472,132 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'ALPHAMIKEFOXTROT_DAMAGE':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.ALPHAMIKEFOXTROT_DAMAGE);
 			return true;
+		case 'CYCLIC_FIRE_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.CYCLIC_FIRE_COOLDOWN);
+			return true;
+		case 'CYCLIC_FIRE_AIM_MALUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.CYCLIC_FIRE_AIM_MALUS);
+			return true;
+		case 'CYCLIC_FIRE_MIN_ACTION_REQ':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.CYCLIC_FIRE_MIN_ACTION_REQ);
+			return true;
+		case 'CYCLIC_FIRE_SHOTS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.CYCLIC_FIRE_SHOTS);
+			return true;
+		case 'KUBIKURI_MIN_ACTION_REQ':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.KUBIKURI_MIN_ACTION_REQ);
+			return true;
+		case 'KUBIKURI_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.KUBIKURI_COOLDOWN);
+			return true;
+		case 'IRON_SKIN_MELEE_DAMAGE_REDUCTION':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.IRON_SKIN_MELEE_DAMAGE_REDUCTION);
+			return true;
+		case 'COMBAT_AWARENESS_BONUS_ARMOR':
+			OutString = string(class'X2Effect_LW2WotC_CombatAwareness'.default.COMBAT_AWARENESS_BONUS_ARMOR);
+			return true;
+		case 'COMBAT_AWARENESS_BONUS_DEFENSE':
+			OutString = string(class'X2Effect_LW2WotC_CombatAwareness'.default.COMBAT_AWARENESS_BONUS_DEFENSE);
+			return true;
+		case 'COMBAT_RUSH_AIM_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_RUSH_AIM_BONUS);
+			return true;
+		case 'COMBAT_RUSH_CRIT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_RUSH_CRIT_BONUS);
+			return true;
+		case 'COMBAT_RUSH_MOBILITY_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_RUSH_MOBILITY_BONUS);
+			return true;
+		case 'COMBAT_RUSH_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMBAT_RUSH_COOLDOWN);
+			return true;
+		case 'FULL_KIT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.FULL_KIT_BONUS);
+			return true;
+		case 'GHOSTWALKER_DURATION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.GHOSTWALKER_DURATION);
+			return true;
+		case 'GHOSTWALKER_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.GHOSTWALKER_COOLDOWN);
+			return true;
+		case 'SAVIOR_BONUS_HEAL_AMMOUNT':
+			OutString = string(class'X2Effect_LW2WotC_Savior'.default.SAVIOR_BONUS_HEAL_AMMOUNT);
+			return true;
+		case 'HEAVY_ORDNANCE_BONUS_CHARGES':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.HEAVY_ORDNANCE_BONUS_CHARGES);
+			return true;
+		case 'PROTECTOR_BONUS_CHARGES':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.PROTECTOR_BONUS_CHARGES);
+			return true;
+		case 'HEAT_WARHEADS_PIERCE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.HEAT_WARHEADS_PIERCE);
+			return true;
+		case 'HEAT_WARHEADS_SHRED':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.HEAT_WARHEADS_SHRED);
+			return true;
+		case 'MAYHEM_DAMAGE_BONUS_PCT':
+			OutString = string(int(class'X2Effect_LW2WotC_Mayhem'.default.MAYHEM_DAMAGE_BONUS_PCT));
+			return true;
+		case 'LOCKDOWN_TOHIT_BONUS':
+			OutString = getLockdownAimBonusString(class'X2Effect_LW2WotC_Lockdown'.default.LOCKDOWN_TOHIT_BONUS);
+			return true;
+		case 'IRON_CURTAIN_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IRON_CURTAIN_COOLDOWN);
+			return true;
+		case 'IRON_CURTAIN_MOB_DAMAGE_DURATION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IRON_CURTAIN_MOB_DAMAGE_DURATION);
+			return true;
+		case 'IRON_CURTAIN_MOBILITY_DAMAGE':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IRON_CURTAIN_MOBILITY_DAMAGE);
+			return true;
+		case 'IRON_CURTAIN_DAMAGE_MODIFIER':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IRON_CURTAIN_DAMAGE_MODIFIER);
+			return true;
+		case 'BODY_SHIELD_DEF_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.BODY_SHIELD_DEF_BONUS);
+			return true;
+		case 'BODY_SHIELD_ENEMY_CRIT_MALUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.BODY_SHIELD_ENEMY_CRIT_MALUS);
+			return true;
+		case 'BODY_SHIELD_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.BODY_SHIELD_COOLDOWN);
+			return true;
+		case 'STING_GRENADE_STUN_CHANCE':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.STING_GRENADE_STUN_CHANCE);
+			return true;
+		case 'IMPACT_FIELDS_DAMAGE_REDUCTION_PCT':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IMPACT_FIELDS_DAMAGE_REDUCTION_PCT);
+			return true;
+		case 'IMPACT_FIELDS_DURATION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IMPACT_FIELDS_DURATION);
+			return true;
+		case 'IMPACT_FIELDS_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.IMPACT_FIELDS_COOLDOWN);
+			return true;
+		case 'FLUSH_AIM_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLUSH_AIM_BONUS);
+			return true;
+		case 'FLUSH_DODGE_REDUCTION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLUSH_DODGE_REDUCTION);
+			return true;
+		case 'FLUSH_DEFENSE_REDUCTION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLUSH_DEFENSE_REDUCTION);
+			return true;
+		case 'FLUSH_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.FLUSH_COOLDOWN);
+			return true;
+		case 'GUNSLINGER_TILES_RANGE':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.GUNSLINGER_TILES_RANGE);
+			return true;
+		case 'GUNSLINGER_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.GUNSLINGER_COOLDOWN);
+			return true;
+		case 'COMMISSAR_HIT_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.COMMISSAR_HIT_BONUS);
+			return true;
+		case 'STEADY_WEAPON_AIM_BONUS':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.STEADY_WEAPON_AIM_BONUS);
+			return true;
 		default: 
 			return false;
 	}
@@ -436,5 +685,86 @@ private static function string getFlechePerTileDamageBonusString(float bonusDama
 	else
 	{
 		return Repl(string(TempFloat), "0", "");
+	}
+}
+
+private static function string getLockdownAimBonusString(int BaseAimBonus)
+{
+	local int AfterReactionModAimBonus;
+
+	// multiplies config value by *.70 (reaction fire aim mod) and rounds down
+	AfterReactionModAimBonus = int(BaseAimBonus * 0.70f);
+
+	return string(AfterReactionModAimBonus);
+}
+
+// Following stuff is for the improved perk tree
+
+exec function PSSetXoffsetBG(int AdjustXOffset)
+{
+	local NPSBDP_UIArmory_PromotionHero UI;
+	
+	UI = NPSBDP_UIArmory_PromotionHero(`SCREENSTACK.GetFirstInstanceOf(class'NPSBDP_UIArmory_PromotionHero'));
+	UI.MC.ChildSetNum("bg", "_x", AdjustXOffset);
+}
+
+exec function PSSetWidth(int Width)
+{
+	local NPSBDP_UIArmory_PromotionHero UI;
+	
+	UI = NPSBDP_UIArmory_PromotionHero(`SCREENSTACK.GetFirstInstanceOf(class'NPSBDP_UIArmory_PromotionHero'));
+	UI.MC.SetNum("_width", Width);
+}
+
+exec function PSSetXOffset(int AdjustXOffset)
+{
+	local NPSBDP_UIArmory_PromotionHero UI;
+	
+	UI = NPSBDP_UIArmory_PromotionHero(`SCREENSTACK.GetFirstInstanceOf(class'NPSBDP_UIArmory_PromotionHero'));
+	UI.MC.SetNum("_x", UI.MC.GetNum("_x") + AdjustXOffset);
+}
+
+exec function PSSetColumnWidth(int Offset = 200, int Width = 120)
+{
+	local NPSBDP_UIArmory_PromotionHero UI;
+	local int i;
+
+	UI = NPSBDP_UIArmory_PromotionHero(`SCREENSTACK.GetFirstInstanceOf(class'NPSBDP_UIArmory_PromotionHero'));
+	for (i = 0; i < UI.Columns.Length; i++)
+	{
+		if (i == 5 || i ==6)
+			UI.Columns[i].MC.SetNum("_width", Width);
+		//UI.Columns[i].SetX(Offset + (i * Width));
+		
+	}
+}
+
+exec function PSScrollBarSetPos(int X, int Y, int Anchor = -1)
+{
+	local NPSBDP_UIArmory_PromotionHero UI;
+	UI = NPSBDP_UIArmory_PromotionHero(`SCREENSTACK.GetFirstInstanceOf(class'NPSBDP_UIArmory_PromotionHero'));
+
+	UI.Scrollbar.SetX(X);
+	UI.Scrollbar.SetY(Y);
+
+	if (Anchor > -1)
+	{
+		UI.Scrollbar.SetAnchor(Anchor);
+	}
+}
+
+exec function PSScrollBarSetSize(int Width = 0, int Height = 0)
+{
+	local NPSBDP_UIArmory_PromotionHero UI;
+	UI = NPSBDP_UIArmory_PromotionHero(`SCREENSTACK.GetFirstInstanceOf(class'NPSBDP_UIArmory_PromotionHero'));
+
+	if (Width > 0)
+	{
+		UI.Scrollbar.SetWidth(Width);
+	}
+
+	if (Height > 0)
+	{
+		UI.Scrollbar.SetHeight(Height);
 	}
 }

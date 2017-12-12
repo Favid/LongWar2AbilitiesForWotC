@@ -5,10 +5,6 @@
 
 class X2Ability_LW2WotC_ActivatedAbilitySet extends XMBAbility config (LW_SoldierSkills);
 
-var config int DOUBLE_TAP_1ST_SHOT_AIM;
-var config int DOUBLE_TAP_2ND_SHOT_AIM;
-var config int DOUBLE_TAP_COOLDOWN;
-var config int DOUBLE_TAP_MIN_ACTION_REQ;
 var config int WALK_FIRE_AIM_BONUS;
 var config int WALK_FIRE_CRIT_MALUS;
 var config int WALK_FIRE_COOLDOWN;
@@ -31,19 +27,7 @@ var config int SLUG_SHOT_COOLDOWN;
 var config int SLUG_SHOT_AMMO_COST;
 var config int SLUG_SHOT_MIN_ACTION_REQ;
 var config int SLUG_SHOT_PIERCE;
-var config int CLUTCH_SHOT_MIN_ACTION_REQ;
-var config int CLUTCH_SHOT_AMMO_COST;
-var config int CLUTCH_SHOT_CHARGES;
-var config int GUNSLINGER_COOLDOWN;
-var config int GUNSLINGER_TILES_RANGE;
 var config int STEADY_WEAPON_AIM_BONUS;
-var config int AREA_SUPPRESSION_AMMO_COST;
-var config int AREA_SUPPRESSION_MAX_SHOTS;
-var config int AREA_SUPPRESSION_SHOT_AMMO_COST;
-var config float AREA_SUPPRESSION_RADIUS;
-var config int SUPPRESSION_LW_SHOT_AIM_BONUS;
-var config int AREA_SUPPRESSION_LW_SHOT_AIM_BONUS;
-var config array<name> SUPPRESSION_LW_INVALID_WEAPON_CATEGORIES;
 var config int INTERFERENCE_CV_CHARGES;
 var config int INTERFERENCE_MG_CHARGES;
 var config int INTERFERENCE_BM_CHARGES;
@@ -62,9 +46,7 @@ var config int IRON_CURTAIN_AMMO_COST;
 var config int IRON_CURTAIN_TILE_WIDTH;
 var config int IRON_CURTAIN_MOB_DAMAGE_DURATION;
 var config int IRON_CURTAIN_MOBILITY_DAMAGE;
-var config int ABSORPTION_FIELDS_COOLDOWN;
-var config int ABSORPTION_FIELDS_ACTION_POINTS;
-var config int ABSORPTION_FIELDS_DURATION;
+var config int IRON_CURTAIN_DAMAGE_MODIFIER;
 var config int BODY_SHIELD_DEF_BONUS;
 var config int BODY_SHIELD_ENEMY_CRIT_MALUS;
 var config int BODY_SHIELD_COOLDOWN;
@@ -104,39 +86,36 @@ var config float KILLER_INSTINCT_CRIT_DAMAGE_BONUS_PCT;
 var config int RESCUE_CV_CHARGES;
 var config int RESCUE_MG_CHARGES;
 var config int RESCUE_BM_CHARGES;
+var config int IMPACT_FIELDS_COOLDOWN;
+var config int IMPACT_FIELDS_DURATION;
+var config int IMPACT_FIELDS_DAMAGE_REDUCTION_PCT;
+var config name DOUBLE_TAP_ACTION_POINT_NAME;
+var config array<name> DOUBLE_TAP_ABILITIES;
+var config int DOUBLE_TAP_COOLDOWN;
+var config bool SNAPSHOT_REDUCES_AP_COST_FOR_SPECIAL_SHOTS;
+var config array<name> SNAPSHOT_REDUCED_AP_COST_SPECIAL_SHOTS;
+var config int VANISHINGACT_CHARGES;
+var config int FLUSH_COOLDOWN;
+var config int FLUSH_AMMO_COST;
+var config int FLUSH_AIM_BONUS;
+var config int FLUSH_STATEFFECT_DURATION;
+var config int FLUSH_DODGE_REDUCTION;
+var config int FLUSH_DEFENSE_REDUCTION;
+var config int FLUSH_DAMAGE_PERCENT_MALUS;
+var config int CLUTCH_SHOT_CHARGES;
+var config int GUNSLINGER_COOLDOWN;
+var config int GUNSLINGER_TILES_RANGE;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
 
-	//Templates.AddItem(AddDoubleTapAbility());
-	//Templates.AddItem(DoubleTap2ndShot()); //Additional Ability
+	Templates.AddItem(ShootAnyone());
+
 	Templates.AddItem(WalkFire());
 	Templates.AddItem(PrecisionShot());
-	//Templates.AddItem(AddCyclicFireAbility());
 	Templates.AddItem(TrenchGun());
 	Templates.AddItem(SlugShot());
-	//Templates.AddItem(AddClutchShotAbility());
-	//Templates.AddItem(AddCommissarAbility());
-	//Templates.AddItem(AddGunslingerAbility());
-	//Templates.AddItem(GunslingerShot()); //Additional Ability
-	//Templates.AddItem(AddSteadyWeaponAbility());
-	//Templates.AddItem(AddSuppressionAbility_LW());
-	//Templates.AddItem(SuppressionShot_LW()); //Additional Ability
-	//Templates.AddItem(AddAreaSuppressionAbility());
-	//Templates.AddItem(AreaSuppressionShot_LW()); //Additional Ability
-	//Templates.AddItem(AddGhostwalkerAbility()); 
-	//Templates.AddItem(AddKubikuriAbility());
-	//Templates.AddItem(KubikiriDamage());
-	//Templates.AddItem(AddIronCurtainAbility());
-	//Templates.AddItem(IronCurtainShot()); //Additional Ability
-	//Templates.AddItem(AddAbsorptionFieldsAbility());
-	//Templates.AddItem(AddBodyShieldAbility());
-	//Templates.AddItem(AddMindMergeAbility());
-	//Templates.AddItem(AddSoulMergeAbility());
-	//Templates.AddItem(AddSnapShot());
-	//Templates.AddItem(SnapShotOverwatch());
-	//Templates.AddItem(AddSnapShotAimModifierAbility());
 	Templates.AddItem(RapidDeployment());
 	Templates.AddItem(Fleche());
 	Templates.AddItem(Slash());
@@ -148,8 +127,26 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Interference());
 	Templates.AddItem(RescueProtocol());
 	Templates.AddItem(Airdrop());
-	Templates.AddItem(ShootAnyone());
+	Templates.AddItem(CyclicFire());
+	Templates.AddItem(Kubikuri());
+	Templates.AddItem(Ghostwalker());
+	Templates.AddItem(IronCurtain());
+	Templates.AddItem(BodyShield());
+	Templates.AddItem(ImpactFields());
+	Templates.AddItem(DoubleTap());
+	Templates.AddItem(SnapShot());
+	Templates.AddItem(GhostGrenade());
+	Templates.AddItem(VanishingAct());
+	Templates.AddItem(Flush());
+	Templates.AddItem(ClutchShot());
+	Templates.AddItem(Gunslinger());
+	Templates.AddItem(GunslingerShot());
+	Templates.AddItem(SteadyWeapon());
 
+	//Templates.AddItem(AddCommissarAbility());
+	//Templates.AddItem(AddMindMergeAbility());
+	//Templates.AddItem(AddSoulMergeAbility());
+	
 	return Templates;
 }
 
@@ -184,7 +181,7 @@ static function X2AbilityTemplate WalkFire()
     local X2Condition_UnitInventory NoSniperRiflesCondition;
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_WalkFire', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", true, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.WALK_FIRE_AMMO_COST, true);
+	Template = Attack('LW2WotC_WalkFire', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.WALK_FIRE_AMMO_COST, true);
 
 	// Add a cooldown.
 	AddCooldown(Template, default.WALK_FIRE_COOLDOWN);
@@ -380,6 +377,9 @@ static function X2AbilityTemplate RapidDeployment()
 	Template = SelfTargetActivated('LW2WotC_RapidDeployment', "img:///UILibrary_LW_PerkPack.LW_AbilityRapidDeployment", true, Effect,, eCost_Free);
 	AddCooldown(Template, default.RAPID_DEPLOYMENT_COOLDOWN);
 
+	// Cannot be used while burning, etc.
+	Template.AddShooterEffectExclusions();
+
 	return Template;
 }
 
@@ -403,10 +403,11 @@ static function X2AbilityTemplate Fleche()
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
 
-	if (!default.NO_MELEE_ATTACKS_WHEN_ON_FIRE)
-	{
-		SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
-	}
+	// NOTE: Mimicing LW2 functionality where Fleche is disabling while burning. Uncomment code below if you want it to follow the same logic as other melee attacks
+	// if (!default.NO_MELEE_ATTACKS_WHEN_ON_FIRE)
+	// {
+	// 	SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
+	// }
 
 	Template.AddShooterEffectExclusions(SkipExclusions);
 
@@ -842,7 +843,6 @@ static function X2AbilityTemplate RunAndGun()
 	ActionRefundCondition.AddCheckValue ('LW2WotC_HitandRunUses', 0, eCheck_Exact,,,'AA_AbilityUnavailable');
 	Template.AbilityShooterConditions.AddItem(ActionRefundCondition); 
 
-
 	return Template;
 }
 
@@ -1164,6 +1164,1008 @@ static function X2AbilityTemplate Airdrop()
 	Template.PostActivationEvents.AddItem('ItemRecalled');
 	Template.CustomSelfFireAnim = 'NO_CombatProtocol';
 	Template.CinescriptCameraType = "Specialist_CombatProtocol";
+
+	return Template;
+}
+
+// Perk name:		Cyclic Fire
+// Perk effect:		Special Shot: Fire multiple shots at a target in a single attack. All shots have aim penalties. Cooldown-based.
+// Localized text:	"Special Shot: Fire <Ability:CYCLIC_FIRE_SHOTS> shots at a target in a single attack. Requires <Ability:CYCLIC_FIRE_MIN_ACTION_REQ> actions and all shots have aim penalties. <Ability:CYCLIC_FIRE_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_CyclicFire", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate CyclicFire()
+{
+	local X2AbilityTemplate 				Template;
+	local EActionPointCost					ActionPointCost;
+	local X2Condition_UnitInventory			NoShotgunsCondition;
+	local X2Condition_UnitInventory			NoSniperRiflesCondition;
+	local X2AbilityToHitCalc_StandardAim	ToHitCalc;
+	local X2Effect_Knockback				KnockbackEffect;
+	local X2AbilityMultiTarget_BurstFire	BurstFireMultiTarget;
+	local X2Effect_Shredder					WeaponDamageEffect;
+
+	// Action point cost will be one or two, depending on config
+	ActionPointCost = eCost_SingleConsumeAll;
+	if(default.CYCLIC_FIRE_MIN_ACTION_REQ == 2)
+	{
+		ActionPointCost = eCost_DoubleConsumeAll;
+	}
+
+	// Create template with helper function - normally we could pass in none for the effect and let the function give this ability template the default weapon damage effect
+	// However, the game will not display the damage numbers for the additional hits properly unless the first shot and the following burst shots use the same instance of of the damage effect
+	Template = Attack('LW2WotC_CyclicFire', "img:///UILibrary_LW_PerkPack.LW_AbilityCyclicFire", false, class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect(), class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY, ActionPointCost, default.CYCLIC_FIRE_AMMO, true);
+
+    // Do not allow this ability to be used with Shotguns
+    NoShotgunsCondition = new class'X2Condition_UnitInventory';
+	NoShotgunsCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	NoShotgunsCondition.ExcludeWeaponCategory = 'shotgun';
+	Template.AbilityShooterConditions.AddItem(NoShotgunsCondition);
+
+    // Do not allow this ability to be used with Sniper Rifles
+	NoSniperRiflesCondition = new class'X2Condition_UnitInventory';
+	NoSniperRiflesCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	NoSniperRiflesCondition.ExcludeWeaponCategory = 'sniper_rifle';
+	Template.AbilityShooterConditions.AddItem(NoSniperRiflesCondition);
+
+	// Configurable ability cooldown
+	AddCooldown(Template, default.CYCLIC_FIRE_COOLDOWN);
+ 	
+ 	// Configurable aim penalty
+	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
+	ToHitCalc.BuiltInHitMod = -default.CYCLIC_FIRE_AIM_MALUS;
+	Template.AbilityToHitCalc = ToHitCalc;
+	Template.AbilityToHitOwnerOnMissCalc = ToHitCalc;
+
+	// Knockback effect on kill
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	// Add the burst fire effect. This is for the additional shots after the first, hence the -1
+	BurstFireMultiTarget = new class'X2AbilityMultiTarget_BurstFire';
+    BurstFireMultiTarget.NumExtraShots = default.CYCLIC_FIRE_SHOTS-1;
+    Template.AbilityMultiTargetStyle = BurstFireMultiTarget;
+
+	// Assign the same weapon damage effect instance to both types of shots, so that damage numbers appear properly
+	// The extra burst fire shots are considered multi-target, so we need to add the effect to it separately for those shots to do damage
+	WeaponDamageEffect = new class'X2Effect_Shredder';
+	Template.AddTargetEffect(WeaponDamageEffect);
+	Template.AddMultiTargetEffect(WeaponDamageEffect);
+	Template.AddTargetEffect(default.WeaponUpgradeMissDamage);
+	Template.AddMultiTargetEffect(default.WeaponUpgradeMissDamage);
+
+    return Template;
+}
+
+// Perk name:		Kubikuri
+// Perk effect:		Special shot against most enemies who have taken any damage: Any critical hit kills them, but regular hits do half damage. Cooldown-based.
+// Localized text:	"Special shot against most enemies who have taken any damage: Any critical hit kills them, but regular hits do half damage. Requires <Ability:KUBIKURI_MIN_ACTION_REQ> actions and has a <Ability:KUBIKURI_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_Kubikuri", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate Kubikuri()
+{
+	local X2AbilityTemplate					Template;
+	local EActionPointCost        			ActionPointCost;
+	local X2Effect_Knockback				KnockbackEffect;
+	local X2Condition_UnitStatCheck			TargetHPCondition;
+
+	// Action point cost will be one or two, depending on config
+	ActionPointCost = eCost_SingleConsumeAll;
+	if(default.KUBIKURI_MIN_ACTION_REQ == 2)
+	{
+		ActionPointCost = eCost_DoubleConsumeAll;
+	}
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_Kubikuri', "img:///UILibrary_LW_PerkPack.LW_AbilityKubikuri", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, ActionPointCost, default.KUBIKURI_AMMO_COST, true);
+
+	// Specific voice line
+	Template.ActivationSpeech = 'Reaper';
+
+	// Can only target enemies that have taken damage
+	TargetHPCondition = new class 'X2Condition_UnitStatCheck';
+	TargetHPCondition.AddCheckStat(eStat_HP,default.KUBIKURI_MAX_HP_PCT,eCheck_LessThanOrEqual,,,true);
+	Template.AbilityTargetConditions.AddItem(TargetHPCondition);
+
+	// Knockback effect on kill
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	// Configurable cooldown
+	AddCooldown(Template, default.KUBIKURI_COOLDOWN);
+
+	// Add a secondary ability to provide bonuses on the shot
+	AddSecondaryAbility(Template, KubikuriShotBonuses());
+
+	return Template;
+}
+
+// This is part of the Kubikuri effect, above
+static function X2AbilityTemplate KubikuriShotBonuses()
+{
+	local X2AbilityTemplate Template;
+	local X2Effect_LW2WotC_Kubikuri	DamageEffect;
+
+	// Effect granting the damage bonus on crit
+	DamageEffect = new class'X2Effect_LW2WotC_Kubikuri';
+
+	// Create template with helper function
+	Template = Passive('LW2WotC_Kubikuri_Bonuses', "img:///UILibrary_LW_PerkPack.LW_AbilityKubikuri", false, DamageEffect);
+
+	// Kubikuri will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Perk name:		Ghostwalker
+// Perk effect:		Activate this ability to reduce enemy detection range against you by almost 25% for the rest of your turn as well as the following turn. Cooldown-based."
+// Localized text:	"Activate this ability to reduce enemy detection range against you by almost 25% for the rest of your turn as well as the following turn. <Ability:GHOSTWALKER_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_Ghostwalker")
+static function X2AbilityTemplate Ghostwalker()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_PersistentStatChange		StealthyEffect;
+	local XMBCondition_Concealed			ConcealedCondition;
+
+	// The reduced detection radius effect that occurs when the ability is activated
+	StealthyEffect = new class'X2Effect_PersistentStatChange';
+	StealthyEffect.BuildPersistentEffect(default.GHOSTWALKER_DURATION, false, true, false, eGameRule_PlayerTurnBegin);
+	StealthyEffect.AddPersistentStatChange(eStat_DetectionModifier, default.GHOSTWALKER_DETECTION_RANGE_REDUCTION);
+
+	// Show a flyover over the target unit when the effect is added
+	StealthyEffect.VisualizationFn = EffectFlyOver_Visualization;
+
+	// Create template with a helper function
+	Template = SelfTargetActivated('LW2WotC_Ghostwalker', "img:///UILibrary_LW_PerkPack.LW_AbilityGhostwalker", true, StealthyEffect, default.AUTO_PRIORITY, eCost_Free);
+
+	// Cannot be used while burning, etc.
+	Template.AddShooterEffectExclusions();
+
+	// Custom voice line
+	Template.ActivationSpeech = 'ActivateConcealment';
+	
+	// Can only be used while conealed
+	ConcealedCondition = new class'XMBCondition_Concealed';
+	Template.AbilityTargetConditions.AddItem(ConcealedCondition);
+
+	// Configurable cooldown
+	AddCooldown(Template, default.GHOSTWALKER_COOLDOWN);
+
+	return Template;
+}
+
+// Perk name:		Iron Curtain
+// Perk effect:		Special shot that does reduced damage but reduces target mobility for the following turns. Cone-based attack with primary weapon. Cooldown-based.
+// Localized text:	"Special shot that does <Ability:IRON_CURTAIN_DAMAGE_MODIFIER> damage but reduces target mobility for the following <Ability:IRON_CURTAIN_MOB_DAMAGE_DURATION> turns. Cone-based attack with primary weapon. <Ability:IRON_CURTAIN_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_IronCurtain")
+static function X2AbilityTemplate IronCurtain()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityCost_Ammo                AmmoCost;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2AbilityTarget_Cursor            CursorTarget;
+	local X2AbilityMultiTarget_Cone         ConeMultiTarget;
+	local X2Condition_UnitProperty          UnitPropertyCondition;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local X2AbilityCooldown                 Cooldown;
+	local X2Condition_UnitInventory			NoShotgunsCondition;
+    local X2Condition_UnitInventory			NoSniperRiflesCondition;
+	local X2Effect_PersistentStatChange		MobilityDamageEffect;
+	local X2Effect_Shredder					RegularDamage;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_IronCurtain');	
+
+	// Boilerplate setup
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY;
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityIronCurtain";
+    Template.ActivationSpeech = 'SaturationFire';
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.Hostility = eHostility_Offensive;
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AbilityTargetConditions.AddItem(default.LivingTargetUnitOnlyProperty);
+	Template.bDisplayInUITooltip = true;
+    Template.bDisplayInUITacticalText = true;
+    Template.DisplayTargetHitChance = true;
+	Template.bShowActivation = true;
+	Template.bSkipFireAction = false;
+
+	// Applies holotargeting and ammo effects
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
+	Template.AssociatedPassives.AddItem('HoloTargeting');
+	Template.bAllowAmmoEffects = true;
+
+	// Configurable action point cost
+	ActionPointCost = new class 'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = default.IRON_CURTAIN_MIN_ACTION_REQ;
+	ActionPointCost.bConsumeAllPoints = true;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	// Configurable ammo cost
+	AmmoCost = new class'X2AbilityCost_Ammo';	
+	AmmoCost.iAmmo = default.IRON_CURTAIN_AMMO_COST;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	// Configurable cooldown
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = default.IRON_CURTAIN_COOLDOWN;
+	Template.AbilityCooldown = Cooldown;
+
+	// Standard multitarget aim calculation
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bMultiTargetOnly = false; 
+	StandardAim.bGuaranteedHit = false;
+	StandardAim.bOnlyMultiHitWithSuccess = false; 
+	Template.AbilityToHitCalc = StandardAim;
+	Template.AbilityToHitOwnerOnMissCalc = StandardAim;
+	Template.bOverrideAim = false;
+
+	// Cursor targeting for a cone attack
+	CursorTarget = new class'X2AbilityTarget_Cursor';
+	CursorTarget.bRestrictToWeaponRange=true;
+	Template.AbilityTargetStyle = CursorTarget;
+	Template.bFragileDamageOnly = false;
+	Template.bCheckCollision = true; 
+	Template.TargetingMethod = class'X2TargetingMethod_Cone';
+
+	// Details for the size of the cone
+	ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+	ConeMultiTarget.bExcludeSelfAsTargetIfWithinRadius = true;
+	ConeMultiTarget.ConeEndDiameter = default.IRON_CURTAIN_TILE_WIDTH * class'XComWorldData'.const.WORLD_StepSize;
+	ConeMultiTarget.bUseWeaponRangeForLength = true;
+	ConeMultiTarget.fTargetRadius = 99;     //  large number to handle weapon range - targets will get filtered according to cone constraints
+	ConeMultiTarget.bIgnoreBlockingCover = false;
+	Template.AbilityMultiTargetStyle = ConeMultiTarget;
+
+	// Cannot be used while burning, disoriented, etc.
+	Template.AddShooterEffectExclusions();
+
+	// Can hit allies. Cannot hit the dead
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeDead = true;
+	UnitPropertyCondition.ExcludeFriendlyToSource = false;
+	Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
+	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
+	
+	// Cannot be used with shotguns
+	NoShotgunsCondition = new class'X2Condition_UnitInventory';
+	NoShotgunsCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	NoShotgunsCondition.ExcludeWeaponCategory = 'shotgun';
+	Template.AbilityShooterConditions.AddItem(NoShotgunsCondition);
+
+	// Cannot be used with sniper rifles
+	NoSniperRiflesCondition = new class'X2Condition_UnitInventory';
+	NoSniperRiflesCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	NoSniperRiflesCondition.ExcludeWeaponCategory = 'sniper_rifle';
+	Template.AbilityShooterConditions.AddItem(NoSniperRiflesCondition);
+
+	// Effect that applies the damage
+	RegularDamage = new class'X2Effect_Shredder';
+	RegularDamage.bApplyOnHit = true;
+	RegularDamage.bApplyOnMiss = false;
+	RegularDamage.bIgnoreBaseDamage = false;
+	Template.AddTargetEffect(RegularDamage);
+	Template.AddMultiTargetEffect(RegularDamage);
+	
+	// Effect that applies the mobility penalty
+	MobilityDamageEffect = new class 'X2Effect_PersistentStatChange';
+	MobilityDamageEffect.BuildPersistentEffect (default.IRON_CURTAIN_MOB_DAMAGE_DURATION, false, false, false, eGameRule_PlayerTurnEnd);
+	MobilityDamageEffect.SetDisplayInfo(ePerkBuff_Penalty,Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,, Template.AbilitySourceName);
+	MobilityDamageEffect.AddPersistentStatChange (eStat_Mobility, -default.IRON_CURTAIN_MOBILITY_DAMAGE);
+	MobilityDamageEffect.DuplicateResponse = eDupe_Allow;
+	MobilityDamageEffect.EffectName = 'IronCurtainEffect';
+	MobilityDamageEffect.VisualizationFn = EffectFlyOver_Visualization;
+	Template.AddTargetEffect(MobilityDamageEffect);
+	Template.AddMultiTargetEffect(MobilityDamageEffect);
+
+	// Typical visualization
+	Template.CinescriptCameraType = "StandardGunFiring";
+	Template.bUsesFiringCamera = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	// Add a secondary ability to provide bonuses on the shot
+	AddSecondaryAbility(Template, IronCurtainBonuses());
+
+	return Template;
+}
+
+// This is part of the Iron Curtain effect, above
+static function X2AbilityTemplate IronCurtainBonuses()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_ConditionalBonus Effect;
+	local XMBCondition_AbilityName Condition;
+
+	// Create a conditional bonus effect
+	Effect = new class'XMBEffect_ConditionalBonus';
+	Effect.EffectName = 'LW2WotC_IronCurtain_Bonuses';
+
+	// The bonus reduces damage by a percentage
+	Effect.AddPercentDamageModifier(-1 * default.IRON_CURTAIN_DAMAGE_MODIFIER);
+
+	// The bonus only applies to the Iron Curtain ability
+	Condition = new class'XMBCondition_AbilityName';
+	Condition.IncludeAbilityNames.AddItem('LW2WotC_IronCurtain');
+	Effect.AbilityTargetConditions.AddItem(Condition);
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_IronCurtain_Bonuses', "img:///UILibrary_LW_PerkPack.LW_AbilityIronCurtain", false, Effect);
+
+	// Iron Curtain will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Perk name:		Body Shield
+// Perk effect:		A targeted enemy receives reduced aim and critical chance against the soldier. Cooldown-based.
+// Localized text:	"A targeted enemy receives -<Ability:BODY_SHIELD_DEF_BONUS> aim and -<Ability:BODY_SHIELD_ENEMY_CRIT_MALUS> critical chance against the soldier. <Ability:BODY_SHIELD_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_BodyShield")
+static function X2AbilityTemplate BodyShield()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_LW2WotC_BodyShield		BodyShieldEffect;
+
+	// Effect on the target that reduces their aim and crit against the user
+	BodyShieldEffect = new class'X2Effect_LW2WotC_BodyShield';
+	BodyShieldEffect.BodyShieldDefBonus = default.BODY_SHIELD_DEF_BONUS;
+	BodyShieldEffect.BodyShieldCritMalus = default.BODY_SHIELD_ENEMY_CRIT_MALUS;
+	BodyShieldEffect.BuildPersistentEffect(default.BODY_SHIELD_DURATION, false, true, false, eGameRule_PlayerTurnEnd);
+	BodyShieldEffect.EffectName='LW2WotC_BodyShield';
+
+	// Create template with a helper function
+	Template = TargetedDebuff('LW2WotC_BodyShield', "img:///UILibrary_LW_PerkPack.LW_AbilityBodyShield", false, BodyShieldEffect, default.AUTO_PRIORITY, eCost_Free);
+
+	// Helper function adds a custom fire animation, but we don't want one for this ability
+	Template.CustomFireAnim = '';
+
+	// Doesn't break concealment or provoke hostile actions
+	Template.Hostility = eHostility_Neutral;
+
+	// Show activation, but don't treat it like a gunshot attack
+	Template.bShowActivation = true;
+	Template.bSkipFireAction = true;
+
+	// Configurable cooldown
+	AddCooldown(Template, default.BODY_SHIELD_COOLDOWN);
+
+	return Template;
+}
+
+// Perk name:		Impact Fields
+// Perk effect:		Activate a force field that reduces incoming damage for a few turns. Cooldown-based.
+// Localized text:	"Activate a force field that reduces incoming damage by <Ability:IMPACT_FIELDS_DAMAGE_REDUCTION_PCT>% for <Ability:IMPACT_FIELDS_DURATION> turns. <Ability:IMPACT_FIELDS_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_ImpactFields")
+static function X2AbilityTemplate ImpactFields()
+{
+	local X2AbilityTemplate 						Template;
+	local X2Effect_LW2WotC_ReduceDamageByPercent	ReduceDamageEffect;
+	local array<name>                       		SkipExclusions;
+
+	// Effect that reduces damage taken
+	ReduceDamageEffect = new class'X2Effect_LW2WotC_ReduceDamageByPercent';
+	ReduceDamageEffect.EffectName='LW2WotC_ImpactFields';
+	ReduceDamageEffect.DamageReductionPercent = default.IMPACT_FIELDS_DAMAGE_REDUCTION_PCT;
+	ReduceDamageEffect.BuildPersistentEffect(default.IMPACT_FIELDS_DURATION, false, true, false, eGameRule_PlayerTurnBegin);
+	ReduceDamageEffect.VisualizationFn = EffectFlyOver_Visualization;
+
+	// Create the template as a helper function. This is an activated ability that costs one action, but does not end the turn
+	Template = SelfTargetActivated('LW2WotC_ImpactFields', "img:///UILibrary_LW_PerkPack.LW_AbilityAbsorptionFields", false, ReduceDamageEffect, default.AUTO_PRIORITY, eCost_Single);
+
+	// Configurable cooldown
+	AddCooldown(Template, default.IMPACT_FIELDS_COOLDOWN);
+
+	// Cannot be used while burning, etc. Disorient is okay though
+	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
+	Template.AddShooterEffectExclusions(SkipExclusions);
+
+	return Template;
+}
+
+// Perk name:		Double Tap
+// Perk effect:		Activate to fire a standard shot and gain a second action restricted to an additional shot or overwatching.
+// Localized text:	"Activate to fire a standard shot and gain a second action restricted to an additional shot or overwatching."
+// Config:			(AbilityName="LW2WotC_DoubleTap")
+static function X2AbilityTemplate DoubleTap()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_Knockback				KnockbackEffect;
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_DoubleTap', "img:///UILibrary_LW_PerkPack.LW_AbilityDoubleTap", false, none, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_DoubleConsumeAll, 1, true);
+
+	// Knockback effect on kill
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	// Configurable cooldown
+	AddCooldown(Template, default.DOUBLE_TAP_COOLDOWN);
+
+	// Additional ability that grants the double tap action points
+	AddSecondaryAbility(Template, DoubleTapBonus());
+
+	return Template;
+}
+
+// This is part of the Double Tap effect, above
+static function X2AbilityTemplate DoubleTapBonus()
+{
+	local X2Effect_GrantActionPoints Effect;
+	local X2AbilityTemplate Template;
+	local XMBCondition_AbilityName NameCondition;
+
+	// Adds two action points that can only be used for gunshots
+	Effect = new class'X2Effect_GrantActionPoints';
+	Effect.NumActionPoints = 2;
+	Effect.PointType = default.DOUBLE_TAP_ACTION_POINT_NAME;
+
+	// Create a triggered ability that will activate whenever the unit uses an ability that meets the condition
+	Template = SelfTargetTrigger('LW2WotC_DoubleTap_Bonus', "img:///UILibrary_LW_PerkPack.LW_AbilityDoubleTap", false, Effect, 'AbilityActivated');
+
+	// Only activates when Double Tap is used
+	NameCondition = new class'XMBCondition_AbilityName';
+	NameCondition.IncludeAbilityNames.AddItem('LW2WotC_DoubleTap');
+	AddTriggerTargetCondition(Template, NameCondition);
+
+	// Show a flyover when activated
+	Template.bShowActivation = true;
+
+	return Template;
+}
+
+// Perk name:		Snap Shot
+// Perk effect:		You may take standard shots with your sniper rifle after moving, but you suffer severe range penalties beyond 5 tiles of squadsight range.
+// Localized text:	"You may take standard shots with your sniper rifle after moving, but you suffer severe range penalties beyond 5 tiles of squadsight range."
+// Config:			(AbilityName="LW2WotC_SnapShot", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate SnapShot()
+{
+	local X2AbilityTemplate					Template;
+	local X2Effect_Knockback				KnockbackEffect;
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_SnapShot', "img:///UILibrary_LW_PerkPack.LW_AbilitySnapShot", false, none, class'UIUtilities_Tactical'.const.STANDARD_SHOT_PRIORITY, eCost_SingleConsumeAll, 1, true);
+
+	// Knockback effect on kill
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	// Only show SnapShot if StandardShot is not available
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_HideIfOtherAvailable;
+	Template.HideIfAvailable.AddItem('SniperStandardFire');
+
+	// Applies the aim penalty at extreme distances
+	AddSecondaryAbility(Template, SnapShotAimModifier());
+
+	return Template;
+}
+
+// This is part of the SnapShot effect, above
+static function X2AbilityTemplate SnapShotAimModifier()
+{
+	local X2AbilityTemplate 			Template;
+	local X2Effect_LW2WotC_SnapShotAimModifier  Effect;
+
+	// This effect lowers the user's aim at extreme ranges when using SnapShot
+	Effect = new class'X2Effect_LW2WotC_SnapShotAimModifier';
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_SnapShot_AimModifier', "img:///UILibrary_LW_PerkPack.LW_AbilitySnapShot", false, Effect);
+
+	// SnapShot will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Reduces AP cost if user has LW2WotC_SnapShot
+// Applied to various abilities if feature is turned on in the config
+// NOTE: This method may not work with abilities that already have intricate cooldown definitions
+static function X2AbilityCost_LW2WotC_ReducedActionCostByAbility SnapShotReducedAbilityCost()
+{
+	local X2AbilityCost_LW2WotC_ReducedActionCostByAbility AbilityCost;
+
+	AbilityCost = new class'X2AbilityCost_LW2WotC_ReducedActionCostByAbility';
+	AbilityCost.iNumPoints = 0; 
+	AbilityCost.bAddWeaponTypicalCost = true; 
+	AbilityCost.bConsumeAllPoints = true;
+	AbilityCost.AbilitiesThatReduceCost.AddItem('LW2WotC_SnapShot');
+
+	return AbilityCost;
+}
+
+// Perk name:		Ghost Grenade
+// Perk effect:		A specialized smoke grenade that causes the targeted ally to enter concealment.
+// Localized text:	"A specialized smoke grenade that causes the targeted ally to enter concealment."
+// Config:			(AbilityName="LW2WotC_GhostGrenade")
+static function X2AbilityTemplate GhostGrenade()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_AddUtilityItem ItemEffect;
+
+	// Adds a free ghost grenade
+	ItemEffect = new class'XMBEffect_AddUtilityItem';
+	ItemEffect.DataName = 'LW2WotC_GhostGrenade';
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_GhostGrenade', "img:///UILibrary_PerkIcons.UIPerk_ghost", false, ItemEffect);
+
+	return Template;
+}
+
+// This is the ability that the Ghost Grenade item grants
+static function X2AbilityTemplate VanishingAct()
+{
+	local X2AbilityTemplate				Template;
+	local X2AbilityCost_ActionPoints	ActionPointCost;
+	local X2Condition_UnitProperty		TargetProperty, ShooterProperty;
+	local X2Effect_ApplySmokeGrenadeToWorld WeaponEffect;
+	local X2Effect_SmokeGrenade				SmokeEffect;	
+	local X2Effect_RangerStealth		StealthEffect;
+	local X2AbilityMultiTarget_Radius		RadiusMultiTarget;
+	local X2AbilityCharges					Charges;
+	local X2AbilityCost_Charges				ChargeCost;
+	local X2Condition_UnitEffects			NotCarryingCondition;
+
+	// Standard setup for an ability granted by an item
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'VanishingAct');
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_ghost"; 
+	Template.AbilitySourceName = 'eAbilitySource_Item';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+    Template.AbilityTargetStyle = default.SingleTargetWithSelf;
+	Template.bCrossClassEligible = false;
+	Template.bIsPassive = false;
+	Template.bDisplayInUITacticalText = false;
+	Template.bLimitTargetIcons = true;
+	Template.bUseLaunchedGrenadeEffects = true;
+
+	// Costs one action point and ends the turn
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+    ActionPointCost.iNumPoints = 1;
+    ActionPointCost.bConsumeAllPoints = true;
+    Template.AbilityCosts.AddItem(ActionPointCost);
+
+    // Standard active ability actions
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+    Template.AddShooterEffectExclusions();
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
+	
+	// Cannot be used while concealed
+	ShooterProperty = new class'X2Condition_UnitProperty';
+	ShooterProperty.ExcludeConcealed = true;
+	Template.AbilityShooterConditions.AddItem(ShooterProperty);
+
+	// Lots of coniditions for who the ability can target
+	TargetProperty = new class'X2Condition_UnitProperty';
+    TargetProperty.ExcludeDead = true;
+    TargetProperty.ExcludeHostileToSource = true;
+    TargetProperty.ExcludeFriendlyToSource = false;
+    TargetProperty.RequireSquadmates = true;
+	TargetProperty.ExcludeConcealed = true;
+	TargetProperty.ExcludeCivilian = true;
+	TargetProperty.ExcludeImpaired = true;
+	TargetProperty.FailOnNonUnits = true;
+	TargetProperty.IsAdvent = false;
+	TargetProperty.ExcludePanicked = true;
+	TargetProperty.ExcludeAlien = true;
+	TargetProperty.IsBleedingOut = false;
+	TargetProperty.IsConcealed = false;
+	TargetProperty.ExcludeStunned = true;
+	TargetProperty.IsImpaired = false;
+    Template.AbilityTargetConditions.AddItem(TargetProperty);
+	
+	// Cannot target anyone who is carrying someone, burning, or bound
+	NotCarryingCondition = new class'X2Condition_UnitEffects';
+	NotCarryingCondition.AddExcludeEffect(class'X2Ability_CarryUnit'.default.CarryUnitEffectName, 'AA_CarryingUnit');
+	NotCarryingCondition.AddExcludeEffect(class'X2StatusEffects'.default.BurningName, 'AA_UnitIsBurning');
+	NotCarryingCondition.AddExcludeEffect(class'X2AbilityTemplateManager'.default.BoundName, 'AA_UnitIsBound');
+	Template.AbilityTargetConditions.AddItem(NotCarryingCondition);
+
+	// Configurable charges
+	Charges = new class'X2AbilityCharges';
+    Charges.InitialCharges = default.VANISHINGACT_CHARGES;
+    Template.AbilityCharges = Charges;
+    ChargeCost = new class'X2AbilityCost_Charges';
+    ChargeCost.NumCharges = 1;
+    Template.AbilityCosts.AddItem(ChargeCost);
+
+    // Area of effect radius for the smoke
+	RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+	RadiusMultiTarget.bUseWeaponRadius = false;
+	RadiusMultiTarget.bUseSourceWeaponLocation = false;
+	RadiusMultiTarget.fTargetRadius = 2; // meters
+	Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+	
+	// Applies smoke cloud to the world
+	WeaponEffect = new class'X2Effect_ApplySmokeGrenadeToWorld';
+	Template.AddTargetEffect (WeaponEffect);
+
+	// Smoke grenade defense bonus
+	SmokeEffect = new class'X2Effect_SmokeGrenade';
+	SmokeEffect.BuildPersistentEffect(class'X2Effect_ApplySmokeGrenadeToWorld'.default.Duration + 1, false, false, false, eGameRule_PlayerTurnBegin);
+    SmokeEffect.SetDisplayInfo(1, class'X2Item_DefaultGrenades'.default.SmokeGrenadeEffectDisplayName, class'X2Item_DefaultGrenades'.default.SmokeGrenadeEffectDisplayDesc, "img:///UILibrary_PerkIcons.UIPerk_grenade_smoke");
+    SmokeEffect.HitMod = class'X2Item_DefaultGrenades'.default.SMOKEGRENADE_HITMOD;
+    SmokeEffect.DuplicateResponse = eDupe_Refresh;
+	Template.AddTargetEffect (SmokeEffect);
+
+	// Coneals the primary target
+	StealthEffect = new class'X2Effect_RangerStealth';
+    StealthEffect.BuildPersistentEffect(1, true, false, false, 8);
+    StealthEffect.SetDisplayInfo(1, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage, true);
+    StealthEffect.bRemoveWhenTargetConcealmentBroken = true;
+    Template.AddTargetEffect(StealthEffect);
+    Template.AddTargetEffect(class'X2Effect_Spotted'.static.CreateUnspottedEffect());
+
+    // For the visualization
+	Template.TargetingMethod = class'X2TargetingMethod_OvertheShoulder';
+    Template.CinescriptCameraType = "Grenadier_GrenadeLauncher";
+
+    // Primary target uses the activate concealment voice line
+	Template.TargetHitSpeech = 'ActivateConcealment';
+
+	// More visualization stuff
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	return Template;
+}
+
+// Perk name:		Flush
+// Perk effect:		Special shot with a bonus to hit that does little or no damage but confers defense and dodge penalties and forces target to change position if it hits.
+// Localized text:	"Special shot with a bonus to hit that does little or no damage but confers defense and dodge penalties and forces target to change position if it hits."
+// Config:			(AbilityName="LW2WotC_Flush", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate Flush()
+{
+	local X2AbilityTemplate Template;
+	local X2AbilityToHitCalc_StandardAim ToHitCalc;
+	local X2Effect_LW2WotC_FallBack FallBackEffect;
+	local X2Effect_PersistentStatChange NerfEffect;
+	local X2Condition_UnitProperty NotConcealedCondition;
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_Flush', "img:///UILibrary_LW_PerkPack.LW_AbilityFlush", false, none, class'UIUtilities_Tactical'.const.CLASS_CORPORAL_PRIORITY - 1, eCost_WeaponConsumeAll, default.FLUSH_AMMO_COST, true);
+
+	// Ammo effects are not applied to Flush
+	Template.bAllowAmmoEffects = false;
+
+	// Disallow crits and add an aim bonus
+	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
+	ToHitCalc.BuiltInHitMod = default.FLUSH_AIM_BONUS;
+	ToHitCalc.bAllowCrit = false;
+	Template.AbilityToHitCalc = ToHitCalc;
+	Template.AbilityToHitOwnerOnMissCalc = ToHitCalc;
+
+	// Forces the target to seek new cover
+	FallBackEffect = new class'X2Effect_LW2WotC_FallBack';
+	FallBackEffect.BehaviorTree = 'FlushRoot';
+	Template.AddTargetEffect(FallBackEffect);
+
+	// Effect that lowers the target's defense and mobility - stackable
+	NerfEffect = new class'X2Effect_PersistentStatChange';
+	NerfEffect.BuildPersistentEffect(default.FLUSH_STATEFFECT_DURATION, false, false, true, eGameRule_PlayerTurnBegin);
+	NerfEffect.AddPersistentStatChange(eStat_Dodge, -float(default.FLUSH_DODGE_REDUCTION));
+	NerfEffect.AddPersistentStatChange(eStat_Defense, -float(default.FLUSH_DEFENSE_REDUCTION));
+	NerfEffect.SetDisplayInfo (ePerkBuff_Penalty, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,, Template.AbilitySourceName);
+	NerfEffect.DuplicateResponse = eDupe_Allow;
+	Template.AddTargetEffect(NerfEffect);
+
+	// Cannot be used while concealed
+	NotConcealedCondition = new class'X2Condition_UnitProperty';
+	NotConcealedCondition.ExcludeConcealed = true;
+	Template.AbilityShooterConditions.AddItem(NotConcealedCondition);
+
+	// Add a cooldown.
+	AddCooldown(Template, default.FLUSH_COOLDOWN);
+
+	// Add a secondary ability to provide bonuses on the shot
+	AddSecondaryAbility(Template, FlushBonuses());
+
+	return Template;
+}
+
+// This is part of the Flush effect, above
+static function X2AbilityTemplate FlushBonuses()
+{
+	local X2AbilityTemplate Template;
+	local XMBEffect_ConditionalBonus Effect;
+	local XMBCondition_AbilityName Condition;
+
+	// Create a conditional bonus effect
+	Effect = new class'XMBEffect_ConditionalBonus';
+	Effect.EffectName = 'LW2WotC_Flush_Bonuses';
+
+	// The bonus reduces damage by a percentage
+	Effect.AddPercentDamageModifier(-1 * default.FLUSH_DAMAGE_PERCENT_MALUS);
+
+	// The bonus only applies to the Flush ability
+	Condition = new class'XMBCondition_AbilityName';
+	Condition.IncludeAbilityNames.AddItem('LW2WotC_Flush');
+	Effect.AbilityTargetConditions.AddItem(Condition);
+
+	// Create the template using a helper function
+	Template = Passive('LW2WotC_Flush_Bonuses', "img:///UILibrary_LW_PerkPack.LW_AbilityFlush", false, Effect);
+
+	// Flush will show up as an active ability, so hide the icon for the passive damage effect
+	HidePerkIcon(Template);
+
+	return Template;
+}
+
+// Perk name:		Clutch Shot
+// Perk effect:		Once per mission, fire a pistol shot that cannot miss.
+// Localized text:	"Once per mission, fire a pistol shot that cannot miss."
+// Config:			(AbilityName="LW2WotC_ClutchShot", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate ClutchShot()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityToHitCalc_StandardAim    ToHitCalc;
+	local X2Condition_Visibility			VisibilityCondition;
+	local X2Effect_Knockback				KnockbackEffect;
+
+	// Create the template using a helper function
+	Template = Attack('LW2WotC_ClutchShot', "img:///UILibrary_LW_PerkPack.LW_AbilityClutchShot", false, none, class'UIUtilities_Tactical'.const.CLASS_LIEUTENANT_PRIORITY, eCost_WeaponConsumeAll, 0, true);
+
+	// Squadsight should not apply
+	Template.AbilityTargetConditions.Length = 0;
+	VisibilityCondition = new class'X2Condition_Visibility';
+	VisibilityCondition.bRequireGameplayVisible = true;
+	VisibilityCondition.bAllowSquadsight = false;
+	Template.AbilityTargetConditions.AddItem(VisibilityCondition);
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileTargetProperty);
+
+	// Attack always hits
+	ToHitCalc = new class'X2AbilityToHitCalc_StandardAim';
+	ToHitCalc.bGuaranteedHit = true;
+	Template.AbilityToHitCalc = ToHitCalc;
+	Template.AbilityToHitOwnerOnMissCalc = ToHitCalc;
+
+	// Knockback effect on kill
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	// Configurable charges
+	AddCharges(Template, default.CLUTCH_SHOT_CHARGES);
+
+	return Template;
+}
+
+// Perk name:		Gunslinger
+// Perk effect:		Take a reaction shot with your pistol against any enemy that moves or attacks within a wide cone of fire. Cooldown-based.
+// Localized text:	"Take a reaction shot with your pistol against any enemy that moves or attacks within <Ability:GUNSLINGER_TILES_RANGE> tiles and a wide cone of fire. <Ability:GUNSLINGER_COOLDOWN> turn cooldown."
+// Config:			(AbilityName="LW2WotC_Gunslinger", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Gunslinger()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityCooldown					Cooldown;
+	local X2AbilityCost_Ammo				AmmoCost;
+	local X2AbilityCost_ActionPoints		ActionPointCost;
+	local X2AbilityTarget_Cursor			CursorTarget;
+	local X2AbilityMultiTarget_Cone			ConeMultiTarget;
+	local X2Effect_ReserveActionPoints		ReservePointsEffect;
+	local X2Effect_MarkValidActivationTiles MarkTilesEffect;
+	local X2Condition_UnitEffects           SuppressedCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_Gunslinger');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityGunslinger";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY;
+	Template.Hostility = eHostility_Defensive;
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+	Template.bDisplayInUITooltip = false;
+	Template.bDisplayInUITacticalText = false;
+	Template.Hostility = eHostility_Defensive;
+	Template.AbilityConfirmSound = "Unreal2DSounds_OverWatch";
+	Template.bSkipFireAction = true;
+    Template.bShowActivation = true;
+	Template.ActivationSpeech = 'KillZone';
+	Template.bCrossClassEligible = false;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	AmmoCost.bFreeCost = true;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	ActionPointCost.bConsumeAllPoints = true;   
+	ActionPointCost.bFreeCost = true;    
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	SuppressedCondition = new class'X2Condition_UnitEffects';
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = default.GUNSLINGER_COOLDOWN;
+	Template.AbilityCooldown = Cooldown;
+
+	CursorTarget = new class'X2AbilityTarget_Cursor';
+	CursorTarget.bRestrictToWeaponRange = true;
+	Template.AbilityTargetStyle = CursorTarget;
+	Template.TargetingMethod = class'X2TargetingMethod_Cone';
+
+	ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+	ConeMultiTarget.bUseWeaponRadius = true;
+	ConeMultiTarget.ConeEndDiameter = 48 * class'XComWorldData'.const.WORLD_StepSize;
+	ConeMultiTarget.ConeLength = default.GUNSLINGER_TILES_RANGE * class'XComWorldData'.const.WORLD_StepSize;
+	Template.AbilityMultiTargetStyle = ConeMultiTarget;
+
+	ReservePointsEffect = new class'X2Effect_ReserveActionPoints';
+	ReservePointsEffect.ReserveType = class'X2Ability_SharpshooterAbilitySet'.default.KillZoneReserveType;
+	Template.AddShooterEffect(ReservePointsEffect);
+
+	MarkTilesEffect = new class'X2Effect_MarkValidActivationTiles';
+	MarkTilesEffect.AbilityToMark = 'GunslingerShot';
+	Template.AddShooterEffect(MarkTilesEffect);
+
+	Template.AdditionalAbilities.AddItem('GunslingerShot');
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	return Template;
+}
+
+// The shot fired when a target moves in the Gunslinger area of effect
+static function X2AbilityTemplate GunslingerShot()
+{
+	local X2AbilityTemplate                 Template;
+	local X2AbilityCost_Ammo				AmmoCost;
+	local X2AbilityCost_ReserveActionPoints ReserveActionPointCost;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local X2Condition_AbilityProperty       AbilityCondition;
+	local X2AbilityTarget_Single            SingleTarget;
+	local X2AbilityTrigger_Event	        Trigger;
+	local X2Effect_Persistent               GunslingerEffect;
+	local X2Condition_UnitEffectsWithAbilitySource  GunslingerCondition;
+	local X2Condition_Visibility            TargetVisibilityCondition;
+	local X2Condition_UnitProperty          ShooterCondition;
+	// local X2Condition_RequiredToHitChance	RequiredHitChanceCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'GunslingerShot');	
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_overwatch";
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY;
+	Template.bDisplayInUITooltip = false;
+	Template.bDisplayInUITacticalText = false;
+
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+
+	// RequiredHitChanceCondition = new class'X2Condition_RequiredToHitChance';
+	// RequiredHitChanceCondition.MinimumRequiredHitChance = class'X2Ability_PerkPackAbilitySet2'.default.REQUIRED_TO_HIT_FOR_OVERWATCH;  
+	// Template.AbilityTargetConditions.AddItem(RequiredHitChanceCondition);
+
+	ReserveActionPointCost = new class'X2AbilityCost_ReserveActionPoints';
+	ReserveActionPointCost.iNumPoints = 1;
+	ReserveActionPointCost.bFreeCost = true;
+	ReserveActionPointCost.AllowedTypes.AddItem('KillZone');
+	Template.AbilityCosts.AddItem(ReserveActionPointCost);
+
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bReactionFire = true;
+	Template.AbilityToHitCalc = StandardAim;
+	Template.AbilityToHitOwnerOnMissCalc = StandardAim;
+
+	Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitDisallowMindControlProperty);
+
+	TargetVisibilityCondition = new class'X2Condition_Visibility';
+	TargetVisibilityCondition.bRequireGameplayVisible = true;
+	TargetVisibilityCondition.bRequireBasicVisibility = true;
+	TargetVisibilityCondition.bDisablePeeksOnMovement = true;
+	TargetVisibilityCondition.bAllowSquadsight = false;
+	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
+
+	AbilityCondition = new class'X2Condition_AbilityProperty';
+	AbilityCondition.TargetMustBeInValidTiles = true;
+	Template.AbilityTargetConditions.AddItem(AbilityCondition);
+
+	Template.AbilityTargetConditions.AddItem(class'X2Ability_DefaultAbilitySet'.static.OverwatchTargetEffectsCondition());
+
+	ShooterCondition = new class'X2Condition_UnitProperty';
+	ShooterCondition.ExcludeConcealed = true;
+	Template.AbilityShooterConditions.AddItem(ShooterCondition);
+
+	GunslingerCondition = new class'X2Condition_UnitEffectsWithAbilitySource';
+	GunslingerCondition.AddExcludeEffect('GunslingerTarget', 'AA_UnitIsImmune');
+	Template.AbilityTargetConditions.AddItem(GunslingerCondition);
+
+	GunslingerEffect = new class'X2Effect_Persistent';
+	GunslingerEffect.EffectName = 'GunslingerTarget';
+	GunslingerEffect.BuildPersistentEffect(1, false, false, false, eGameRule_PlayerTurnBegin);
+	GunslingerEffect.SetupEffectOnShotContextResult(true, true);      //  mark them regardless of whether the shot hit or missed
+	Template.AddTargetEffect(GunslingerEffect);
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	SingleTarget = new class'X2AbilityTarget_Single';
+	SingleTarget.OnlyIncludeTargetsInsideWeaponRange = true;
+	Template.AbilityTargetStyle = SingleTarget;
+
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect());
+	Template.AddTargetEffect(class'X2Ability_GrenadierAbilitySet'.static.ShredderDamageEffect());
+	Template.bAllowAmmoEffects = true;
+
+	Trigger = new class'X2AbilityTrigger_Event';
+	Trigger.EventObserverClass = class'X2TacticalGameRuleset_MovementObserver';
+	Trigger.MethodName = 'InterruptGameState';
+	Template.AbilityTriggers.AddItem(Trigger);
+
+	Trigger = new class'X2AbilityTrigger_Event';
+	Trigger.EventObserverClass = class'X2TacticalGameRuleset_AttackObserver';
+	Trigger.MethodName = 'InterruptGameState';
+	Template.AbilityTriggers.AddItem(Trigger);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	return Template;
+}
+
+// Perk name:		Steady Weapon
+// Perk effect:		Gain bonus aim on your next shot with your primary weapon. Multiple uses will stack bonus. Bonus is lost if you use actions or are wounded.
+// Localized text:	"Gain +<Ability:STEADY_WEAPON_AIM_BONUS> aim on your next shot with your primary weapon. Multiple uses will stack bonus. Bonus is lost if you use actions or are wounded."
+// Config:			(AbilityName="LW2WotC_SteadyWeapon", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
+static function X2AbilityTemplate SteadyWeapon()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityCooldown					Cooldown;
+	local X2AbilityCost_ActionPoints		ActionPointCost;
+	local X2Effect_LW2WotC_SteadyWeapon		ToHitModifier;
+	local X2Condition_UnitEffects			SuppressedCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_SteadyWeapon');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilitySteadyWeapon";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.Hostility = eHostility_Neutral;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.bSkipFireAction=true;
+	Template.bShowActivation=true;
+	Template.AbilityConfirmSound = "Unreal2DSounds_OverWatch";
+	Template.bCrossClassEligible = false;
+	//Template.DefaultKeyBinding = 539;
+	//Template.bNoConfirmationWithHotKey = true;
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = 1;
+	Template.AbilityCooldown = Cooldown;
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	ActionPointCost.bConsumeAllPoints = true;    
+	Template.AbilityCosts.AddItem(ActionPointCost);
+	
+	SuppressedCondition = new class'X2Condition_UnitEffects';
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+
+	Template.AddShooterEffectExclusions();
+	Template.CinescriptCameraType = "Overwatch";
+	ToHitModifier = new class'X2Effect_LW2WotC_SteadyWeapon';
+	ToHitModifier.BuildPersistentEffect(2, false, true, false, eGameRule_UseActionPoint);
+	ToHitModifier.SetDisplayInfo(ePerkBuff_Bonus, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+	ToHitModifier.Aim_Bonus = default.STEADY_WEAPON_AIM_BONUS;
+	ToHitModifier.DuplicateResponse=eDupe_Refresh;
+	Template.AddTargetEffect(ToHitModifier);	
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
 	return Template;
 }
