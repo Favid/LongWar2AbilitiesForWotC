@@ -154,7 +154,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Conventional()
 
     Template.Abilities.AddItem('LWRocketLauncher');
     Template.Abilities.AddItem('RocketFuse');
-    Template.Abilities.AddItem('LWFlamethrower');
+    // Template.Abilities.AddItem('LWFlamethrower');
 
     Template.iPhysicsImpulse = 5;
 
@@ -213,7 +213,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Mag()
 
     Template.Abilities.AddItem('LWRocketLauncher');
     Template.Abilities.AddItem('RocketFuse');
-    Template.Abilities.AddItem('LWFlamethrower');
+    // Template.Abilities.AddItem('LWFlamethrower');
 
     Template.iPhysicsImpulse = 5;
 
@@ -272,7 +272,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_COIL()
 
     Template.Abilities.AddItem('LWRocketLauncher');
     Template.Abilities.AddItem('RocketFuse');
-    Template.Abilities.AddItem('LWFlamethrower');
+    // Template.Abilities.AddItem('LWFlamethrower');
 
     Template.iPhysicsImpulse = 5;
 
@@ -331,7 +331,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Beam()
 
     Template.Abilities.AddItem('LWBlasterLauncher');
     Template.Abilities.AddItem('RocketFuse');
-    Template.Abilities.AddItem('LWFlamethrower');
+    // Template.Abilities.AddItem('LWFlamethrower');
 
     Template.iPhysicsImpulse = 5;
 
