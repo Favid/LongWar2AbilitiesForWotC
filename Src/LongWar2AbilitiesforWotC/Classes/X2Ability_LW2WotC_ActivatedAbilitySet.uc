@@ -392,8 +392,9 @@ static function X2AbilityTemplate Fleche()
 	local X2AbilityTemplate                 Template;
 	local array<name>                       SkipExclusions;
 
-	// Fleche is just a copy of the vanilla Ranger's Slash ability, but with a bonus damage effect
+	// Fleche is just a copy of the vanilla Ranger's Slash ability, but with a bonus damage effect and new icon
 	Template = class'X2Ability_RangerAbilitySet'.static.AddSwordSliceAbility('LW2WotC_Fleche');
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityFleche";
 
 	// Add secondary ability for bonus damage
 	AddSecondaryAbility(Template, FlecheBonuses());
