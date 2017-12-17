@@ -142,10 +142,8 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Gunslinger());
 	Templates.AddItem(GunslingerShot());
 	Templates.AddItem(SteadyWeapon());
-
-	//Templates.AddItem(AddCommissarAbility());
-	//Templates.AddItem(AddMindMergeAbility());
-	//Templates.AddItem(AddSoulMergeAbility());
+	Templates.AddItem(MindMerge());
+	Templates.AddItem(SoulMerge());
 	
 	return Templates;
 }
@@ -2168,5 +2166,99 @@ static function X2AbilityTemplate SteadyWeapon()
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
+	return Template;
+}
+
+static function X2AbilityTemplate MindMerge()
+{
+	local X2AbilityTemplate				Template;
+	local X2AbilityCooldown_LW2WotC_MindMerge	Cooldown;
+	local X2AbilityCost_ActionPoints	ActionPointCost;
+	local X2Condition_UnitProperty		TargetCondition;
+	local X2Effect_LW2WotC_MindMerge			MindMergeEffect;	
+	local X2Condition_UnitEffects		MMCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_MindMerge');
+
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityMindMerge";
+	Template.AbilitySourceName = 'eAbilitySource_Psionic';
+	Template.Hostility = eHostility_Neutral;
+	Template.ShotHUDPriority = 320;
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.bCrossClassEligible = false;
+	Template.bDisplayInUITooltip = true;
+	Template.bDisplayInUITacticalText = true;
+	Template.bLimitTargetIcons = true;
+	Template.DisplayTargetHitChance = false;
+
+	TargetCondition = new class'X2Condition_UnitProperty';
+    TargetCondition.ExcludeHostileToSource = true;
+    TargetCondition.ExcludeFriendlyToSource = false;
+	TargetCondition.TreatMindControlledSquadmateAsHostile = true;
+    TargetCondition.RequireSquadmates = true;
+    TargetCondition.FailOnNonUnits = true;
+    TargetCondition.ExcludeDead = true;
+    TargetCondition.ExcludeRobotic = true;
+    Template.AbilityTargetConditions.AddItem(TargetCondition);
+	Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = default.MIND_MERGE_MIN_ACTION_POINTS;
+	ActionPointCost.bConsumeAllPoints = false;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	Cooldown = new class'X2AbilityCooldown_LW2WotC_MindMerge';
+	Cooldown.MIND_MERGE_COOLDOWN = default.MIND_MERGE_COOLDOWN;
+	Cooldown.SOUL_MERGE_COOLDOWN_REDUCTION = default.SOUL_MERGE_COOLDOWN_REDUCTION;
+	Template.AbilityCooldown = Cooldown;
+
+	MMCondition = new class'X2Condition_UnitEffects';
+	MMCondition.AddExcludeEffect('MindMergeEffect', 'AA_UnitIsMindMerged');
+	Template.AbilityTargetConditions.AddItem(MMCondition);
+
+	MindMergeEffect = new class 'X2Effect_LW2WotC_MindMerge';
+	MindMergeEffect.EffectName = 'MindMergeEffect';
+	MindMergeEffect.BaseWillIncrease = 0;
+	MindMergeEffect.BaseShieldHPIncrease = 1;
+	MindMergeEffect.MindMergeWillDivisor = default.MIND_MERGE_WILL_DIVISOR;
+	MindMergeEffect.MindMergeShieldHPDivisor = default.MIND_MERGE_SHIELDHP_DIVISOR;
+	MindMergeEffect.SoulMergeWillDivisor = default.SOUL_MERGE_WILL_DIVISOR;
+	MindMergeEffect.SoulMergeShieldHPDivisor = default.SOUL_MERGE_SHIELDHP_DIVISOR;
+	MindMergeEffect.AmpMGWillBonus = default.MIND_MERGE_AMP_MG_WILL_BONUS;
+	MindMergeEffect.AmpMGShieldHPBonus = default.MIND_MERGE_AMP_MG_SHIELDHP_BONUS;
+	MindMergeEffect.AmpBMWillBonus = default.MIND_MERGE_AMP_BM_WILL_BONUS;
+	MindMergeEffect.AmpBMShieldHPBonus = default.MIND_MERGE_AMP_BM_SHIELDHP_BONUS;
+	MindMergeEffect.MindMergeCritDivisor= default.MIND_MERGE_CRIT_DIVISOR;
+	MindMergeEffect.SoulMergeCritDivisor= default.SOUL_MERGE_CRIT_DIVISOR;
+	MindMergeEffect.AmpMGCritBonus= default.MIND_MERGE_AMP_MG_CRIT_BONUS;
+	MindMergeEffect.AMpBMCritBonus= default.SOUL_MERGE_AMP_BM_CRIT_BONUS;
+
+	MindMergeEffect.bRemoveWhenTargetDies=true;
+	MindMergeEffect.BuildPersistentEffect (default.MIND_MERGE_DURATION, false, true, true, eGameRule_PlayerTurnBegin);
+	MindMergeEFfect.SetDisplayInfo (ePerkBuff_Bonus, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,, Template.AbilitySourceName);
+	Template.AddTargetEffect (MindMergeEffect);
+
+	Template.AssociatedPassives.AddItem('SoulMerge');
+
+	Template.ActivationSpeech = 'PsionicsInspiration';
+	Template.CinescriptCameraType = "Psionic_FireAtUnit";
+	Template.CustomFireAnim = 'HL_Psi_ProjectileMerge';
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	return Template;
+}
+
+static function X2AbilityTemplate SoulMerge()
+{
+	local X2AbilityTemplate                 Template;
+
+	Template = PurePassive('LW2WotC_SoulMerge', "img:///UILibrary_LW_PerkPack.LW_AbilitySoulMerge", false, 'eAbilitySource_Psionic');
+	Template.PrerequisiteAbilities.AddItem('LW2WotC_MindMerge');
 	return Template;
 }
