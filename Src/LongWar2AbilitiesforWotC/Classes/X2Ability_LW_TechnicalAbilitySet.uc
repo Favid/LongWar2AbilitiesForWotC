@@ -78,74 +78,74 @@ static function array<X2DataTemplate> CreateTemplates()
     Templates.AddItem(LWRocketLauncherAbility());
     Templates.AddItem(LWBlasterLauncherAbility());
     // Templates.AddItem(PurePassive('FireInTheHole', "img:///UILibrary_LW_PerkPack.LW_AbilityFireInTheHole"));
-    // Templates.AddItem(AddShockAndAwe());
-    // Templates.AddItem(AddJavelinRockets());
-    // Templates.AddItem(CreateConcussionRocketAbility());
-    // Templates.AddItem(CreateBunkerBusterAbility());
+    Templates.AddItem(AddShockAndAwe());
+    Templates.AddItem(AddJavelinRockets());
+    Templates.AddItem(CreateConcussionRocketAbility());
+    Templates.AddItem(CreateBunkerBusterAbility());
 
-     Templates.AddItem(CreateNapalmXPanicEffectAbility());
+    Templates.AddItem(CreateNapalmXPanicEffectAbility());
 
-    // Templates.AddItem(CreateFireandSteelAbility());
+    Templates.AddItem(CreateFireandSteelAbility());
 
     return Templates;
 }
 
 //this ability increase the range of rockets fire from gauntlet
-// static function X2AbilityTemplate AddJavelinRockets()
-// {
-//     local X2AbilityTemplate             Template;
-//     local X2Effect_JavelinRockets       JavelinRocketsEffect;
+static function X2AbilityTemplate AddJavelinRockets()
+{
+    local X2AbilityTemplate             Template;
+    local X2Effect_JavelinRockets       JavelinRocketsEffect;
 
-//     `CREATE_X2ABILITY_TEMPLATE(Template, 'JavelinRockets');
-//     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityJavelinRockets";
-//     Template.AbilitySourceName = 'eAbilitySource_Perk';
-//     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-//     Template.Hostility = eHostility_Neutral;
-//     Template.AbilityToHitCalc = default.DeadEye;
-//     Template.AbilityTargetStyle = default.SelfTarget;
-//     Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-//     Template.bIsPassive = true;
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'JavelinRockets');
+    Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityJavelinRockets";
+    Template.AbilitySourceName = 'eAbilitySource_Perk';
+    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+    Template.Hostility = eHostility_Neutral;
+    Template.AbilityToHitCalc = default.DeadEye;
+    Template.AbilityTargetStyle = default.SelfTarget;
+    Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+    Template.bIsPassive = true;
 
-//     JavelinRocketsEffect = new class 'X2Effect_JavelinRockets';
-//     JavelinRocketsEffect.BuildPersistentEffect (1, true, false);
-//     JavelinRocketsEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-//     Template.AddTargetEffect (JavelinRocketsEffect);
+    JavelinRocketsEffect = new class 'X2Effect_JavelinRockets';
+    JavelinRocketsEffect.BuildPersistentEffect (1, true, false);
+    JavelinRocketsEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+    Template.AddTargetEffect (JavelinRocketsEffect);
 
-//     Template.bCrossClassEligible = false;
-//     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    Template.bCrossClassEligible = false;
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
-//     return Template;
-// }
+    return Template;
+}
 
 //this ability will add +1 charge to the rocket launcher portion of gauntlet
-// static function X2AbilityTemplate AddShockAndAwe()
-// {
-//     local X2AbilityTemplate             Template;
-//     local X2Effect_BonusRocketCharges   RocketChargesEffect;
+static function X2AbilityTemplate AddShockAndAwe()
+{
+    local X2AbilityTemplate             Template;
+    local X2Effect_BonusRocketCharges   RocketChargesEffect;
 
-//     `CREATE_X2ABILITY_TEMPLATE(Template, 'ShockAndAwe');
-//     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityShockAndAwe";
-//     Template.AbilitySourceName = 'eAbilitySource_Perk';
-//     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-//     Template.Hostility = eHostility_Neutral;
-//     Template.AbilityToHitCalc = default.DeadEye;
-//     Template.AbilityTargetStyle = default.SelfTarget;
-//     Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-//     Template.bIsPassive = true;
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'ShockAndAwe');
+    Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityShockAndAwe";
+    Template.AbilitySourceName = 'eAbilitySource_Perk';
+    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+    Template.Hostility = eHostility_Neutral;
+    Template.AbilityToHitCalc = default.DeadEye;
+    Template.AbilityTargetStyle = default.SelfTarget;
+    Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+    Template.bIsPassive = true;
 
-//     RocketChargesEffect = new class 'X2Effect_BonusRocketCharges';
-//     RocketChargesEffect.BonusUses=default.SHOCK_AND_AWE_BONUS_CHARGES;
-//     RocketChargesEffect.SlotType=eInvSlot_SecondaryWeapon;
+    RocketChargesEffect = new class 'X2Effect_BonusRocketCharges';
+    RocketChargesEffect.BonusUses=default.SHOCK_AND_AWE_BONUS_CHARGES;
+    RocketChargesEffect.SlotType=eInvSlot_SecondaryWeapon;
 
-//     RocketChargesEffect.BuildPersistentEffect (1, true, false);
-//     RocketChargesEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-//     Template.AddTargetEffect (RocketChargesEffect);
+    RocketChargesEffect.BuildPersistentEffect (1, true, false);
+    RocketChargesEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+    Template.AddTargetEffect (RocketChargesEffect);
 
-//     Template.bCrossClassEligible = false;
-//     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    Template.bCrossClassEligible = false;
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
-//     return Template;
-// }
+    return Template;
+}
 
 
 static function X2AbilityTemplate CreateLWFlamethrowerAbility()
@@ -832,29 +832,29 @@ static function X2DataTemplate CreateNapalmXPanicEffectAbility()
     return Template;
 }
 
-// static function X2AbilityTemplate CreateFireandSteelAbility()
-// {
-//     local X2AbilityTemplate                 Template;
-//     local X2Effect_BonusWeaponDamage        DamageEffect;
+static function X2AbilityTemplate CreateFireandSteelAbility()
+{
+    local X2AbilityTemplate                 Template;
+    local X2Effect_BonusWeaponDamage        DamageEffect;
 
-//     `CREATE_X2ABILITY_TEMPLATE(Template, 'FireandSteel');
-//     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityFireandSteel";
-//     Template.AbilitySourceName = 'eAbilitySource_Perk';
-//     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-//     Template.Hostility = eHostility_Neutral;
-//     Template.AbilityToHitCalc = default.DeadEye;
-//     Template.AbilityTargetStyle = default.SelfTarget;
-//     Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
-//     Template.bIsPassive = true;
-//     DamageEffect = new class'X2Effect_BonusWeaponDamage';
-//     DamageEffect.BonusDmg = default.FIRE_AND_STEEL_DAMAGE_BONUS;
-//     DamageEffect.BuildPersistentEffect(1, true, false, false);
-//     DamageEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
-//     Template.AddTargetEffect(DamageEffect);
-//     Template.bCrossClassEligible = false;
-//     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-//     return Template;
-// }
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'FireandSteel');
+    Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityFireandSteel";
+    Template.AbilitySourceName = 'eAbilitySource_Perk';
+    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+    Template.Hostility = eHostility_Neutral;
+    Template.AbilityToHitCalc = default.DeadEye;
+    Template.AbilityTargetStyle = default.SelfTarget;
+    Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+    Template.bIsPassive = true;
+    DamageEffect = new class'X2Effect_BonusWeaponDamage';
+    DamageEffect.BonusDmg = default.FIRE_AND_STEEL_DAMAGE_BONUS;
+    DamageEffect.BuildPersistentEffect(1, true, false, false);
+    DamageEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
+    Template.AddTargetEffect(DamageEffect);
+    Template.bCrossClassEligible = false;
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    return Template;
+}
 
 static function X2AbilityTemplate LWRocketLauncherAbility()
 {
@@ -1025,229 +1025,231 @@ static function X2AbilityTemplate CreateHighPressureAbility()
     return Template;
 }
 
-// static function X2AbilityTemplate CreateConcussionRocketAbility()
-// {
-//     local X2AbilityTemplate                     Template;
-//     local X2AbilityCharges                  Charges;
-//     local X2AbilityCost_Charges             ChargeCost;
-//     local X2AbilityCost_ActionPoints        ActionPointCost;
-//     local X2AbilityTarget_Cursor            CursorTarget;
-//     local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
-//     local X2AbilityToHitCalc_StandardAim    StandardAim;
-//     local X2Effect_PersistentStatChange     DisorientedEffect;
-//     local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
-//     //local X2Effect_SmokeGrenade               SmokeEffect;
-//     local X2Effect_ApplySmokeGrenadeToWorld WeaponEffect;
-//     local X2Effect_Stunned                  StunnedEffect;
-//     local X2Condition_UnitEffects           SuppressedCondition;
-//     local X2Condition_UnitProperty          UnitPropertyCondition;
-//     local X2Condition_UnitType              ImmuneUnitCondition;
+static function X2AbilityTemplate CreateConcussionRocketAbility()
+{
+    local X2AbilityTemplate                     Template;
+    local X2AbilityCharges                  Charges;
+    local X2AbilityCost_Charges             ChargeCost;
+    local X2AbilityCost_ActionPoints        ActionPointCost;
+    local X2AbilityTarget_Cursor            CursorTarget;
+    local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
+    local X2AbilityToHitCalc_StandardAim    StandardAim;
+    local X2Effect_PersistentStatChange     DisorientedEffect;
+    local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
+    //local X2Effect_SmokeGrenade               SmokeEffect;
+    local X2Effect_ApplySmokeGrenadeToWorld WeaponEffect;
+    local X2Effect_Stunned                  StunnedEffect;
+    local X2Condition_UnitEffects           SuppressedCondition;
+    local X2Condition_UnitProperty          UnitPropertyCondition;
+    local X2Condition_UnitType              ImmuneUnitCondition;
 
-//     `CREATE_X2ABILITY_TEMPLATE(Template, 'ConcussionRocket');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'ConcussionRocket');
 
-//     Template.AbilitySourceName = 'eAbilitySource_Perk';
-//     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
-//     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityConcussionRocket";
-//     Template.bCrossClassEligible = false;
-//     Template.Hostility = eHostility_Offensive;
-//     Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY;
+    Template.AbilitySourceName = 'eAbilitySource_Perk';
+    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+    Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityConcussionRocket";
+    Template.bCrossClassEligible = false;
+    Template.Hostility = eHostility_Offensive;
+    Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY;
 
-//     Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-//     Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';
-//     Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-//     Template.AddShooterEffectExclusions();
+    Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+    // Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';  // this version includes scatter
+    Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
+    Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+    Template.AddShooterEffectExclusions();
 
-//     SuppressedCondition = new class'X2Condition_UnitEffects';
-//     SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-//     SuppressedCondition.AddExcludeEffect(class'X2Effect_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-//     Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    SuppressedCondition = new class'X2Condition_UnitEffects';
+    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+    SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
-//     CursorTarget = new class'X2AbilityTarget_Cursor';
-//     CursorTarget.bRestrictToWeaponRange = true;
-//     Template.AbilityTargetStyle = CursorTarget;
+    CursorTarget = new class'X2AbilityTarget_Cursor';
+    CursorTarget.bRestrictToWeaponRange = true;
+    Template.AbilityTargetStyle = CursorTarget;
 
-//     StandardAim = new class'X2AbilityToHitCalc_StandardAim';
-//     StandardAim.bAllowCrit = false;
-//     StandardAim.bGuaranteedHit = true;
-//     Template.AbilityToHitCalc = StandardAim;
+    StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+    StandardAim.bAllowCrit = false;
+    StandardAim.bGuaranteedHit = true;
+    Template.AbilityToHitCalc = StandardAim;
 
-//     ActionPointCost = new class'X2AbilityCost_HeavyWeaponActionPoints';
-//     Template.AbilityCosts.AddItem(ActionPointCost);
+    ActionPointCost = new class'X2AbilityCost_HeavyWeaponActionPoints';
+    Template.AbilityCosts.AddItem(ActionPointCost);
 
-//     Charges = new class'X2AbilityCharges';
-//     Charges.InitialCharges = 1;
-//     Template.AbilityCharges = Charges;
+    Charges = new class'X2AbilityCharges';
+    Charges.InitialCharges = 1;
+    Template.AbilityCharges = Charges;
 
-//     ChargeCost = new class'X2AbilityCost_Charges';
-//     ChargeCost.NumCharges = 1;
-//     Template.AbilityCosts.AddItem(ChargeCost);
+    ChargeCost = new class'X2AbilityCost_Charges';
+    ChargeCost.NumCharges = 1;
+    Template.AbilityCosts.AddItem(ChargeCost);
 
-//     UnitPropertyCondition = new class'X2Condition_UnitProperty';
-//     UnitPropertyCondition.ExcludeRobotic = true;
-//     UnitPropertyCondition.ExcludeOrganic = false;
-//     UnitPropertyCondition.ExcludeDead = true;
-//     UnitPropertyCondition.ExcludeFriendlyToSource = true;
-//     UnitPropertyCondition.RequireWithinRange = true;
-//     Template.AbilityTargetConditions.AddItem (UnitPropertyCondition);
-//     Template.AbilityMultiTargetConditions.AddItem(UnitPropertyCondition);
+    UnitPropertyCondition = new class'X2Condition_UnitProperty';
+    UnitPropertyCondition.ExcludeRobotic = true;
+    UnitPropertyCondition.ExcludeOrganic = false;
+    UnitPropertyCondition.ExcludeDead = true;
+    UnitPropertyCondition.ExcludeFriendlyToSource = true;
+    UnitPropertyCondition.RequireWithinRange = true;
+    Template.AbilityTargetConditions.AddItem (UnitPropertyCondition);
+    Template.AbilityMultiTargetConditions.AddItem(UnitPropertyCondition);
 
-//     ImmuneUnitCondition = new class'X2Condition_UnitType';
-//     ImmuneUnitCondition.ExcludeTypes.AddItem('PsiZombie');
-//     ImmuneUnitCondition.ExcludeTypes.AddItem('AdvPsiWitchM2');
-//     ImmuneUnitCondition.ExcludeTypes.AddItem('AdvPsiWitchM3');
-//     Template.AbilityTargetConditions.AddItem(ImmuneUnitCondition);
-//     Template.AbilityMultiTargetConditions.AddItem(ImmuneUnitCondition);
+    ImmuneUnitCondition = new class'X2Condition_UnitType';
+    ImmuneUnitCondition.ExcludeTypes.AddItem('PsiZombie');
+    ImmuneUnitCondition.ExcludeTypes.AddItem('AdvPsiWitchM2');
+    ImmuneUnitCondition.ExcludeTypes.AddItem('AdvPsiWitchM3');
+    Template.AbilityTargetConditions.AddItem(ImmuneUnitCondition);
+    Template.AbilityMultiTargetConditions.AddItem(ImmuneUnitCondition);
 
-//     RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
-//     RadiusMultiTarget.bUseWeaponRadius = false;
-//     RadiusMultiTarget.fTargetRadius = default.CONCUSSION_ROCKET_RADIUS_TILES * 1.5; // meters
-//     Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+    RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+    RadiusMultiTarget.bUseWeaponRadius = false;
+    RadiusMultiTarget.fTargetRadius = default.CONCUSSION_ROCKET_RADIUS_TILES * 1.5; // meters
+    Template.AbilityMultiTargetStyle = RadiusMultiTarget;
 
-//     WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
-//     WeaponDamageEffect.bIgnoreBaseDamage = true;
-//     WeaponDamageEffect.EffectDamageValue=default.CONCUSSION_ROCKET_DAMAGE_VALUE;
-//     WeaponDamageEffect.bExplosiveDamage = true;
-//     WeaponDamageEffect.EnvironmentalDamageAmount=default.CONCUSSION_ROCKET_ENV_DAMAGE;
-//     //Template.AddTargetEffect(WeaponDamageEffect);
-//     Template.AddMultiTargetEffect(WeaponDamageEffect);
+    WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
+    WeaponDamageEffect.bIgnoreBaseDamage = true;
+    WeaponDamageEffect.EffectDamageValue=default.CONCUSSION_ROCKET_DAMAGE_VALUE;
+    WeaponDamageEffect.bExplosiveDamage = true;
+    WeaponDamageEffect.EnvironmentalDamageAmount=default.CONCUSSION_ROCKET_ENV_DAMAGE;
+    //Template.AddTargetEffect(WeaponDamageEffect);
+    Template.AddMultiTargetEffect(WeaponDamageEffect);
 
-//     StunnedEffect = class'X2StatusEffects'.static.CreateStunnedStatusEffect(2,100,false);
-//     StunnedEffect.bRemoveWhenSourceDies = false;
-//     StunnedEffect.ApplyChanceFn = ApplyChance_Concussion_Stunned;
-//     //Template.AddTargetEffect(StunnedEffect);
-//     Template.AddMultiTargetEffect(StunnedEffect);
+    StunnedEffect = class'X2StatusEffects'.static.CreateStunnedStatusEffect(2,100,false);
+    StunnedEffect.bRemoveWhenSourceDies = false;
+    StunnedEffect.ApplyChanceFn = ApplyChance_Concussion_Stunned;
+    //Template.AddTargetEffect(StunnedEffect);
+    Template.AddMultiTargetEffect(StunnedEffect);
 
-//     DisorientedEffect = class'X2StatusEffects'.static.CreateDisorientedStatusEffect();
-//     DisorientedEffect.ApplyChanceFn = ApplyChance_Concussion_Disoriented;
-//     //Template.AddTargetEffect(DisorientedEffect);
-//     Template.AddMultiTargetEffect(DisorientedEffect);
+    DisorientedEffect = class'X2StatusEffects'.static.CreateDisorientedStatusEffect();
+    DisorientedEffect.ApplyChanceFn = ApplyChance_Concussion_Disoriented;
+    //Template.AddTargetEffect(DisorientedEffect);
+    Template.AddMultiTargetEffect(DisorientedEffect);
 
-//     WeaponEffect = new class'X2Effect_ApplySmokeGrenadeToWorld';
-//     Template.AddMultiTargetEffect (WeaponEffect);
+    WeaponEffect = new class'X2Effect_ApplySmokeGrenadeToWorld';
+    Template.AddMultiTargetEffect (WeaponEffect);
 
-//     Template.AddMultiTargetEffect (class'X2Item_DefaultGrenades'.static.SmokeGrenadeEffect());
+    Template.AddMultiTargetEffect (class'X2Item_DefaultGrenades'.static.SmokeGrenadeEffect());
 
-//     Template.ActivationSpeech = 'Explosion';
-//     Template.CinescriptCameraType = "Soldier_HeavyWeapons";
+    Template.ActivationSpeech = 'Explosion';
+    Template.CinescriptCameraType = "Soldier_HeavyWeapons";
 
-//     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-//     Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-//     Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
-//     return Template;
-// }
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+    Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+    return Template;
+}
 
-// static function name ApplyChance_Concussion_Stunned (const out EffectAppliedData ApplyEffectParameters, XComGameState_BaseObject kNewTargetState, XComGameState NewGameState)
-// {
-//     local XComGameState_Unit UnitState;
-//     local int RandRoll;
+static function name ApplyChance_Concussion_Stunned (const out EffectAppliedData ApplyEffectParameters, XComGameState_BaseObject kNewTargetState, XComGameState NewGameState)
+{
+    local XComGameState_Unit UnitState;
+    local int RandRoll;
 
-//     UnitState = XComGameState_Unit(kNewTargetState);
-//     RandRoll = `SYNC_RAND_STATIC(100);
-//     if (UnitState != none)
-//     {
-//         if (RandRoll >= UnitState.GetCurrentStat (eStat_Will) - default.CONCUSSION_ROCKET_TARGET_WILL_MALUS_STUN)
-//         {
-//             return 'AA_Success';
-//         }
-//     }
-//     return 'AA_EffectChanceFailed';
-// }
+    UnitState = XComGameState_Unit(kNewTargetState);
+    RandRoll = `SYNC_RAND_STATIC(100);
+    if (UnitState != none)
+    {
+        if (RandRoll >= UnitState.GetCurrentStat (eStat_Will) - default.CONCUSSION_ROCKET_TARGET_WILL_MALUS_STUN)
+        {
+            return 'AA_Success';
+        }
+    }
+    return 'AA_EffectChanceFailed';
+}
 
-// static function name ApplyChance_Concussion_Disoriented (const out EffectAppliedData ApplyEffectParameters, XComGameState_BaseObject kNewTargetState, XComGameState NewGameState)
-// {
-//     local XComGameState_Unit UnitState;
-//     local int RandRoll;
+static function name ApplyChance_Concussion_Disoriented (const out EffectAppliedData ApplyEffectParameters, XComGameState_BaseObject kNewTargetState, XComGameState NewGameState)
+{
+    local XComGameState_Unit UnitState;
+    local int RandRoll;
 
-//     UnitState = XComGameState_Unit(kNewTargetState);
-//     RandRoll = `SYNC_RAND_STATIC(100);
+    UnitState = XComGameState_Unit(kNewTargetState);
+    RandRoll = `SYNC_RAND_STATIC(100);
 
-//     if (UnitState != none)
-//     {
-//         if (!UnitState.IsStunned())
-//         {
-//             if (RandRoll >= UnitState.GetCurrentStat (eStat_Will) - default.CONCUSSION_ROCKET_TARGET_WILL_MALUS_DISORIENT)
-//             {
-//             return 'AA_Success';
-//             }
-//         }
-//     }
-//     return 'AA_EffectChanceFailed';
-// }
+    if (UnitState != none)
+    {
+        if (!UnitState.IsStunned())
+        {
+            if (RandRoll >= UnitState.GetCurrentStat (eStat_Will) - default.CONCUSSION_ROCKET_TARGET_WILL_MALUS_DISORIENT)
+            {
+            return 'AA_Success';
+            }
+        }
+    }
+    return 'AA_EffectChanceFailed';
+}
 
 
-// static function X2AbilityTemplate CreateBunkerBusterAbility()
-// {
-//     local X2AbilityTemplate                 Template;
-//     local X2AbilityCharges                  Charges;
-//     local X2AbilityCost_Charges             ChargeCost;
-//     local X2AbilityCost_ActionPoints        ActionPointCost;
-//     local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
-//     local X2AbilityTarget_Cursor            CursorTarget;
-//     local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
-//     local X2AbilityToHitCalc_StandardAim    StandardAim;
-//     local X2Condition_UnitEffects           SuppressedCondition;
+static function X2AbilityTemplate CreateBunkerBusterAbility()
+{
+    local X2AbilityTemplate                 Template;
+    local X2AbilityCharges                  Charges;
+    local X2AbilityCost_Charges             ChargeCost;
+    local X2AbilityCost_ActionPoints        ActionPointCost;
+    local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
+    local X2AbilityTarget_Cursor            CursorTarget;
+    local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
+    local X2AbilityToHitCalc_StandardAim    StandardAim;
+    local X2Condition_UnitEffects           SuppressedCondition;
 
-//     `CREATE_X2ABILITY_TEMPLATE(Template, 'BunkerBuster');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'BunkerBuster');
 
-//     Template.AbilitySourceName = 'eAbilitySource_Perk';
-//     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
-//     Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_heavy_rockets";
-//     Template.bCrossClassEligible = false;
-//     Template.Hostility = eHostility_Offensive;
-//     Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY;
+    Template.AbilitySourceName = 'eAbilitySource_Perk';
+    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+    Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_heavy_rockets";
+    Template.bCrossClassEligible = false;
+    Template.Hostility = eHostility_Offensive;
+    Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY;
 
-//     Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-//     Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';
-//     Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-//     Template.AddShooterEffectExclusions();
+    Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+    // Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';  // this version includes scatter
+    Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
+    Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+    Template.AddShooterEffectExclusions();
 
-//     CursorTarget = new class'X2AbilityTarget_Cursor';
-//     CursorTarget.bRestrictToWeaponRange = true;
-//     Template.AbilityTargetStyle = CursorTarget;
+    CursorTarget = new class'X2AbilityTarget_Cursor';
+    CursorTarget.bRestrictToWeaponRange = true;
+    Template.AbilityTargetStyle = CursorTarget;
 
-//     StandardAim = new class'X2AbilityToHitCalc_StandardAim';
-//     StandardAim.bAllowCrit = false;
-//     StandardAim.bGuaranteedHit = true;
-//     Template.AbilityToHitCalc = StandardAim;
+    StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+    StandardAim.bAllowCrit = false;
+    StandardAim.bGuaranteedHit = true;
+    Template.AbilityToHitCalc = StandardAim;
 
-//     ActionPointCost = new class'X2AbilityCost_ActionPoints';
-//     ActionPointCost.iNumPoints = 2;
-//     ActionPointCost.bConsumeAllPoints = true;
-//     Template.AbilityCosts.AddItem(ActionPointCost);
+    ActionPointCost = new class'X2AbilityCost_ActionPoints';
+    ActionPointCost.iNumPoints = 2;
+    ActionPointCost.bConsumeAllPoints = true;
+    Template.AbilityCosts.AddItem(ActionPointCost);
 
-//     Charges = new class'X2AbilityCharges';
-//     Charges.InitialCharges = 1;
-//     Template.AbilityCharges = Charges;
+    Charges = new class'X2AbilityCharges';
+    Charges.InitialCharges = 1;
+    Template.AbilityCharges = Charges;
 
-//     ChargeCost = new class'X2AbilityCost_Charges';
-//     ChargeCost.NumCharges = 1;
-//     Template.AbilityCosts.AddItem(ChargeCost);
+    ChargeCost = new class'X2AbilityCost_Charges';
+    ChargeCost.NumCharges = 1;
+    Template.AbilityCosts.AddItem(ChargeCost);
 
-//     SuppressedCondition = new class'X2Condition_UnitEffects';
-//     SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-//     SuppressedCondition.AddExcludeEffect(class'X2Effect_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-//     Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    SuppressedCondition = new class'X2Condition_UnitEffects';
+    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+    SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
-//     RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
-//     RadiusMultiTarget.bUseWeaponRadius = false;
-//     RadiusMultiTarget.fTargetRadius = default.BUNKER_BUSTER_RADIUS_METERS; // meters
-//     Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+    RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+    RadiusMultiTarget.bUseWeaponRadius = false;
+    RadiusMultiTarget.fTargetRadius = default.BUNKER_BUSTER_RADIUS_METERS; // meters
+    Template.AbilityMultiTargetStyle = RadiusMultiTarget;
 
-//     WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
-//     WeaponDamageEffect.bIgnoreBaseDamage = true;
-//     WeaponDamageEffect.EffectDamageValue=default.BUNKER_BUSTER_DAMAGE_VALUE;
-//     WeaponDamageEffect.bExplosiveDamage = true;
-//     WeaponDamageEffect.EnvironmentalDamageAmount=default.BUNKER_BUSTER_ENV_DAMAGE;
-//     Template.AddMultiTargetEffect(WeaponDamageEffect);
+    WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
+    WeaponDamageEffect.bIgnoreBaseDamage = true;
+    WeaponDamageEffect.EffectDamageValue=default.BUNKER_BUSTER_DAMAGE_VALUE;
+    WeaponDamageEffect.bExplosiveDamage = true;
+    WeaponDamageEffect.EnvironmentalDamageAmount=default.BUNKER_BUSTER_ENV_DAMAGE;
+    Template.AddMultiTargetEffect(WeaponDamageEffect);
 
-//     Template.ActivationSpeech = 'Explosion';
-//     Template.CinescriptCameraType = "Soldier_HeavyWeapons";
+    Template.ActivationSpeech = 'Explosion';
+    Template.CinescriptCameraType = "Soldier_HeavyWeapons";
 
-//     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-//     Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-//     Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
-//     return Template;
-// }
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+    Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+    return Template;
+}
 
 
 static function X2AbilityTemplate AddQuickburn()
