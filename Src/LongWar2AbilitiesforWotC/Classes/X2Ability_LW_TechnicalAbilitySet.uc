@@ -59,11 +59,11 @@ static function array<X2DataTemplate> CreateTemplates()
 
     Templates.AddItem(PurePassive('HeavyArmaments', "img:///UILibrary_LW_Overhaul.LW_AbilityHeavyArmaments"));
 
-    // Templates.AddItem(CreateLWFlamethrowerAbility());
+    Templates.AddItem(CreateLWFlamethrowerAbility());
 
-    // Templates.AddItem(PurePassive('PhosphorusPassive', "img:///UILibrary_LW_Overhaul.LW_AbilityPhosphorus"));
-    // Templates.AddItem(PurePassive('NapalmX', "img:///UILibrary_LW_Overhaul.LW_AbilityNapalmX"));
-    // Templates.AddItem(PurePassive('Incinerator', "img:///UILibrary_LW_Overhaul.LW_AbilityHighPressure"));
+    Templates.AddItem(PurePassive('PhosphorusPassive', "img:///UILibrary_LW_Overhaul.LW_AbilityPhosphorus"));
+    Templates.AddItem(PurePassive('NapalmX', "img:///UILibrary_LW_Overhaul.LW_AbilityNapalmX"));
+    Templates.AddItem(PurePassive('Incinerator', "img:///UILibrary_LW_Overhaul.LW_AbilityHighPressure"));
     // Templates.AddItem(AddQuickburn());
     // Templates.AddItem(CreateRoustAbility());
     // Templates.AddItem(CreateBurnoutAbility());
@@ -73,7 +73,7 @@ static function array<X2DataTemplate> CreateTemplates()
     // Templates.AddItem(FirestormDamage());
     // Templates.AddItem(CreateHighPressureAbility());
     // Templates.AddItem(CreateTechnicalFireImmunityAbility());
-    // Templates.AddItem(CreatePhosphorusBonusAbility());
+    Templates.AddItem(CreatePhosphorusBonusAbility());
 
     Templates.AddItem(LWRocketLauncherAbility());
     Templates.AddItem(LWBlasterLauncherAbility());
@@ -84,7 +84,7 @@ static function array<X2DataTemplate> CreateTemplates()
     // Templates.AddItem(CreateConcussionRocketAbility());
     // Templates.AddItem(CreateBunkerBusterAbility());
 
-    // Templates.AddItem(CreateNapalmXPanicEffectAbility());
+     Templates.AddItem(CreateNapalmXPanicEffectAbility());
 
     // Templates.AddItem(CreateFireandSteelAbility());
 
@@ -149,148 +149,178 @@ static function array<X2DataTemplate> CreateTemplates()
 // }
 
 
-// static function X2AbilityTemplate CreateLWFlamethrowerAbility()
-// {
-//     local X2AbilityTemplate                     Template;
-//     local X2AbilityCost_ActionPoints            ActionPointCost;
-//     local X2AbilityTarget_Cursor                CursorTarget;
-//     local X2AbilityMultiTarget_Cone_LWFlamethrower  ConeMultiTarget;
-//     local X2Condition_UnitProperty              UnitPropertyCondition;
-//     local X2AbilityTrigger_PlayerInput          InputTrigger;
-//     local X2Effect_ApplyFireToWorld_Limited     FireToWorldEffect;
-//     local X2AbilityToHitCalc_StandardAim        StandardAim;
-//     local X2Effect_Burning                      BurningEffect;
-//     local X2AbilityCharges_BonusCharges         Charges;
-//     local X2AbilityCost_Charges                 ChargeCost;
-//     local X2Condition_UnitEffects               SuppressedCondition;
+static function X2AbilityTemplate CreateLWFlamethrowerAbility()
+{
+    local X2AbilityTemplate                     Template;
+    local X2AbilityCost_ActionPoints            ActionPointCost;
+    local X2AbilityTarget_Cursor                CursorTarget;
+    local X2AbilityMultiTarget_Cone             ConeMultiTarget;
+    local X2Condition_UnitProperty              UnitPropertyCondition;
+    local X2AbilityTrigger_PlayerInput          InputTrigger;
+    local X2Effect_ApplyFireToWorld             FireToWorldEffect;
+    local X2AbilityToHitCalc_StandardAim        StandardAim;
+    local X2Effect_Burning                      BurningEffect;
+    local X2AbilityCharges_BonusCharges         Charges;
+    local X2AbilityCost_Charges                 ChargeCost;
+    local X2Condition_UnitEffects               SuppressedCondition;
+    local AbilityGrantedBonusCone               IncineratorBonusCone;
 
-//     `CREATE_X2ABILITY_TEMPLATE(Template, 'LWFlamethrower');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LWFlamethrower');
 
-//     Template.AbilitySourceName = 'eAbilitySource_Standard';
-//     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
-//     Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_flamethrower";
-//     Template.bCrossClassEligible = false;
-//     Template.Hostility = eHostility_Offensive;
-//     Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.ARMOR_ACTIVE_PRIORITY;
-//     //Template.bUseAmmoAsChargesForHUD = true;
+    Template.AbilitySourceName = 'eAbilitySource_Standard';
+    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+    Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_flamethrower";
+    Template.bCrossClassEligible = false;
+    Template.Hostility = eHostility_Offensive;
+    Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.ARMOR_ACTIVE_PRIORITY;
 
-//     InputTrigger = new class'X2AbilityTrigger_PlayerInput';
-//     Template.AbilityTriggers.AddItem(InputTrigger);
+    InputTrigger = new class'X2AbilityTrigger_PlayerInput';
+    Template.AbilityTriggers.AddItem(InputTrigger);
 
-//     Charges = new class'X2AbilityCharges_BonusCharges';
-//     Charges.InitialCharges = default.FLAMETHROWER_CHARGES;
-//     Charges.BonusAbility = 'HighPressure';
-//     Charges.BonusItem = 'HighPressureTanks';
-//     Charges.BonusCharges =  default.FLAMETHROWER_HIGH_PRESSURE_CHARGES;
-//     Template.AbilityCharges = Charges;
+    // Configurable charges, but if the user has the HighPressure ability or the HighPressureTanks item, they get bonus charges
+    Charges = new class'X2AbilityCharges_BonusCharges';
+    Charges.InitialCharges = default.FLAMETHROWER_CHARGES;
+    Charges.BonusAbility = 'HighPressure';
+    Charges.BonusItem = 'HighPressureTanks';
+    Charges.BonusCharges =  default.FLAMETHROWER_HIGH_PRESSURE_CHARGES;
+    Template.AbilityCharges = Charges;
 
-//     ChargeCost = new class'X2AbilityCost_Charges';
-//     ChargeCost.NumCharges = 1;
-//     Template.AbilityCosts.AddItem(ChargeCost);
+    // Each attack costs one charge
+    ChargeCost = new class'X2AbilityCost_Charges';
+    ChargeCost.NumCharges = 1;
+    Template.AbilityCosts.AddItem(ChargeCost);
 
-//     ActionPointCost = new class'X2AbilityCost_ActionPoints';
-//     ActionPointCost.iNumPoints = 1;
-//     ActionPointCost.bConsumeAllPoints = true;
-//     //ActionPointCost.DoNotConsumeAllSoldierAbilities.AddItem('Quickburn');
-//     Template.AbilityCosts.AddItem(ActionPointCost);
+    // Costs one action point and ends turn
+    ActionPointCost = new class'X2AbilityCost_ActionPoints';
+    ActionPointCost.iNumPoints = 1;
+    ActionPointCost.bConsumeAllPoints = true;
+    Template.AbilityCosts.AddItem(ActionPointCost);
 
-//     StandardAim = new class'X2AbilityToHitCalc_StandardAim';
-//     StandardAim.bAllowCrit = false;
-//     StandardAim.bGuaranteedHit = true;
-//     Template.AbilityToHitCalc = StandardAim;
+    // Cannot miss
+    StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+    StandardAim.bAllowCrit = false;
+    StandardAim.bGuaranteedHit = true;
+    Template.AbilityToHitCalc = StandardAim;
 
-//     Template.AddShooterEffectExclusions();
+    // Cannot be used while disoriented, burning, etc.
+    Template.AddShooterEffectExclusions();
 
-//     SuppressedCondition = new class'X2Condition_UnitEffects';
-//     SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-//     SuppressedCondition.AddExcludeEffect(class'X2Effect_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-//     Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    // Cannot be used while suppressed
+    SuppressedCondition = new class'X2Condition_UnitEffects';
+    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+    SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
-//     CursorTarget = new class'X2AbilityTarget_Cursor';
-//     CursorTarget.bRestrictToWeaponRange = true;
-//     Template.AbilityTargetStyle = CursorTarget;
+    // Player aims with the mouse cursor
+    CursorTarget = new class'X2AbilityTarget_Cursor';
+    CursorTarget.bRestrictToWeaponRange = true;
+    Template.AbilityTargetStyle = CursorTarget;
 
-//     Template.TargetingMethod = class'X2TargetingMethod_Cone_Flamethrower_LW';
+    // Targeting works like the Heavy Weapon cone weapons (e.g. the flamethrower and shred cannon)
+    // NOTE: This is different than how it operates in LW2, where the technical flamethrower can wrap around cover
+    //       That's a bitch to port though. Maybe later...
+    Template.TargetingMethod = class'X2TargetingMethod_Cone';
 
-//     ConeMultiTarget = new class'X2AbilityMultiTarget_Cone_LWFlamethrower';
-//     ConeMultiTarget.bUseWeaponRadius = true;
-//     //base values are now pulled from the X2MultiWeaponTemplate alt range/radius values
-//     ConeMultiTarget.AbilityModifiers.AddItem('Incinerator');
-//     ConeMultiTarget.ConeEndDiameterModifiers.AddItem(default.INCINERATOR_CONEEND_DIAMETER_MODIFIER);
-//     ConeMultiTarget.ConeLengthModifiers.AddItem(default.INCINERATOR_CONELENGTH_MODIFIER);
-//     ConeMultiTarget.bIgnoreBlockingCover = true;
-//     Template.AbilityMultiTargetStyle = ConeMultiTarget;
+    // Multi target effects apply like the Heavy Weapon cone weapons
+    // NOTE: This is different than LW2. LW2 allowed different Gauntlet tiers to have different cone lengths and radii, although the final release didn't use them.
+    //       There may be other differences, but I'm not positive yet.
+    //       This is also hard to port. Maybe later...
+    ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+    ConeMultiTarget.bUseWeaponRadius = true;
+    ConeMultiTarget.ConeEndDiameter = class'X2Item_LWGauntlet'.default.Gauntlet_Secondary_CONVENTIONAL_RADIUS * class'XComWorldData'.const.WORLD_StepSize;
+    ConeMultiTarget.ConeLength = class'X2Item_LWGauntlet'.default.Gauntlet_Secondary_CONVENTIONAL_RANGE * class'XComWorldData'.const.WORLD_StepSize;
+    ConeMultiTarget.bIgnoreBlockingCover = true;
 
-//     UnitPropertyCondition = new class'X2Condition_UnitProperty';
-//     UnitPropertyCondition.ExcludeDead = true;
-//     Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
+    // Allow the Incinerator ability to increase the cone length/radius
+    // TODO: Check if this is tiles or unreal units
+    IncineratorBonusCone.RequiredAbility = 'Incinerator';
+    IncineratorBonusCone.fBonusDiameter = default.INCINERATOR_CONEEND_DIAMETER_MODIFIER;
+    IncineratorBonusCone.fBonusLength = default.INCINERATOR_CONELENGTH_MODIFIER;
+    ConeMultiTarget.AbilityBonusCones.AddItem(IncineratorBonusCone);
+    Template.AbilityMultiTargetStyle = ConeMultiTarget;
 
-//     Template.AdditionalAbilities.AddItem(default.PanicImpairingAbilityName);
-//     //Panic effects need to come before the damage. This is needed for proper visualization ordering.
-//     //Effect on a successful flamethrower attack is triggering the Apply Panic Effect Ability
-//     Template.AddMultiTargetEffect(CreateNapalmXPanicEffect());
+    // Can't use it while you're dead
+    UnitPropertyCondition = new class'X2Condition_UnitProperty';
+    UnitPropertyCondition.ExcludeDead = true;
+    Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
 
-//     Template.AdditionalAbilities.AddItem('Phosphorus');
+    // TODO: Passives for adding panic and hurting robots
+    Template.AdditionalAbilities.AddItem(default.PanicImpairingAbilityName);
+    //Panic effects need to come before the damage. This is needed for proper visualization ordering.
+    //Effect on a successful flamethrower attack is triggering the Apply Panic Effect Ability
+    Template.AddMultiTargetEffect(CreateNapalmXPanicEffect());
+    Template.AdditionalAbilities.AddItem('Phosphorus');
 
-//     FireToWorldEffect = new class'X2Effect_ApplyFireToWorld_Limited';
-//     FireToWorldEffect.bUseFireChanceLevel = true;
-//     FireToWorldEffect.bDamageFragileOnly = true;
-//     FireToWorldEffect.FireChance_Level1 = 0.25f;
-//     FireToWorldEffect.FireChance_Level2 = 0.15f;
-//     FireToWorldEffect.FireChance_Level3 = 0.10f;
-//     FireToWorldEffect.bCheckForLOSFromTargetLocation = false; //The flamethrower does its own LOS filtering
+    // Sets fire to targeted world tiles
+    // NOTE: This is different than LW2, which applies a 'limited' version of the fire. This is currently using the Heavy Weapons flamethrower fire, which is A LOT OF FIRE.
+    //       Once again, a pain to port. Maybe later...
+    FireToWorldEffect = new class'X2Effect_ApplyFireToWorld';
+    FireToWorldEffect.bUseFireChanceLevel = true;
+    FireToWorldEffect.bDamageFragileOnly = true;
+    FireToWorldEffect.FireChance_Level1 = 0.25f;
+    FireToWorldEffect.FireChance_Level2 = 0.15f;
+    FireToWorldEffect.FireChance_Level3 = 0.10f;
+    FireToWorldEffect.bCheckForLOSFromTargetLocation = false; //The flamethrower does its own LOS filtering
+    Template.AddMultiTargetEffect(FireToWorldEffect);
 
-//     BurningEffect = class'X2StatusEffects'.static.CreateBurningStatusEffect(default.FLAMETHROWER_BURNING_BASE_DAMAGE, default.FLAMETHROWER_BURNING_DAMAGE_SPREAD);
-//     BurningEffect.ApplyChance = default.FLAMETHROWER_DIRECT_APPLY_CHANCE;
-//     Template.AddMultiTargetEffect(BurningEffect);
+    // Chance to burn targets
+    BurningEffect = class'X2StatusEffects'.static.CreateBurningStatusEffect(default.FLAMETHROWER_BURNING_BASE_DAMAGE, default.FLAMETHROWER_BURNING_DAMAGE_SPREAD);
+    BurningEffect.ApplyChance = default.FLAMETHROWER_DIRECT_APPLY_CHANCE;
+    Template.AddMultiTargetEffect(BurningEffect);
 
-//     Template.AddMultiTargetEffect(CreateFlamethrowerDamageAbility());
-//     Template.AddMultiTargetEffect(FireToWorldEffect);
+    // The damage caused to the targets. Special because it works off of secondary stats of the equipped Gauntlet
+    Template.AddMultiTargetEffect(CreateFlamethrowerDamageAbility());
 
-//     Template.bCheckCollision = true;
-//     Template.bAffectNeighboringTiles = true;
-//     Template.bFragileDamageOnly = true;
+    // 
+    Template.bCheckCollision = true;
+    Template.bAffectNeighboringTiles = true;
+    Template.bFragileDamageOnly = true;
 
-//     Template.ActionFireClass = class'X2Action_Fire_Flamethrower_LW';
-//     Template.ActivationSpeech = 'Flamethrower';
-//     Template.CinescriptCameraType = "Soldier_HeavyWeapons";
+    // Flamthrower animations and stuff
+    Template.ActionFireClass = class'X2Action_Fire_Flamethrower';
+    Template.ActivationSpeech = 'Flamethrower';
+    Template.CinescriptCameraType = "Soldier_HeavyWeapons";
+    Template.PostActivationEvents.AddItem('FlamethrowerActivated');
+    Template.CustomFireAnim = 'FF_FireFlameThrower';
 
-//     Template.PostActivationEvents.AddItem('FlamethrowerActivated');
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 
-//     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-//     Template.BuildVisualizationFn = LWFlamethrower_BuildVisualization;
+    // Interactions with the Chosen and Shadow
+    Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+    Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
 
-//     return Template;
-// }
+    return Template;
+}
 
-// static function X2AbilityTemplate CreatePhosphorusBonusAbility()
-// {
-//     local X2AbilityTemplate         Template;
-//     local X2Effect_Phosphorus       PhosphorusEffect;
+static function X2AbilityTemplate CreatePhosphorusBonusAbility()
+{
+    local X2AbilityTemplate         Template;
+    local X2Effect_Phosphorus       PhosphorusEffect;
 
-//     `CREATE_X2ABILITY_TEMPLATE(Template, 'Phosphorus');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'Phosphorus');
 
-//     Template.AbilitySourceName = 'eAbilitySource_Perk';
-//     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
-//     Template.bCrossClassEligible = false;
-//     Template.Hostility = eHostility_Neutral;
-//     Template.IconImage = "img:///UILibrary_LW_Overhaul.LW_AbilityPhosphorus";
-//     Template.bDontDisplayInAbilitySummary = true;
-//     Template.AbilityToHitCalc = default.DeadEye;
-//     Template.AbilityTargetStyle = default.SelfTarget;
-//     Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+    Template.AbilitySourceName = 'eAbilitySource_Perk';
+    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+    Template.bCrossClassEligible = false;
+    Template.Hostility = eHostility_Neutral;
+    Template.IconImage = "img:///UILibrary_LW_Overhaul.LW_AbilityPhosphorus";
+    Template.bDontDisplayInAbilitySummary = true;
+    Template.AbilityToHitCalc = default.DeadEye;
+    Template.AbilityTargetStyle = default.SelfTarget;
+    Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
 
-//     PhosphorusEffect = new class'X2Effect_Phosphorus';
-//     PhosphorusEffect.BuildPersistentEffect (1, true, false);
-//     PhosphorusEffect.bDisplayInUI = false;
-//     PhosphorusEffect.BonusShred = default.PHOSPHORUS_BONUS_SHRED;
-//     Template.AddTargetEffect(PhosphorusEffect);
+    PhosphorusEffect = new class'X2Effect_Phosphorus';
+    PhosphorusEffect.BuildPersistentEffect (1, true, false);
+    PhosphorusEffect.bDisplayInUI = false;
+    PhosphorusEffect.BonusShred = default.PHOSPHORUS_BONUS_SHRED;
+    Template.AddTargetEffect(PhosphorusEffect);
 
-//     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
-//     return Template;
+    return Template;
 
-// }
+}
 
 
 // static function X2AbilityTemplate CreateRoustAbility()
@@ -610,24 +640,24 @@ static function array<X2DataTemplate> CreateTemplates()
 //     return Template;
 // }
 
-// static function X2Effect_ApplyAltWeaponDamage CreateFlamethrowerDamageAbility()
-// {
-//     local X2Effect_ApplyAltWeaponDamage WeaponDamageEffect;
-//     local X2Condition_UnitProperty      Condition_UnitProperty;
-//     local X2Condition_Phosphorus        PhosphorusCondition;
+static function X2Effect_ApplyAltWeaponDamage CreateFlamethrowerDamageAbility()
+{
+    local X2Effect_ApplyAltWeaponDamage WeaponDamageEffect;
+    local X2Condition_UnitProperty      Condition_UnitProperty;
+    local X2Condition_Phosphorus        PhosphorusCondition;
 
-//     WeaponDamageEffect = new class'X2Effect_ApplyAltWeaponDamage';
-//     WeaponDamageEffect.bExplosiveDamage = true;
+    WeaponDamageEffect = new class'X2Effect_ApplyAltWeaponDamage';
+    WeaponDamageEffect.bExplosiveDamage = true;
 
-//     PhosphorusCondition = new class'X2Condition_Phosphorus';
-//     WeaponDamageEffect.TargetConditions.AddItem(PhosphorusCondition);
+    PhosphorusCondition = new class'X2Condition_Phosphorus';
+    WeaponDamageEffect.TargetConditions.AddItem(PhosphorusCondition);
 
-//     Condition_UnitProperty = new class'X2Condition_UnitProperty';
-//     Condition_UnitProperty.ExcludeFriendlyToSource = false;
-//     WeaponDamageEffect.TargetConditions.AddItem(Condition_UnitProperty);
+    Condition_UnitProperty = new class'X2Condition_UnitProperty';
+    Condition_UnitProperty.ExcludeFriendlyToSource = false;
+    WeaponDamageEffect.TargetConditions.AddItem(Condition_UnitProperty);
 
-//     return WeaponDamageEffect;
-// }
+    return WeaponDamageEffect;
+}
 
 // static function X2AbilityTemplate CreateBurnoutAbility()
 // {
@@ -679,121 +709,84 @@ static function array<X2DataTemplate> CreateTemplates()
 //     return PurePassive('BurnoutPassive', "img:///UILibrary_LW_Overhaul.LW_AbilityIgnition", false, 'eAbilitySource_Perk', true);
 // }
 
-// this is a hack to allow the flamethrower to be merged with rocket launcher, but still have custom anims at each tier
-// function LWFlamethrower_BuildVisualization(XComGameState VisualizeGameState, out array<VisualizationTrack> OutVisualizationTracks)
-// {
-//     local X2AbilityTemplate                 AbilityTemplate;
-//     local AbilityInputContext               AbilityContext;
-//     local XComGameStateContext_Ability      Context;
-//     local X2WeaponTemplate                  WeaponTemplate;
-//     local XComGameState_Item                SourceWeapon;
 
-//     Context = XComGameStateContext_Ability(VisualizeGameState.GetContext());
-//     AbilityContext = Context.InputContext;
-//     AbilityTemplate = class'XComGameState_Ability'.static.GetMyTemplateManager().FindAbilityTemplate(Context.InputContext.AbilityTemplateName);
-//     SourceWeapon = XComGameState_Item(`XCOMHISTORY.GetGameStateForObjectID(AbilityContext.ItemObject.ObjectID));
-//     if (SourceWeapon != None)
-//     {
-//         WeaponTemplate = X2WeaponTemplate(SourceWeapon.GetMyTemplate());
-//     }
-//     AbilityTemplate.CustomFireAnim = 'FF_FireFlameThrower'; // default to something safe
-//     if(WeaponTemplate != none)
-//     {
-//         switch (WeaponTemplate.DataName)
-//         {
-//             case 'LWGauntlet_CG':
-//             case 'LWGauntlet_BM':
-//                 AbilityTemplate.CustomFireAnim = 'FF_FireFlameThrower_Lv2'; // use the fancy animation
-//                 break;
-//             default:
-//                 break;
-//         }
-//     }
+static function X2Effect_ImmediateMultiTargetAbilityActivation CreateNapalmXPanicEffect()
+{
+    local X2Effect_ImmediateMultiTargetAbilityActivation    NapalmXEffect;
+    local X2Condition_AbilityProperty                       NapalmXCondition;
+    local X2Condition_UnitProperty                          UnitCondition;
 
-//     //Continue building the visualization as normal.
-//     TypicalAbility_BuildVisualization(VisualizeGameState, OutVisualizationTracks);
-// }
+    NapalmXEffect = new class 'X2Effect_ImmediateMultiTargetAbilityActivation';
 
+    NapalmXEffect.BuildPersistentEffect(1, false, false, , eGameRule_PlayerTurnBegin);
+    NapalmXEffect.EffectName = 'ImmediateDisorientOrPanic';
+    NapalmXEffect.AbilityName = default.PanicImpairingAbilityName;
+    NapalmXEffect.bRemoveWhenTargetDies = true;
 
-// static function X2Effect_ImmediateMultiTargetAbilityActivation CreateNapalmXPanicEffect()
-// {
-//     local X2Effect_ImmediateMultiTargetAbilityActivation    NapalmXEffect;
-//     local X2Condition_AbilityProperty                       NapalmXCondition;
-//     local X2Condition_UnitProperty                          UnitCondition;
+    UnitCondition = new class'X2Condition_UnitProperty';
+    UnitCondition.ExcludeOrganic = false;
+    UnitCondition.ExcludeRobotic = true;
+    UnitCondition.ExcludeAlive = false;
+    UnitCondition.ExcludeDead = true;
+    UnitCondition.FailOnNonUnits = true;
+    UnitCondition.ExcludeFriendlyToSource = true;
 
-//     NapalmXEffect = new class 'X2Effect_ImmediateMultiTargetAbilityActivation';
+    NapalmXCondition = new class'X2Condition_AbilityProperty';
+    NapalmXCondition.OwnerHasSoldierAbilities.AddItem('NapalmX');
 
-//     NapalmXEffect.BuildPersistentEffect(1, false, false, , eGameRule_PlayerTurnBegin);
-//     NapalmXEffect.EffectName = 'ImmediateDisorientOrPanic';
-//     NapalmXEffect.AbilityName = default.PanicImpairingAbilityName;
-//     NapalmXEffect.bRemoveWhenTargetDies = true;
-//     //NapalmXEffect.VisualizationFn = PanickingAbilityEffectTriggeredVisualization;
+    NapalmXEffect.TargetConditions.AddItem(UnitCondition);
+    NapalmXEffect.TargetConditions.AddItem(NapalmXCondition);
 
-//     UnitCondition = new class'X2Condition_UnitProperty';
-//     UnitCondition.ExcludeOrganic = false;
-//     UnitCondition.ExcludeRobotic = true;
-//     UnitCondition.ExcludeAlive = false;
-//     UnitCondition.ExcludeDead = true;
-//     UnitCondition.FailOnNonUnits = true;
-//     UnitCondition.ExcludeFriendlyToSource = true;
+    return NapalmXEffect;
+}
 
-//     NapalmXCondition = new class'X2Condition_AbilityProperty';
-//     NapalmXCondition.OwnerHasSoldierAbilities.AddItem('NapalmX');
+static function X2DataTemplate CreateNapalmXPanicEffectAbility()
+{
+    local X2AbilityTemplate             Template;
+    local X2Condition_UnitProperty      UnitPropertyCondition;
+    local X2Effect_Panicked             PanicEffect;
 
-//     NapalmXEffect.TargetConditions.AddItem(UnitCondition);
-//     NapalmXEffect.TargetConditions.AddItem(NapalmXCondition);
+    `CREATE_X2ABILITY_TEMPLATE(Template, default.PanicImpairingAbilityName);
 
-//     return NapalmXEffect;
-// }
+    Template.bDontDisplayInAbilitySummary = true;
+    Template.AbilitySourceName = 'eAbilitySource_Standard';
+    Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
 
-// static function X2DataTemplate CreateNapalmXPanicEffectAbility()
-// {
-//     local X2AbilityTemplate             Template;
-//     local X2Condition_UnitProperty      UnitPropertyCondition;
-//     //local X2Effect_PersistentStatChange DisorientedEffect;
-//     local X2Effect_Panicked             PanicEffect;
+    Template.AbilityTargetStyle = default.SimpleSingleTarget;
 
-//     `CREATE_X2ABILITY_TEMPLATE(Template, default.PanicImpairingAbilityName);
+    Template.AbilityTriggers.AddItem(new class'X2AbilityTrigger_Placeholder');      //  ability is activated by another ability that hits
 
-//     Template.bDontDisplayInAbilitySummary = true;
-//     Template.AbilitySourceName = 'eAbilitySource_Standard';
-//     Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+    // Target Conditions
+    //
+    UnitPropertyCondition = new class'X2Condition_UnitProperty';
+    UnitPropertyCondition.ExcludeDead = true;
+    UnitPropertyCondition.ExcludeFriendlyToSource = true;
+    UnitPropertyCondition.ExcludeRobotic = true;
+    UnitPropertyCondition.FailOnNonUnits = true;
+    Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
 
-//     Template.AbilityTargetStyle = default.SimpleSingleTarget;
+    // Shooter Conditions
+    //
+    Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 
-//     Template.AbilityTriggers.AddItem(new class'X2AbilityTrigger_Placeholder');      //  ability is activated by another ability that hits
+    Template.AddShooterEffectExclusions();
 
-//     // Target Conditions
-//     //
-//     UnitPropertyCondition = new class'X2Condition_UnitProperty';
-//     UnitPropertyCondition.ExcludeDead = true;
-//     UnitPropertyCondition.ExcludeFriendlyToSource = true;
-//     UnitPropertyCondition.ExcludeRobotic = true;
-//     UnitPropertyCondition.FailOnNonUnits = true;
-//     Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
+    Template.AbilityToHitCalc = new class'X2AbilityToHitCalc_StatCheck_LWFlamethrower';
 
-//     // Shooter Conditions
-//     //
-//     Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+    //  Panic effect for 3-4 unblocked psi hits
+    PanicEffect = class'X2StatusEffects'.static.CreatePanickedStatusEffect();
+    PanicEffect.MinStatContestResult = 1;
+    PanicEffect.MaxStatContestResult = 0;
+    PanicEffect.bRemoveWhenSourceDies = false;
+    Template.AddTargetEffect(PanicEffect);
 
-//     Template.AddShooterEffectExclusions();
+    Template.bSkipPerkActivationActions = true;
+    Template.bSkipFireAction = true;
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 
-//     Template.AbilityToHitCalc = new class'X2AbilityToHitCalc_StatCheck_LWFlamethrower';
-
-//     //  Panic effect for 3-4 unblocked psi hits
-//     PanicEffect = class'X2StatusEffects'.static.CreatePanickedStatusEffect();
-//     PanicEffect.MinStatContestResult = 1;
-//     PanicEffect.MaxStatContestResult = 0;
-//     PanicEffect.bRemoveWhenSourceDies = false;
-//     Template.AddTargetEffect(PanicEffect);
-
-//     Template.bSkipPerkActivationActions = true;
-//     Template.bSkipFireAction = true;
-//     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-//     Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-
-//     return Template;
-// }
+    return Template;
+}
 
 // static function X2AbilityTemplate CreateFireandSteelAbility()
 // {
