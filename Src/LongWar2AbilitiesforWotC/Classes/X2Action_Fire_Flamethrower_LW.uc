@@ -346,7 +346,7 @@ simulated state Executing
                 }
             }
 
-            VisMgr.GetNodesOfType(VisMgr.VisualizationTree, class'X2Action_UpdateWorldEffects_Fire', worldEffectFireActionArray);
+            VisMgr.GetNodesOfType(VisMgr.VisualizationTree, class'X2Action_ApplyWeaponDamageToTerrain', worldEffectFireActionArray);
 
             foreach VisualizeGameState.IterateByClassType(class'XComGameState_EnvironmentDamage', EnvironmentDamageEvent)
             {

@@ -599,8 +599,8 @@ static function X2AbilityTemplate CreateFirestorm()
     Template.bFragileDamageOnly = true;
 
     // TODO: Port custom firestorm animation
-    // Template.ActionFireClass = class'X2Action_Fire_Firestorm';
-    Template.ActionFireClass = class'X2Action_Fire_Flamethrower';
+    Template.ActionFireClass = class'X2Action_Fire_Firestorm';
+    // Template.ActionFireClass = class'X2Action_Fire_Flamethrower';
     Template.TargetingMethod = class'X2TargetingMethod_Grenade';
 
     Template.ActivationSpeech = 'Flamethrower';
