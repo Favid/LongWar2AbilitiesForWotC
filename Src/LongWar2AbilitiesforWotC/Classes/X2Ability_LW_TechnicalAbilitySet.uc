@@ -77,7 +77,7 @@ static function array<X2DataTemplate> CreateTemplates()
 
     Templates.AddItem(LWRocketLauncherAbility());
     Templates.AddItem(LWBlasterLauncherAbility());
-    // Templates.AddItem(PurePassive('FireInTheHole', "img:///UILibrary_LW_PerkPack.LW_AbilityFireInTheHole"));
+    Templates.AddItem(PurePassive('FireInTheHole', "img:///UILibrary_LW_PerkPack.LW_AbilityFireInTheHole"));
     Templates.AddItem(AddShockAndAwe());
     Templates.AddItem(AddJavelinRockets());
     Templates.AddItem(CreateConcussionRocketAbility());
@@ -216,13 +216,12 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     Template.AbilityTargetStyle = CursorTarget;
 
     // Targeting works like the Heavy Weapon cone weapons (e.g. the flamethrower and shred cannon)
-    // NOTE: This is different than how it operates in LW2, where the technical flamethrower can wrap around cover
+    // NOTE: This is different than how it operates in LW2, where the technical flamethrower can wrap around cover.
     //       That's a bitch to port though. Maybe later...
     Template.TargetingMethod = class'X2TargetingMethod_Cone';
 
     // Multi target effects apply like the Heavy Weapon cone weapons
-    // NOTE: This is different than LW2. LW2 allowed different Gauntlet tiers to have different cone lengths and radii, although the final release didn't use them.
-    //       There may be other differences, but I'm not positive yet.
+    // NOTE: This is different than LW2. LW2 allowed different Gauntlet tiers to have a different cone length/radius, and some other stuff.
     //       This is also hard to port. Maybe later...
     ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
     ConeMultiTarget.bUseWeaponRadius = true;
@@ -231,7 +230,6 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     ConeMultiTarget.bIgnoreBlockingCover = true;
 
     // Allow the Incinerator ability to increase the cone length/radius
-    // TODO: Check if this is tiles or unreal units
     IncineratorBonusCone.RequiredAbility = 'Incinerator';
     IncineratorBonusCone.fBonusDiameter = default.INCINERATOR_CONEEND_DIAMETER_MODIFIER;
     IncineratorBonusCone.fBonusLength = default.INCINERATOR_CONELENGTH_MODIFIER;
@@ -243,11 +241,14 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     UnitPropertyCondition.ExcludeDead = true;
     Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
 
-    // TODO: Passives for adding panic and hurting robots
+    // Grants ability that checks if user has the panic-causing ability
     Template.AdditionalAbilities.AddItem(default.PanicImpairingAbilityName);
-    //Panic effects need to come before the damage. This is needed for proper visualization ordering.
-    //Effect on a successful flamethrower attack is triggering the Apply Panic Effect Ability
+
+    // Panic effects need to come before the damage. This is needed for proper visualization ordering.
+    // Effect on a successful flamethrower attack is triggering the Apply Panic Effect Ability
     Template.AddMultiTargetEffect(CreateNapalmXPanicEffect());
+
+    // Grants ability that checks if user can damage robots
     Template.AdditionalAbilities.AddItem('Phosphorus');
 
     // Sets fire to targeted world tiles
@@ -912,8 +913,8 @@ static function X2AbilityTemplate LWRocketLauncherAbility()
     SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
     Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
-    // Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';  // this version includes scatter
-    Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
+    Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';  // this version includes scatter
+    // Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
 
 
 
@@ -947,8 +948,8 @@ static function X2AbilityTemplate LWBlasterLauncherAbility()
     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
     Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_blasterlauncher";
     Template.bUseAmmoAsChargesForHUD = true;
-    // Template.TargetingMethod = class'X2TargetingMethod_LWBlasterLauncher'; // this version includes scatter
-    Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';  
+    Template.TargetingMethod = class'X2TargetingMethod_LWBlasterLauncher'; // this version includes scatter
+    // Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';  
 
     AmmoCost = new class'X2AbilityCost_Ammo';
     AmmoCost.iAmmo = 1;
@@ -1053,8 +1054,8 @@ static function X2AbilityTemplate CreateConcussionRocketAbility()
     Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY;
 
     Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-    // Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';  // this version includes scatter
-    Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
+    Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';  // this version includes scatter
+    // Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
     Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
     Template.AddShooterEffectExclusions();
 
@@ -1198,8 +1199,8 @@ static function X2AbilityTemplate CreateBunkerBusterAbility()
     Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY;
 
     Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-    // Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';  // this version includes scatter
-    Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
+    Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';  // this version includes scatter
+    // Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
     Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
     Template.AddShooterEffectExclusions();
 

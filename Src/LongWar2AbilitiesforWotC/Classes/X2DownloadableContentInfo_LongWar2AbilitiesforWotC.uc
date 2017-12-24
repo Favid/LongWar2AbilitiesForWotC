@@ -213,6 +213,10 @@ static event InstallNewCampaign(XComGameState StartState)
 static function bool AbilityTagExpandHandler(string InString, out string OutString)
 {
 	local name Type;
+	local UITacticalHUD TacticalHUD;
+	local StateObjectReference UnitRef;
+	local XComGameState_Unit UnitState;
+	local int NumTiles;
 
 	Type = name(InString);
 	switch(Type)
@@ -597,6 +601,23 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 			return true;
 		case 'STEADY_WEAPON_AIM_BONUS':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.STEADY_WEAPON_AIM_BONUS);
+			return true;
+		case 'ROCKETSCATTER':
+			TacticalHUD = UITacticalHUD(`SCREENSTACK.GetScreen(class'UITacticalHUD'));
+			if (TacticalHUD != none)
+				UnitRef = XComTacticalController(TacticalHUD.PC).GetActiveUnitStateRef();
+			if (UnitRef.ObjectID > 0)
+				UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(UnitRef.ObjectID));
+
+			if (TacticalHUD != none && TacticalHUD.GetTargetingMethod() != none && UnitState != none)
+			{
+				NumTiles = class'X2Ability_LW_TechnicalAbilitySet'.static.GetNumAimRolls(UnitState);
+				Outstring = class'X2Ability_LW_TechnicalAbilitySet'.default.strMaxScatter $ string(NumTiles);
+			}
+			else
+			{
+				Outstring = "";
+			}
 			return true;
 		default: 
 			return false;
