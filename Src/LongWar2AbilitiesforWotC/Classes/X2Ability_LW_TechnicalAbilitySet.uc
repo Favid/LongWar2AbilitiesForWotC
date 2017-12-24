@@ -218,15 +218,15 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     // Targeting works like the Heavy Weapon cone weapons (e.g. the flamethrower and shred cannon)
     // NOTE: This is different than how it operates in LW2, where the technical flamethrower can wrap around cover.
     //       That's a bitch to port though. Maybe later...
-    Template.TargetingMethod = class'X2TargetingMethod_Cone';
+    Template.TargetingMethod = class'X2TargetingMethod_Cone_Flamethrower_LW';
 
     // Multi target effects apply like the Heavy Weapon cone weapons
     // NOTE: This is different than LW2. LW2 allowed different Gauntlet tiers to have a different cone length/radius, and some other stuff.
     //       This is also hard to port. Maybe later...
-    ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+    ConeMultiTarget = new class'X2AbilityMultiTarget_Cone_LWFlamethrower';
     ConeMultiTarget.bUseWeaponRadius = true;
-    ConeMultiTarget.ConeEndDiameter = class'X2Item_LWGauntlet'.default.Gauntlet_Secondary_CONVENTIONAL_RADIUS * class'XComWorldData'.const.WORLD_StepSize;
-    ConeMultiTarget.ConeLength = class'X2Item_LWGauntlet'.default.Gauntlet_Secondary_CONVENTIONAL_RANGE * class'XComWorldData'.const.WORLD_StepSize;
+    // ConeMultiTarget.ConeEndDiameter = class'X2Item_LWGauntlet'.default.Gauntlet_Secondary_CONVENTIONAL_RADIUS * class'XComWorldData'.const.WORLD_StepSize;
+    // ConeMultiTarget.ConeLength = class'X2Item_LWGauntlet'.default.Gauntlet_Secondary_CONVENTIONAL_RANGE * class'XComWorldData'.const.WORLD_StepSize;
     ConeMultiTarget.bIgnoreBlockingCover = true;
 
     // Allow the Incinerator ability to increase the cone length/radius
@@ -277,14 +277,14 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     Template.bFragileDamageOnly = true;
 
     // Flamthrower animations and stuff
-    Template.ActionFireClass = class'X2Action_Fire_Flamethrower';
+    Template.ActionFireClass = class'X2Action_Fire_Flamethrower_LW';
     Template.ActivationSpeech = 'Flamethrower';
     Template.CinescriptCameraType = "Soldier_HeavyWeapons";
     Template.PostActivationEvents.AddItem('FlamethrowerActivated');
-    Template.CustomFireAnim = 'FF_FireFlameThrower';
 
+    // Trick to allow a different custom firing animation depending on which tier Gauntlet is equipped
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+    Template.BuildVisualizationFn = LWFlamethrower_BuildVisualization;
 
     // Interactions with the Chosen and Shadow
     Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
@@ -400,16 +400,13 @@ static function X2AbilityTemplate CreateRoustAbility()
     // Targeting works like the Heavy Weapon cone weapons (e.g. the flamethrower and shred cannon)
     // NOTE: This is different than how it operates in LW2, where the technical flamethrower can wrap around cover
     //       That's a bitch to port though. Maybe later...
-    Template.TargetingMethod = class'X2TargetingMethod_Cone';
+    Template.TargetingMethod = class'X2TargetingMethod_Cone_Flamethrower_LW';
 
-    // Multi target effects apply like the Heavy Weapon cone weapons
-    // NOTE: This is different than LW2. LW2 allowed different Gauntlet tiers to have different cone lengths and radii, although the final release didn't use them.
-    //       There may be other differences, but I'm not positive yet.
+    // Multi target effects use a modified cone that can 'curve' around high cover
+    // NOTE: This is different than LW2. LW2 allowed different Gauntlet tiers to have a different cone length/radius, and some other stuff.
     //       This is also hard to port. Maybe later...
-    ConeMultiTarget = new class'X2AbilityMultiTarget_Cone';
+    ConeMultiTarget = new class'X2AbilityMultiTarget_Cone_LWFlamethrower';
     ConeMultiTarget.bUseWeaponRadius = true;
-    ConeMultiTarget.ConeEndDiameter = class'X2Item_LWGauntlet'.default.Gauntlet_Secondary_CONVENTIONAL_RADIUS * class'XComWorldData'.const.WORLD_StepSize;
-    ConeMultiTarget.ConeLength = class'X2Item_LWGauntlet'.default.Gauntlet_Secondary_CONVENTIONAL_RANGE * class'XComWorldData'.const.WORLD_StepSize;
     ConeMultiTarget.bIgnoreBlockingCover = true;
 
     // Allow the Incinerator ability to increase the cone length/radius
@@ -462,14 +459,15 @@ static function X2AbilityTemplate CreateRoustAbility()
     Template.bFragileDamageOnly = true;
 
     // Flamthrower animations and stuff
-    Template.ActionFireClass = class'X2Action_Fire_Flamethrower';
+    // Template.ActionFireClass = class'X2Action_Fire_Flamethrower';
+    Template.ActionFireClass = class'X2Action_Fire_Flamethrower_LW';
     Template.ActivationSpeech = 'Flamethrower';
     Template.CinescriptCameraType = "Soldier_HeavyWeapons";
     Template.PostActivationEvents.AddItem('FlamethrowerActivated');
-    Template.CustomFireAnim = 'FF_FireFlameThrower';
 
+    // Trick to allow a different custom firing animation depending on which tier Gauntlet is equipped
+    Template.BuildVisualizationFn = LWFlamethrower_BuildVisualization;
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 
     // Interactions with the Chosen and Shadow
     Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
@@ -600,7 +598,7 @@ static function X2AbilityTemplate CreateFirestorm()
     Template.bAffectNeighboringTiles = true;
     Template.bFragileDamageOnly = true;
 
-    // TODO:
+    // TODO: Port custom firestorm animation
     // Template.ActionFireClass = class'X2Action_Fire_Firestorm';
     Template.ActionFireClass = class'X2Action_Fire_Flamethrower';
     Template.TargetingMethod = class'X2TargetingMethod_Grenade';
@@ -1405,6 +1403,39 @@ static function int TileDistanceBetween(XComGameState_Unit Unit, vector TargetLo
     return Tiles;
 }
 
+function LWFlamethrower_BuildVisualization(XComGameState VisualizeGameState)
+{
+    local X2AbilityTemplate                 AbilityTemplate;
+    local AbilityInputContext               AbilityContext;
+    local XComGameStateContext_Ability      Context;
+    local X2WeaponTemplate                  WeaponTemplate;
+    local XComGameState_Item                SourceWeapon;
+
+    Context = XComGameStateContext_Ability(VisualizeGameState.GetContext());
+    AbilityContext = Context.InputContext;
+    AbilityTemplate = class'XComGameState_Ability'.static.GetMyTemplateManager().FindAbilityTemplate(Context.InputContext.AbilityTemplateName);
+    SourceWeapon = XComGameState_Item(`XCOMHISTORY.GetGameStateForObjectID(AbilityContext.ItemObject.ObjectID));
+    if (SourceWeapon != None)
+    {
+        WeaponTemplate = X2WeaponTemplate(SourceWeapon.GetMyTemplate());
+    }
+    AbilityTemplate.CustomFireAnim = 'FF_FireFlameThrower'; // default to something safe
+    if(WeaponTemplate != none)
+    {
+        switch (WeaponTemplate.DataName)
+        {
+            case 'LWGauntlet_CG':
+            case 'LWGauntlet_BM':
+                AbilityTemplate.CustomFireAnim = 'FF_FireFlameThrower_Lv2'; // use the fancy animation
+                break;
+            default:
+                break;
+        }
+    }
+
+    //Continue building the visualization as normal.
+    TypicalAbility_BuildVisualization(VisualizeGameState);
+}
 
 defaultProperties
 {
