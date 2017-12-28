@@ -53,7 +53,13 @@
     <Content Include="Config\XComPromotionUIMod.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Content\LWGauntlet.upk">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Content\LW_Perk_CloseEncounters.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\LW_Perk_Psi_MindMerge.upk">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Content\UILibrary_LW_PerkPack.upk">
@@ -90,6 +96,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityCharges_LW2WotC_GremlinTierBased.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityCooldown_LW2WotC_MindMerge.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityCooldown_LW2WotC_RunAndGun.uc">
@@ -250,6 +259,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_MeleeDamageAdjust.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_MindMerge.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_MovementBasedBonusDamage.uc">
