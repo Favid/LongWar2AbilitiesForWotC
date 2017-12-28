@@ -39,7 +39,7 @@ function XComGameState.EventListenerReturn SteadyWeaponActionListener(Object Eve
                 CostlyAction = true;
             if (Cost.IsA('X2AbilityCost_QuickdrawActionPoints') && !X2AbilityCost_QuickdrawActionPoints(Cost).bFreeCost)
                 CostlyAction = true;
-            if (AbilityState.GetMyTemplateName() == 'CloseCombatSpecialistAttack')
+            if (AbilityState.GetMyTemplateName() == 'LW2WotC_CloseCombatSpecialistAttack')
                 CostlyAction = true;
             if (AbilityState.GetMyTemplateName() == 'BladestormAttack')
                 CostlyAction = true;
@@ -47,7 +47,7 @@ function XComGameState.EventListenerReturn SteadyWeaponActionListener(Object Eve
                 CostlyAction = true;
             if(CostlyAction) 
             {
-                if (AbilityState.GetMyTemplateName() == 'SteadyWeapon' || AbilityState.GetMyTemplateName() == 'Stock_LW_Bsc_Ability' ||  AbilityState.GetMyTemplateName() == 'Stock_LW_Adv_Ability' ||  AbilityState.GetMyTemplateName() == 'Stock_LW_Sup_Ability')
+                if (AbilityState.GetMyTemplateName() == 'LW2WotC_SteadyWeapon' || AbilityState.GetMyTemplateName() == 'Stock_LW_Bsc_Ability' ||  AbilityState.GetMyTemplateName() == 'Stock_LW_Adv_Ability' ||  AbilityState.GetMyTemplateName() == 'Stock_LW_Sup_Ability')
                     return ELR_NoInterrupt;
 
                 if (!GetOwningEffect().bRemoved)

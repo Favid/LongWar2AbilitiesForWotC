@@ -34,7 +34,7 @@ static event OnPostTemplatesCreated()
 		PatchAbilitiesForSnapshot();
 	}
 
-	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.6");
+	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.7");
 }
 
 /// <summary>
