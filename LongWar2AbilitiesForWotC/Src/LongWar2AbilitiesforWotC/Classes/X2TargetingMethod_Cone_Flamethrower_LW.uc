@@ -69,99 +69,101 @@ function Init(AvailableAction InAction, int NewTargetIndex)
 	}
 }
 
-function Update(float DeltaTime)
-{
-	local array<Actor> CurrentlyMarkedTargets;
-	local vector Direction;
-	local TTile TargetTile;
-	local array<TTile> Tiles; //, NeighborTiles;
-	//local X2AbilityMultiTarget_Cone targetingMethod;
-	//local INT i;
-	local vector SnappedTargetLocation;
-
-	//`LWTRACE("Flamethrower TargetingMethod : DeltaTime = " $ DeltaTime);
-	CumulativeUpdateTime += DeltaTime;
-	if (MaxFramesPerSecondUpdateRate > 0 && CumulativeUpdateTime < 1.0/MaxFramesPerSecondUpdateRate)
-	{
-		return;
-	}
-	else if (`XWORLDINFO.bAggressiveLOD) // frame rate is well below DesiredFrameRate, so make LOD more aggressive
-	{
-		if (CumulativeUpdateTime < 0.1)
-		{
-			return;
-		}
-		else
-		{
-			CumulativeUpdateTime = 0;
-		}
-	}
-	else if (`XWORLDINFO.bDropDetail) // frame rate is below DesiredFrameRate
-	{
-		if (CumulativeUpdateTime < 0.05)
-		{
-			return;
-		}
-		else
-		{
-			CumulativeUpdateTime = 0;
-		}
-	}
-
-	NewTargetLocation = Cursor.GetCursorFeetLocation();
-	//TargetTile = WorldData.GetTileCoordinatesFromPosition(NewTargetLocation);
-	WorldData.GetFloorTileForPosition(NewTargetLocation, TargetTile);
-	//NewTargetLocation = WorldData.GetPositionFromTileCoordinates(TargetTile);
-	SnappedTargetLocation = WorldData.GetPositionFromTileCoordinates(TargetTile);
-	NewTargetLocation.Z = SnappedTargetLocation.Z;
-	NewTargetLocation.Z += class'XComWorldData'.const.WORLD_FloorHeight;
-
-	if (TargetTile == FiringTile)
-	{
-		bGoodTarget = false;
-		return;
-	}
-
-	bGoodTarget = true;
-	Direction = NewTargetLocation - FiringLocation;
-
-	NewTargetLocation = FiringLocation + (Direction / VSize(Direction)) * ConeLength;       //  recalibrate based on direction to cursor; must always be as long as possible
-
-	if (NewTargetLocation != CachedTargetLocation)
-	{
-		GetTargetedActors(NewTargetLocation, CurrentlyMarkedTargets, Tiles);
-
-		//targetingMethod = X2AbilityMultiTarget_Cone(Ability.GetMyTemplate().AbilityMultiTargetStyle);
-
-		//if (Ability.GetMyTemplate().bAffectNeighboringTiles)
+//function Update(float DeltaTime)
+//{
+	//local array<Actor> CurrentlyMarkedTargets;
+	//local vector Direction;
+	//local TTile TargetTile;
+	//local array<TTile> Tiles; //, NeighborTiles;
+	////local X2AbilityMultiTarget_Cone targetingMethod;
+	////local INT i;
+	//local vector SnappedTargetLocation;
+//
+	//`RedScreen("UPDATE CALLED BOHO YOHO ");
+//
+	////`LWTRACE("Flamethrower TargetingMethod : DeltaTime = " $ DeltaTime);
+	//CumulativeUpdateTime += DeltaTime;
+	//if (MaxFramesPerSecondUpdateRate > 0 && CumulativeUpdateTime < 1.0/MaxFramesPerSecondUpdateRate)
+	//{
+		//return;
+	//}
+	//else if (`XWORLDINFO.bAggressiveLOD) // frame rate is well below DesiredFrameRate, so make LOD more aggressive
+	//{
+		//if (CumulativeUpdateTime < 0.1)
 		//{
-			//ReticuleTargetedTiles.Length = 0;
-			//ReticuleTargetedSecondaryTiles.Length = 0;
-			//Tiles.Length = 0;
-//
-			//targetingMethod.GetCollisionValidTilesForLocation(Ability, NewTargetLocation, Tiles, NeighborTiles);
-//
-			////class'WorldInfo'.static.GetWorldInfo().FlushPersistentDebugLines();
-			//ReticuleTargetedTiles = Tiles;
-//
-			//for (i = 0; i < NeighborTiles.Length; i++)
-			//{
-				//if (IsNeighborTile(NeighborTiles[i], ReticuleTargetedTiles) && IsNextToWall(NeighborTiles[i]) )
-				//{
-					//ReticuleTargetedSecondaryTiles.AddItem(NeighborTiles[i]);
-					////`SHAPEMGR.DrawTile(NeighborTiles[i], 0, 255, 0, 0.9);
-				//}
-			//}
+			//return;
 		//}
-
-		CheckForFriendlyUnit(CurrentlyMarkedTargets);	
-		MarkTargetedActors(CurrentlyMarkedTargets, (!AbilityIsOffensive) ? FiringUnit.GetTeam() : eTeam_None );
-		DrawSplashRadius(NewTargetLocation);		
-		DrawAOETiles(Tiles);
-	}
-
-	Super(X2TargetingMethod).Update(DeltaTime);
-}
+		//else
+		//{
+			//CumulativeUpdateTime = 0;
+		//}
+	//}
+	//else if (`XWORLDINFO.bDropDetail) // frame rate is below DesiredFrameRate
+	//{
+		//if (CumulativeUpdateTime < 0.05)
+		//{
+			//return;
+		//}
+		//else
+		//{
+			//CumulativeUpdateTime = 0;
+		//}
+	//}
+//
+	//NewTargetLocation = Cursor.GetCursorFeetLocation();
+	////TargetTile = WorldData.GetTileCoordinatesFromPosition(NewTargetLocation);
+	//WorldData.GetFloorTileForPosition(NewTargetLocation, TargetTile);
+	////NewTargetLocation = WorldData.GetPositionFromTileCoordinates(TargetTile);
+	//SnappedTargetLocation = WorldData.GetPositionFromTileCoordinates(TargetTile);
+	//NewTargetLocation.Z = SnappedTargetLocation.Z;
+	//NewTargetLocation.Z += class'XComWorldData'.const.WORLD_FloorHeight;
+//
+	//if (TargetTile == FiringTile)
+	//{
+		//bGoodTarget = false;
+		//return;
+	//}
+//
+	//bGoodTarget = true;
+	//Direction = NewTargetLocation - FiringLocation;
+//
+	//NewTargetLocation = FiringLocation + (Direction / VSize(Direction)) * ConeLength;       //  recalibrate based on direction to cursor; must always be as long as possible
+//
+	//if (NewTargetLocation != CachedTargetLocation)
+	//{
+		//GetTargetedActors(NewTargetLocation, CurrentlyMarkedTargets, Tiles);
+//
+		////targetingMethod = X2AbilityMultiTarget_Cone(Ability.GetMyTemplate().AbilityMultiTargetStyle);
+//
+		////if (Ability.GetMyTemplate().bAffectNeighboringTiles)
+		////{
+			////ReticuleTargetedTiles.Length = 0;
+			////ReticuleTargetedSecondaryTiles.Length = 0;
+			////Tiles.Length = 0;
+////
+			////targetingMethod.GetCollisionValidTilesForLocation(Ability, NewTargetLocation, Tiles, NeighborTiles);
+////
+			//////class'WorldInfo'.static.GetWorldInfo().FlushPersistentDebugLines();
+			////ReticuleTargetedTiles = Tiles;
+////
+			////for (i = 0; i < NeighborTiles.Length; i++)
+			////{
+				////if (IsNeighborTile(NeighborTiles[i], ReticuleTargetedTiles) && IsNextToWall(NeighborTiles[i]) )
+				////{
+					////ReticuleTargetedSecondaryTiles.AddItem(NeighborTiles[i]);
+					//////`SHAPEMGR.DrawTile(NeighborTiles[i], 0, 255, 0, 0.9);
+				////}
+			////}
+		////}
+//
+		//CheckForFriendlyUnit(CurrentlyMarkedTargets);	
+		//MarkTargetedActors(CurrentlyMarkedTargets, (!AbilityIsOffensive) ? FiringUnit.GetTeam() : eTeam_None );
+		//DrawSplashRadius(NewTargetLocation);		
+		//DrawAOETiles(Tiles);
+	//}
+//
+	//Super(X2TargetingMethod).Update(DeltaTime);
+//}
 
 //override native
 simulated protected function GetTargetedActors(const vector Location, out array<Actor> TargetActors, optional out array<TTile> TargetTiles)
