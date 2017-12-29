@@ -12,6 +12,7 @@
     <Folder Include="Config\" />
     <Folder Include="Localization\" />
     <Folder Include="Content" />
+    <Folder Include="Localization\Gauntlet" />
     <Folder Include="Src\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\Classes\" />
@@ -63,6 +64,39 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Content\UILibrary_LW_PerkPack.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.chn">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.cht">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.deu">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.esn">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.fra">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.ita">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.jpn">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.kor">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.pol">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\Gauntlet\XComGame.rus">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Localization\LongWar2AbilitiesForWotc.int">
