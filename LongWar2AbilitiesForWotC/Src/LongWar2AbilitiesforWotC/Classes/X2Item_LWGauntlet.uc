@@ -6,6 +6,8 @@
 //---------------------------------------------------------------------------------------
 class X2Item_LWGauntlet extends X2Item config(GameData_WeaponData);
 
+var bool bFiniteItems;
+
 // ***** UI Image definitions  *****
 var config string Gauntlet_CV_UIImage;
 var config string Gauntlet_MG_UIImage;
@@ -80,6 +82,34 @@ var config int Gauntlet_Secondary_BEAM_RANGE;
 var config int Gauntlet_Secondary_BEAM_RADIUS;
 var config int Gauntlet_Secondary_BEAM_ISOUNDRANGE;
 
+// ***** Schematic/Item cost properties *****
+var config int Gauntlet_MAGNETIC_SCHEMATIC_SUPPLYCOST;
+var config int Gauntlet_MAGNETIC_SCHEMATIC_ALLOYCOST;
+var config int Gauntlet_MAGNETIC_SCHEMATIC_ELERIUMCOST;
+var config int Gauntlet_MAGNETIC_SCHEMATIC_ELERIUMCORECOST;
+
+var config int Gauntlet_MAGNETIC_INDIVIDUAL_SUPPLYCOST;
+var config int Gauntlet_MAGNETIC_INDIVIDUAL_ALLOYCOST;
+var config int Gauntlet_MAGNETIC_INDIVIDUAL_ELERIUMCOST;
+var config int Gauntlet_MAGNETIC_INDIVIDUAL_ELERIUMCORECOST;
+var config int Gauntlet_MAGNETIC_INDIVIDUAL_TRADINGPOSTVALUE;
+
+var config array<name> Gauntlet_MAGNETIC_REQUIRED_TECHS;
+
+var config int Gauntlet_BEAM_SCHEMATIC_SUPPLYCOST;
+var config int Gauntlet_BEAM_SCHEMATIC_ALLOYCOST;
+var config int Gauntlet_BEAM_SCHEMATIC_ELERIUMCOST;
+var config int Gauntlet_BEAM_SCHEMATIC_ELERIUMCORECOST;
+
+var config int Gauntlet_BEAM_INDIVIDUAL_SUPPLYCOST;
+var config int Gauntlet_BEAM_INDIVIDUAL_ALLOYCOST;
+var config int Gauntlet_BEAM_INDIVIDUAL_ELERIUMCOST;
+var config int Gauntlet_BEAM_INDIVIDUAL_ELERIUMCORECOST;
+var config int Gauntlet_BEAM_INDIVIDUAL_ITEMCOST;
+var config int Gauntlet_BEAM_INDIVIDUAL_TRADINGPOSTVALUE;
+
+var config array<name> Gauntlet_BEAM_REQUIRED_TECHS;
+
 var localized string PrimaryRangeLabel;
 var localized string PrimaryRadiusLabel;
 var localized string SecondaryRangeLabel;
@@ -94,6 +124,13 @@ static function array<X2DataTemplate> CreateTemplates()
     //Templates.AddItem(CreateTemplate_Gauntlet_Coil());
     Templates.AddItem(CreateTemplate_Gauntlet_Beam());
     Templates.AddItem(CreateNapalmDamageType());
+
+		// Create two schematics used to upgrade weapons (If Finite Items is FALSE)
+	if (!default.bFiniteItems)
+	{
+		Templates.AddItem(CreateTemplate_Gauntlet_Magnetic_Schematic());
+		Templates.AddItem(CreateTemplate_Gauntlet_Beam_Schematic());
+	}
 
     return Templates;
 }
@@ -174,6 +211,8 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Conventional()
 static function X2DataTemplate CreateTemplate_Gauntlet_Mag()
 {
     local X2MultiWeaponTemplate Template;
+	local ArtifactCost		SupplyCost, AlloyCost, EleriumCost, CoreCost, ItemCost;
+	local name				TechRequirement;
 
     `CREATE_X2TEMPLATE(class'X2MultiWeaponTemplate', Template, 'LWGauntlet_MG');
     Template.EquipSound = "MAG_Weapon_Equip";
@@ -217,8 +256,53 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Mag()
 
     Template.iPhysicsImpulse = 5;
 
-    Template.StartingItem = false;
-    Template.CanBeBuilt = true;
+	if (!default.bFiniteItems)
+	{
+		Template.CreatorTemplateName = 'Gauntlet_MG_Schematic'; // The schematic which creates this item
+		Template.BaseItem = 'Gauntlet_CV'; // Which item this will be upgraded from
+		Template.HideIfPurchased = 'Gauntlet_BM_Schematic';
+		Template.CanBeBuilt = false;
+		Template.bInfiniteItem = true;
+	}
+	else
+	{
+		foreach default.Gauntlet_MAGNETIC_REQUIRED_TECHS(TechRequirement)
+		{
+			Template.Requirements.RequiredTechs.AddItem(TechRequirement);
+		}
+		
+		if (default.Gauntlet_MAGNETIC_INDIVIDUAL_SUPPLYCOST > 0)
+		{
+			SupplyCost.ItemTemplateName = 'Supplies';
+			SupplyCost.Quantity = default.Gauntlet_MAGNETIC_INDIVIDUAL_SUPPLYCOST;
+			Template.Cost.ResourceCosts.AddItem(SupplyCost);
+		}
+		if (default.Gauntlet_MAGNETIC_INDIVIDUAL_ALLOYCOST > 0)
+		{
+			AlloyCost.ItemTemplateName = 'AlienAlloy';
+			AlloyCost.Quantity = default.Gauntlet_MAGNETIC_INDIVIDUAL_ALLOYCOST;
+			Template.Cost.ResourceCosts.AddItem(AlloyCost);
+		}
+		if (default.Gauntlet_MAGNETIC_INDIVIDUAL_ELERIUMCOST > 0)
+		{
+			EleriumCost.ItemTemplateName = 'EleriumDust';
+			EleriumCost.Quantity = default.Gauntlet_MAGNETIC_INDIVIDUAL_ELERIUMCOST;
+			Template.Cost.ResourceCosts.AddItem(EleriumCost);
+		}
+		if (default.Gauntlet_MAGNETIC_INDIVIDUAL_ELERIUMCORECOST > 0)
+		{
+			CoreCost.ItemTemplateName = 'EleriumCore';
+			CoreCost.Quantity = default.Gauntlet_MAGNETIC_INDIVIDUAL_ELERIUMCORECOST;
+			Template.Cost.ResourceCosts.AddItem(CoreCost);
+		}
+		if (default.Gauntlet_MAGNETIC_INDIVIDUAL_TRADINGPOSTVALUE > 0)
+		{
+			Template.TradingPostValue = default.Gauntlet_MAGNETIC_INDIVIDUAL_TRADINGPOSTVALUE;
+		}
+
+		Template.CanBeBuilt = true;
+		Template.bInfiniteItem = false;
+	}
     
     Template.DamageTypeTemplateName = 'Electrical';
 
@@ -233,6 +317,8 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Mag()
 static function X2DataTemplate CreateTemplate_Gauntlet_COIL()
 {
     local X2MultiWeaponTemplate Template;
+	local ArtifactCost		SupplyCost, AlloyCost, EleriumCost, CoreCost, ItemCost;
+	local name				TechRequirement;
 
     `CREATE_X2TEMPLATE(class'X2MultiWeaponTemplate', Template, 'LWGauntlet_CG');
     Template.EquipSound = "Magnetic_Weapon_Equip";
@@ -276,9 +362,59 @@ static function X2DataTemplate CreateTemplate_Gauntlet_COIL()
 
     Template.iPhysicsImpulse = 5;
 
-    Template.StartingItem = false;
-    Template.CanBeBuilt = true;
-    
+	if (!default.bFiniteItems)
+	{
+		Template.CreatorTemplateName = 'Gauntlet_BM_Schematic'; // The schematic which creates this item
+		Template.BaseItem = 'Gauntlet_MG'; // Which item this will be upgraded from
+		Template.CanBeBuilt = false;
+		Template.bInfiniteItem = true;
+	}
+	else
+	{
+		foreach default.Gauntlet_BEAM_REQUIRED_TECHS(TechRequirement)
+		{
+			Template.Requirements.RequiredTechs.AddItem(TechRequirement);
+		}
+
+		if (default.Gauntlet_BEAM_INDIVIDUAL_SUPPLYCOST > 0)
+		{
+			SupplyCost.ItemTemplateName = 'Supplies';
+			SupplyCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_SUPPLYCOST;
+			Template.Cost.ResourceCosts.AddItem(SupplyCost);
+		}
+		if (default.Gauntlet_BEAM_INDIVIDUAL_ALLOYCOST > 0)
+		{
+			AlloyCost.ItemTemplateName = 'AlienAlloy';
+			AlloyCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ALLOYCOST;
+			Template.Cost.ResourceCosts.AddItem(AlloyCost);
+		}
+		if (default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCOST > 0)
+		{
+			EleriumCost.ItemTemplateName = 'EleriumDust';
+			EleriumCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCOST;
+			Template.Cost.ResourceCosts.AddItem(EleriumCost);
+		}
+		if (default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCORECOST > 0)
+		{
+			CoreCost.ItemTemplateName = 'EleriumCore';
+			CoreCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCORECOST;
+			Template.Cost.ResourceCosts.AddItem(CoreCost);
+		}
+		if (default.Gauntlet_BEAM_INDIVIDUAL_ITEMCOST > 0)
+		{
+			ItemCost.ItemTemplateName = 'Gauntlet_MG';
+			ItemCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ITEMCOST;
+			Template.Cost.ResourceCosts.AddItem(ItemCost);
+		}
+		if (default.Gauntlet_BEAM_INDIVIDUAL_TRADINGPOSTVALUE > 0)
+		{
+			Template.TradingPostValue = default.Gauntlet_BEAM_INDIVIDUAL_TRADINGPOSTVALUE;
+		}
+
+		Template.CanBeBuilt = true;
+		Template.bInfiniteItem = false;
+	}
+
     Template.DamageTypeTemplateName = 'Electrical';
 
     Template.SetUIStatMarkup(default.PrimaryRangeLabel, , default.Gauntlet_Primary_COIL_RANGE);
@@ -292,6 +428,8 @@ static function X2DataTemplate CreateTemplate_Gauntlet_COIL()
 static function X2DataTemplate CreateTemplate_Gauntlet_Beam()
 {
     local X2MultiWeaponTemplate Template;
+	local ArtifactCost			SupplyCost, AlloyCost, EleriumCost, CoreCost, ItemCost;
+	local name					TechRequirement;
 
     `CREATE_X2TEMPLATE(class'X2MultiWeaponTemplate', Template, 'LWGauntlet_BM');
     Template.EquipSound = "Beam_Weapon_Equip";
@@ -335,8 +473,58 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Beam()
 
     Template.iPhysicsImpulse = 5;
 
-    Template.StartingItem = false;
-    Template.CanBeBuilt = true;
+	if (!default.bFiniteItems)
+	{
+		Template.CreatorTemplateName = 'Gauntlet_BM_Schematic'; // The schematic which creates this item
+		Template.BaseItem = 'Gauntlet_MG'; // Which item this will be upgraded from
+		Template.CanBeBuilt = false;
+		Template.bInfiniteItem = true;
+	}
+	else
+	{
+		foreach default.Gauntlet_BEAM_REQUIRED_TECHS(TechRequirement)
+		{
+			Template.Requirements.RequiredTechs.AddItem(TechRequirement);
+		}
+
+		if (default.Gauntlet_BEAM_INDIVIDUAL_SUPPLYCOST > 0)
+		{
+			SupplyCost.ItemTemplateName = 'Supplies';
+			SupplyCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_SUPPLYCOST;
+			Template.Cost.ResourceCosts.AddItem(SupplyCost);
+		}
+		if (default.Gauntlet_BEAM_INDIVIDUAL_ALLOYCOST > 0)
+		{
+			AlloyCost.ItemTemplateName = 'AlienAlloy';
+			AlloyCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ALLOYCOST;
+			Template.Cost.ResourceCosts.AddItem(AlloyCost);
+		}
+		if (default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCOST > 0)
+		{
+			EleriumCost.ItemTemplateName = 'EleriumDust';
+			EleriumCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCOST;
+			Template.Cost.ResourceCosts.AddItem(EleriumCost);
+		}
+		if (default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCORECOST > 0)
+		{
+			CoreCost.ItemTemplateName = 'EleriumCore';
+			CoreCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCORECOST;
+			Template.Cost.ResourceCosts.AddItem(CoreCost);
+		}
+		if (default.Gauntlet_BEAM_INDIVIDUAL_ITEMCOST > 0)
+		{
+			ItemCost.ItemTemplateName = 'Gauntlet_MG';
+			ItemCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ITEMCOST;
+			Template.Cost.ResourceCosts.AddItem(ItemCost);
+		}
+		if (default.Gauntlet_BEAM_INDIVIDUAL_TRADINGPOSTVALUE > 0)
+		{
+			Template.TradingPostValue = default.Gauntlet_BEAM_INDIVIDUAL_TRADINGPOSTVALUE;
+		}
+
+		Template.CanBeBuilt = true;
+		Template.bInfiniteItem = false;
+	}
     
     Template.DamageTypeTemplateName = 'Electrical';
 
@@ -346,6 +534,125 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Beam()
     Template.SetUIStatMarkup(default.SecondaryRadiusLabel, , default.Gauntlet_Secondary_BEAM_RADIUS);
 
     return Template;
+}
+
+// ***** Magnetic Gauntlet Upgrade Schematic *****
+static function X2DataTemplate CreateTemplate_Gauntlet_Magnetic_Schematic()
+{
+	local X2SchematicTemplate	Template;
+	local ArtifactCost			SupplyCost, AlloyCost, EleriumCost, CoreCost;
+	local name					TechRequirement;
+
+	`CREATE_X2TEMPLATE(class'X2SchematicTemplate', Template, 'Gauntlet_MG_Schematic');
+
+	Template.ItemCat = 'weapon';
+	Template.strImage = default.Gauntlet_MG_UIImage;
+	Template.CanBeBuilt = true;
+	Template.bOneTimeBuild = true;
+	Template.HideInInventory = true;
+	Template.PointsToComplete = 0;
+	Template.Tier = 1;
+	Template.OnBuiltFn = class'X2Item_DefaultSchematics'.static.UpgradeItems;
+
+	// Reference Item
+	Template.ReferenceItemTemplate = 'Gauntlet_MG';
+	Template.HideIfPurchased = 'Gauntlet_BM';
+
+	// Requirements
+	foreach default.Gauntlet_MAGNETIC_REQUIRED_TECHS(TechRequirement)
+	{
+		Template.Requirements.RequiredTechs.AddItem(TechRequirement);
+	}
+	Template.Requirements.RequiredEngineeringScore = 10;
+	Template.Requirements.bVisibleIfPersonnelGatesNotMet = true;
+
+	// Cost
+	if (default.Gauntlet_MAGNETIC_SCHEMATIC_SUPPLYCOST > 0)
+	{
+		SupplyCost.ItemTemplateName = 'Supplies';
+		SupplyCost.Quantity = default.Gauntlet_MAGNETIC_SCHEMATIC_SUPPLYCOST;
+		Template.Cost.ResourceCosts.AddItem(SupplyCost);
+	}
+	if (default.Gauntlet_MAGNETIC_SCHEMATIC_ALLOYCOST > 0)
+	{
+		AlloyCost.ItemTemplateName = 'AlienAlloy';
+		AlloyCost.Quantity = default.Gauntlet_MAGNETIC_SCHEMATIC_ALLOYCOST;
+		Template.Cost.ResourceCosts.AddItem(AlloyCost);
+	}
+	if (default.Gauntlet_MAGNETIC_SCHEMATIC_ELERIUMCOST > 0)
+	{
+		EleriumCost.ItemTemplateName = 'EleriumDust';
+		EleriumCost.Quantity = default.Gauntlet_MAGNETIC_SCHEMATIC_ELERIUMCOST;
+		Template.Cost.ResourceCosts.AddItem(EleriumCost);
+	}
+	if (default.Gauntlet_MAGNETIC_SCHEMATIC_ELERIUMCORECOST > 0)
+	{
+		CoreCost.ItemTemplateName = 'EleriumCore';
+		CoreCost.Quantity = default.Gauntlet_MAGNETIC_SCHEMATIC_ELERIUMCORECOST;
+		Template.Cost.ResourceCosts.AddItem(CoreCost);
+	}
+
+	return Template;
+}
+
+
+// ***** Beam Gauntlet Upgrade Schematic *****
+static function X2DataTemplate CreateTemplate_Gauntlet_Beam_Schematic()
+{
+	local X2SchematicTemplate	Template;
+	local ArtifactCost			SupplyCost, AlloyCost, EleriumCost, CoreCost;
+	local name					TechRequirement;
+
+	`CREATE_X2TEMPLATE(class'X2SchematicTemplate', Template, 'Gauntlet_BM_Schematic');
+
+	Template.ItemCat = 'weapon';
+	Template.strImage = default.Gauntlet_BM_UIImage;
+	Template.CanBeBuilt = true;
+	Template.bOneTimeBuild = true;
+	Template.HideInInventory = true;
+	Template.PointsToComplete = 0;
+	Template.Tier = 3;
+	Template.OnBuiltFn = class'X2Item_DefaultSchematics'.static.UpgradeItems;
+
+	// Reference Item
+	Template.ReferenceItemTemplate = 'Gauntlet_BM';
+
+	// Requirements
+	foreach default.Gauntlet_BEAM_REQUIRED_TECHS(TechRequirement)
+	{
+		Template.Requirements.RequiredTechs.AddItem(TechRequirement);
+	}
+	Template.Requirements.RequiredItems.AddItem('Gauntlet_MG_Schematic');
+	Template.Requirements.RequiredEngineeringScore = 20;
+	Template.Requirements.bVisibleIfPersonnelGatesNotMet = true;
+
+	// Cost
+	if (default.Gauntlet_BEAM_SCHEMATIC_SUPPLYCOST > 0)
+	{
+		SupplyCost.ItemTemplateName = 'Supplies';
+		SupplyCost.Quantity = default.Gauntlet_BEAM_SCHEMATIC_SUPPLYCOST;
+		Template.Cost.ResourceCosts.AddItem(SupplyCost);
+	}
+	if (default.Gauntlet_BEAM_SCHEMATIC_ALLOYCOST > 0)
+	{
+		AlloyCost.ItemTemplateName = 'AlienAlloy';
+		AlloyCost.Quantity = default.Gauntlet_BEAM_SCHEMATIC_ALLOYCOST;
+		Template.Cost.ResourceCosts.AddItem(AlloyCost);
+	}
+	if (default.Gauntlet_BEAM_SCHEMATIC_ELERIUMCOST > 0)
+	{
+		EleriumCost.ItemTemplateName = 'EleriumDust';
+		EleriumCost.Quantity = default.Gauntlet_BEAM_SCHEMATIC_ELERIUMCOST;
+		Template.Cost.ResourceCosts.AddItem(EleriumCost);
+	}
+	if (default.Gauntlet_BEAM_SCHEMATIC_ELERIUMCORECOST > 0)
+	{
+		CoreCost.ItemTemplateName = 'EleriumCore';
+		CoreCost.Quantity = default.Gauntlet_BEAM_SCHEMATIC_ELERIUMCORECOST;
+		Template.Cost.ResourceCosts.AddItem(CoreCost);
+	}
+
+	return Template;
 }
 
 
