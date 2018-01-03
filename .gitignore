@@ -112,4 +112,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 PublishedFileId.ID
+
+# XCOM 2 exclude list:
+*.XCOM_suo
 Src/LongWar2AbilitiesforWotC/Classes/X2Ability_PerkPackAbilitySet.uc
