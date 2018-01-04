@@ -57,10 +57,9 @@ event ExpandHandler(string InString, out string OutString)
 		// ?   Arcthrower			?
 		// ??????????????????????????
 
-		// TODO
-		//case 'ARCTHROWER_STUN_COOLDOWN':
-			//OutString = string(class'X2Ability_ArcthrowerAbilitySet'.default.STUN_COOLDOWN - 1);
-			//break;
+		case 'ARCTHROWER_STUN_COOLDOWN':
+			OutString = string(class'X2Ability_ArcthrowerAbilitySet'.default.STUN_COOLDOWN - 1);
+			break;
 		case 'ARCTHROWER_CV_AIM':
 			OutString = string(class'X2Item_ArcthrowerWeapon'.default.Arcthrower_CONVENTIONAL_AIM);
 			break;
@@ -88,9 +87,9 @@ event ExpandHandler(string InString, out string OutString)
 		case 'ARCTHROWER_BM_DAMAGE':
 			OutString = string(class'X2Item_ArcthrowerWeapon'.default.Arcthrower_BEAM_BASEDAMAGE.Damage);
 			break;
-		//case 'ARCTHROWER_EMPULSER_HACK_DEFENSE_PENALTY':
-			//OutString = string(class'X2Ability_ArcthrowerAbilitySet'.default.EMPULSER_HACK_DEFENSE_CHANGE);
-			//break; // TODO
+		case 'ARCTHROWER_EMPULSER_HACK_DEFENSE_PENALTY':
+			OutString = string(class'X2Ability_ArcthrowerAbilitySet'.default.EMPULSER_HACK_DEFENSE_CHANGE);
+			break;
 		case 'ARCTHROWER_STUNGUNNER_AIM_BONUS':
 			if (StrategyParseObj == none)
 			{
@@ -127,9 +126,9 @@ event ExpandHandler(string InString, out string OutString)
 		case 'ARCTHROWER_STUNGUNNER_AIM_BONUS_BM':
 			OutString = string(class'X2Effect_StunGunner'.default.STUNGUNNER_BONUS_BM);
 			break;
-		//case 'ARCTHROWER_CHAIN_LIGHTNING_COOLDOWN':
-			//OutString = string(class'X2Ability_ArcthrowerAbilitySet'.default.CHAIN_LIGHTNING_COOLDOWN - 1);
-			//break; // TODO
+		case 'ARCTHROWER_CHAIN_LIGHTNING_COOLDOWN':
+			OutString = string(class'X2Ability_ArcthrowerAbilitySet'.default.CHAIN_LIGHTNING_COOLDOWN - 1);
+			break;
 
 
 		// ??????????????????????????
@@ -282,12 +281,12 @@ event ExpandHandler(string InString, out string OutString)
 				}
 			}
 			break;
-		//case'HOLOTARGETER_RAPID_TARGETING_COOLDOWN':
-			//OutString = string(class'X2Ability_HolotargeterAbilitySet'.default.RAPID_TARGETING_COOLDOWN - 1);
-			//break; // TODO
-		//case'HOLOTARGETER_MULTI_TARGETING_COOLDOWN':
-			//OutString = string(class'X2Ability_HolotargeterAbilitySet'.default.MULTI_TARGETING_COOLDOWN - 1);
-			//break;
+		case'HOLOTARGETER_RAPID_TARGETING_COOLDOWN':
+			OutString = string(class'X2Ability_HolotargeterAbilitySet'.default.RAPID_TARGETING_COOLDOWN - 1);
+			break;
+		case'HOLOTARGETER_MULTI_TARGETING_COOLDOWN':
+			OutString = string(class'X2Ability_HolotargeterAbilitySet'.default.MULTI_TARGETING_COOLDOWN - 1);
+			break;
 		case'HOLOTARGETER_INDEPENDENT_TARGETING_BONUS_TURNS':
 			OutString = string(class'X2Effect_LWHolotarget'.default.INDEPENDENT_TARGETING_NUM_BONUS_TURNS);
 			break;
