@@ -10,13 +10,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Content\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Localization\" />
     <Folder Include="Content" />
+    <Folder Include="Localization\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Src\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\Classes\" />
     <Folder Include="Src\LW_Tuple" />
     <Folder Include="Src\LW_Tuple\Classes" />
+    <Folder Include="Src\WOTC_LW2SecondaryWeapons" />
+    <Folder Include="Src\WOTC_LW2SecondaryWeapons\Classes" />
     <Folder Include="Src\XModBase_Interfaces" />
     <Folder Include="Src\XModBase_Core_2_0_1" />
     <Folder Include="Src\XModBase_Core_2_0_1\Classes" />
@@ -41,16 +45,25 @@
     <Content Include="Config\XComGameData_CharacterStatus.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComGameData_SoldierSkills.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComGameData_WeaponData.ini">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComGameData_XpData.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComLW2SecondariesWOTC.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComLW_SoldierSkills.ini">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComPromotionUIMod.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComUI.ini">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Content\LWGauntlet.upk">
@@ -65,7 +78,58 @@
     <Content Include="Content\UILibrary_LW_PerkPack.upk">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\FX_CHA_SectopodDrone.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\FX_Holograms.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\FX_Holo_Targeting.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\FX_Shaders.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\FX_VH_Shiv.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\FX_WP_AssaultRifle.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\FX_WP_TargetPainter.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\LWArcthrowerWOTC.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\LWCombatKnifeWOTC.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\LWHolotargeterWOTC.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\LWSawedoffShotgunWOTC.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\LWSoldierSockets.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\UILibrary_LWSecondariesWOTC.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\WOTC_LW2SecondaryWeapons_ModShaderCache.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2SecondaryWeapons\WP_Holo_Targeting.upk">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Localization\LongWar2AbilitiesForWotc.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\WOTC_LW2SecondaryWeapons\WOTC_LW2SecondaryWeapons.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\WOTC_LW2SecondaryWeapons\XComGame.int">
       <SubType>Content</SubType>
     </Content>
     <Content Include="ReadMe.txt" />
@@ -484,6 +548,60 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LW_Tuple\Classes\LWTuple.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2AbilityTag_LW2SecondariesWOTC.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Ability_ArcthrowerAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Ability_CombatKnifeAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Ability_HolotargeterAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Ability_SawedOffShotgunAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Condition_ValidWeaponType.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2DownloadableContentInfo_WOTC_LW2SecondaryWeapons.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Effect_AddAmmo.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Effect_Arcthrower.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Effect_ArcthrowerStunned.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Effect_DoubleDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Effect_LoadPerks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Effect_LWHolotarget.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Effect_StunGunner.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Item_ArcthrowerWeapon.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Item_LWCombatKnife.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Item_LWHolotargeter.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2Item_LWSawedOffShotgun.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XModBase_Core_2_0_1\Classes\XMBAbilityCost_ActionPoints.uc">
