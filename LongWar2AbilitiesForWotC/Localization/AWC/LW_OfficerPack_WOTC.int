@@ -1,0 +1,83 @@
+[UIScreenListener_Armory_Promotion_LWOfficerPack]
+strOfficerMenuOption=Leader Abilities
+
+[X2EventListener_LWOfficer_ArmoryMainMenu]
+strOfficerMenuOption=Leader Abilities
+OfficerListItemDescription=View already trained Leader Abilities.
+
+[UIScreenListener_Facility_Academy_LWOfficerPack]
+strOfficerTrainButton=Train Leader
+
+[UIScreenListener_SquadSelect_LWOfficerPack]
+strAutoFillLabel="AUTOFILL SQUAD"
+strAutoFillTooltip="Autofill squad up to maximum"
+
+
+[UITacticalHUD_MouseControls_LWOfficerPack]
+strCommandRangeToggleTooltip=Click to toggle Command Range
+
+[X2StrategyElement_LW_OTS_OfficerStaffSlot]
+;strOTSLocationDisplayString=<XGParam:StrValue0/> Training
+
+;[UIArmory_LWOfficerMenu]
+;m_strSelectAbility=SELECT LEADER ABILITY:
+;m_strAbilityHeader=LEADER ABILITIES:
+;m_strConfirmAbilityTitle=CONFIRM ABILITY SELECTION
+;m_strConfirmAbilityText=You can't remove or change abilities. Are you sure you want to learn <XGParam:StrValue0/>?
+;m_strAbilityLockedTitle=LOCKED
+;m_strAbilityLockedDescription=Get more combat experience to learn new abilities.
+
+[UIArmory_LWOfficerPromotion]
+m_strSelectAbility=SELECT ABILITY:
+m_strAbilityHeader=ABILITIES:
+;m_strCorporalPromotionDialogTitle=NEW RANK: CORPORAL
+;m_strCorporalPromotionDialogText=Your combat experience gives you the confidence and skills to take on the Alien threat. You can now use the following abilities during combat:\n\n<XGParam:StrValue0/>
+;m_strAWCUnlockDialogTitle=HIDDEN ABILITY UNCOVERED
+;m_strAWCUnlockDialogText=Thanks to the efforts of the Advanced Warfare Center, this soldier has learned a combat ability outside of their area of specialization: \n\n<XGParam:StrValue0/>
+m_strConfirmAbilityTitle=CONFIRM ABILITY SELECTION
+m_strConfirmAbilityText=You can't remove or change abilities. Are you sure you want to learn <XGParam:StrValue0/>?
+m_strAbilityLockedTitle=LOCKED
+m_strAbilityLockedDescription=Get more combat experience to learn new abilities.
+
+[LWOfficerUtilities]
+;   there should be one name for each rank; e.g. Rookie, Squaddie, etc.
+LWOfficerRankNames[0]=NCO
+LWOfficerRankNames[1]=Fireteam Leader
+LWOfficerRankNames[2]=Squad Leader
+LWOfficerRankNames[3]=Section Leader 
+LWOfficerRankNames[4]=Troop Leader
+LWOfficerRankNames[5]=Field Commander
+
+; DEPRECATED FOR STANDALONE VERSION
+;   the abbreviated rank name; e.g. Rk., Sq., etc.
+;LWOfficerShortNames[0]=NCO
+;LWOfficerShortNames[1]=FTL
+;LWOfficerShortNames[2]=SQL
+;LWOfficerShortNames[3]=SCL
+;LWOfficerShortNames[4]=TRL
+;LWOfficerShortNames[5]=FC
+
+[UIFacility_LWOfficerSlot]
+m_strTrainOfficerDialogTitle=TRAIN LEADER
+m_strTrainOfficerDialogText=Soldiers of sergeant rank or greater can undergo specialized training at the Guerrilla Tactics School, studying to become a leader. They will be unavailable for combat during the training process.\n\nIMPORTANT: Except in dire emergencies only one leader may go on a mission at a time, so choose carefully whom you promote, as they cannot be assigned to squads with another leader.\n\nDo you want to proceed?
+m_strStopTrainOfficerDialogTitle=STOP LEADER TRAINING?
+m_strStopTrainOfficerDialogText=Do you want to stop %UNITNAME from training?\n\nWARNING: All leadership training progress will be lost.
+
+[UIAlert_LWOfficerTrainingComplete]
+m_strTrainingCompleteLabel=LEADER TRAINING COMPLETED
+m_strTrainingComplete=<XGParam:StrValue0/> has completed their training. New abilities can be examined and assigned by viewing the soldier in the Armory.
+m_strViewSoldier=VIEW SOLDIER
+m_strNewAbilityLabel=NEW ABILITY
+
+[UIPersonnel_ListItem_SquadSelect_LWOfficerPack]
+strOfficerAlreadySelectedStatus=Leader Already Selected
+
+[X2Ability_OfficerAbilitySet]
+strCollector_WorldMessage=Collector: +1 Intel
+FocussedFriendlyName=Focus Fire
+FocussedFriendlyDesc=Targets subject to Focus Fire are easier for enemies to hit and damage.
+
+[XComGameState_Effect_Scavenger]
+;the string shown in world message for scavenged items
+m_strScavengerLoot="(<XGParam:IntValue0/>) <XGParam:StrValue0/!ItemName/> scavenged."
+

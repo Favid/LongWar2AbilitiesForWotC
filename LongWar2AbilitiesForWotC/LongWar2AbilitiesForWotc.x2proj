@@ -13,12 +13,15 @@
     <Folder Include="Content\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Localization\" />
     <Folder Include="Content" />
+    <Folder Include="Localization\AWC" />
     <Folder Include="Localization\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Src\" />
+    <Folder Include="Src\AWC\Classes" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\Classes\" />
     <Folder Include="Src\LW_Tuple" />
     <Folder Include="Src\LW_Tuple\Classes" />
+    <Folder Include="Src\AWC" />
     <Folder Include="Src\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Src\WOTC_LW2SecondaryWeapons\Classes" />
     <Folder Include="Src\XModBase_Interfaces" />
@@ -55,6 +58,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComLW2SecondariesWOTC.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComLW_OfficerPack.ini">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComLW_SoldierSkills.ini">
@@ -123,6 +129,15 @@
     <Content Include="Content\WOTC_LW2SecondaryWeapons\WP_Holo_Targeting.upk">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Localization\AWC\AWC.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\AWC\LW_OfficerPack_WOTC.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\AWC\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Localization\LongWar2AbilitiesForWotc.int">
       <SubType>Content</SubType>
     </Content>
@@ -138,6 +153,45 @@
     <Content Include="Config\XComEngine.ini" />
     <Content Include="Config\XComGame.ini" />
     <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\AWC\Classes\LWOfficerUtilities.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\UIAlert_LWOfficerTrainingComplete.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\UIArmory_LWOfficerPromotion.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\UIArmory_LWOfficerPromotionItem.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\UIFacility_LWOfficerSlot.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\UIPersonnel_ListItem_SquadSelect_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\UIPersonnel_LWOfficer.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\UIStrategyScreenListener_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\X2DownloadableContentInfo_AWC.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\X2EventListener_LWOfficer_ArmoryMainMenu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\X2StrategyElement_LW_OTS_OfficerStaffSlot.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\XComGameState_HeadquartersProjectTrainLWOfficer.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\AWC\Classes\XComGameState_Unit_LWOfficer.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\Examples.uc">
       <SubType>Content</SubType>
     </Content>

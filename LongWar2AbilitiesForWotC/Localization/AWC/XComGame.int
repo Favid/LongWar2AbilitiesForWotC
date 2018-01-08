@@ -1,0 +1,201 @@
+; This section is necessary to force the localization combiner to find the class and reload it in order to replace existing values below
+;[XComGame.X2ExperienceConfig]
+
+; Replace vanilla regular rank names with new ones
+; NOT IN USE YET
+;[X2ExperienceConfig]
+;RankNames[0]="Rookie"
+;RankNames[1]="Squaddie"
+;RankNames[2]="Corporal"
+;RankNames[3]="Sergeant"
+;RankNames[4]="Staff Sergeant"
+;RankNames[5]="Gunnery Sergeant"
+;RankNames[6]="Master Sergeant"
+;RankNames[7]="Sergeant Major"
+;RankNames[8]="Brigadier"
+
+;ShortNames[0]="Rk."
+;ShortNames[1]="LCpl."
+;ShortNames[2]="Cpl."
+;ShortNames[3]="Sgt."
+;ShortNames[4]="SSgt."
+;ShortNames[5]="GSgt."
+;ShortNames[6]="MSgt."
+;ShortNames[7]="SgM."
+;ShortNames[8]="Brig."
+
+[XComGame.UIAlert]
+[UIAlert]
+!m_strWoundedSoldiersAllowedTitle=WOUNDED SOLDIERS ALLOWED
+!m_strWoundedSoldiersAllowedBody=Commander, in order to ensure the success of this vital operation, wounded soldiers may be assigned to the mission!
++m_strWoundedSoldiersAllowedTitle=ADDITIONAL SOLDIERS ALLOWED
++m_strWoundedSoldiersAllowedBody=Commander, in order to ensure the success of this vital operation, wounded soldiers and multiple leaders may be assigned to the mission!
+
+
+;---- BEGIN ABILITIES
+
+;displayed both for officer and soldiers receiving effect
+[GetSome X2AbilityTemplate]
+LocFriendlyName="Get Some"
+LocLongDescription="Once per mission, spend an action to grant all allies within Command Range a +20 bonus to Critical Hit chances for the remainder of the turn."
+LocHelpText="Improves critical hit chances of soldiers near leader"
+LocFlyOverText="Get Some"
+LocPromotionPopupText="<Bullet/> Spend an action to grant all friendly units within Command Range a +20 bonus to Critical Hit chances for the remainder of the turn.<br/><Bullet/> Usable once per mission.<br/><Bullet/> Command Range increases with each new leader level."
+
+[Collector X2AbilityTemplate]
+LocFriendlyName="Collector"
+LocLongDescription="Killing any non-human enemy has a 50% chance to grant 1 intel point as long as the leader is healthy."
+LocHelpText="Gain extra intel from kills by squad"
+LocFlyOverText="Collector"
+; displayed for officer in OfficerAbility UI
+LocPromotionPopupText="<Bullet/> Killing any non-human, living enemy has a 50% chance to grant 1 intel point as long as the leader is healthy."
+
+;displayed on officer in tactical container
+[CollectorPassive X2AbilityTemplate]
+LocFriendlyName="Collector"
+LocLongDescription="Killing any non-human enemy has a 50% chance to grant 1 intel point as long as the leader is healthy."
+LocHelpText="Gain extra intel from kills by squad"
+LocFlyOverText="Collector"
+LocPromotionPopupText="<Bullet/> Killing any non-human, living enemy has a 50% chance to grant 1 intel point as long as the leader is healthy."
+
+;displayed on other soldier that receive the effect
+[Defilade X2AbilityTemplate]
+LocFriendlyName="Defilade"
+LocLongDescription="Soldiers within Command Range of the leader receive +5 bonus to defense value provided by cover."
+LocHelpText="Bonus defense from cover for soldiers near leader"
+LocFlyOverText="Defilade"
+;displayed for officer in Officer Ability UI
+LocPromotionPopupText="<Bullet/> Soldiers within Command Range of the leader receive +5 bonus to defense value provided by cover.<br/><Bullet/> Command Range increases with each new leader level."
+
+;Displayed on officer in tactical container
+[DefiladePassive X2AbilityTemplate]
+LocFriendlyName="Defilade"
+LocLongDescription="Soldiers within Command Range of the leader receive +5 bonus to defense value provided by cover."
+LocHelpText="Bonus defense from cover for soldiers near leader"
+LocFlyOverText="Defilade"
+LocPromotionPopupText="<Bullet/> Soldiers within Command Range of the leader receive +5 bonus to defense value provided by cover.<br/><Bullet/> Command Range increases with each new leader level."
+
+;displayed both on officer and in debuff on target
+[FocusFire X2AbilityTemplate]
+LocFriendlyName="Focus Fire"
+LocLongDescription="Spend an action to pinpoint a target and grant your squad cumulative Aim bonuses and 1 Armor Piercing on attacks against that target for the rest of the turn."
+LocHelpText="Pinpoint a target so your squad gains Aim and Armor Piercing bonuses against it"
+LocFlyOverText="Focus Fire"
+LocPromotionPopupText="<Bullet/> Spend an action to pinpoint a target and grant your squad cumulative aim bonuses and 1 armor piercing on attacks against that target for the rest of the turn.<br/><Bullet/> Each successive direct weapon attack against the target in the same turn grants an additional +4 aim bonus.<br/><Bullet/> Three-turn cooldown.<br/>"
+
+;displayed both on officer and on soldiers receiving effect
+[FallBack X2AbilityTemplate]
+LocFriendlyName="Fall Back!"
+LocLongDescription="Spend an action to grant a free but uncontrolled defensive action to any visible ally."
+LocHelpText="Grant a free but uncontrolled defensive action to any visible ally"
+LocFlyOverText="Fall Back!"
+LocPromotionPopupText="<Bullet/> Spend an action to grant a free but uncontrolled defensive action to any visible ally. The ally will usually attempt to seek a safer position or hunker down.<br/><Bullet/> Four-turn cooldown."
+
+[Scavenger X2AbilityTemplate]
+LocFriendlyName="Scavenger"
+LocLongDescription="Mission rewards of supplies, Alien Alloys and Elerium increased by 30% after successful missions. Chance of collecting extra Alien Alloys and Elerium from aliens."
+LocHelpText="Bonus supplies, Alien Alloys and Elerium"
+LocFlyOverText="Scavenger"
+;displayed for officer in Officer Ability UI
+LocPromotionPopupText="<Bullet/> If the leader survives the mission and is conscious, mission rewards of supplies, Alien Alloys and Elerium are increased by 30 percent.<br/><Bullet> Squad may recover Alien Alloys and Elerium from dead aliens.<br/>"
+
+;Displayed on officer in tactical container
+[ScavengerPassive X2AbilityTemplate]
+LocFriendlyName="Scavenger"
+LocLongDescription="Mission rewards of supplies, Alien Alloys and Elerium increased by 30% after successful missions. Chance of collecting Alien Alloys and Elerium from aliens."
+LocHelpText="Bonus supplies, Alien Alloys and Elerium"
+LocFlyOverText="Scavenger"
+LocPromotionPopupText="<Bullet/> If the leader survives the mission in good condition, mission rewards of supplies, Alien Alloys and Elerium are increased by 30 percent.<br/><Bullet> Squad may recover Alien Alloys and Elerium from dead aliens.<br/>"
+
+;displayed on other soldier that receive the effect
+[FireDiscipline X2AbilityTemplate]
+LocFriendlyName="Fire Discipline"
+LocLongDescription="All allies within Command Range of the leader gain +10% to hit on reaction fire."
+LocHelpText="All allies near leader gain reaction fire bonus"
+LocFlyOverText="Fire Discipline"
+;displayed for officer in Officer Ability UI
+LocPromotionPopupText="<Bullet/> All allies within Command Range of the leader gain +10% to hit on reaction fire.<br/><Bullet/> Command Range increases with each new leader level."
+
+;Displayed on officer in tactical container
+[FireDisciplinePassive X2AbilityTemplate]
+LocFriendlyName="Fire Discipline"
+LocLongDescription="All allies within Command Range of the leader gain +10% to hit on reaction fire."
+LocHelpText="All allies near leader gain reaction fire bonus"
+LocFlyOverText="Fire Discipline"
+LocPromotionPopupText="<Bullet/> All allies within Command Range of the leader gain +10% to hit on reaction fire.<br/><Bullet/> Command Range increases with each new leader level."
+
+;displayed both on officer and on soldiers receiving effect
+[OscarMike X2AbilityTemplate]
+LocFriendlyName="Oscar Mike"
+LocLongDescription="Spend an action to give all allies within Command Range +3 Mobility for the remainder of the turn. Usable once per mission."
+LocHelpText="Leader may grant bonus Mobility to nearby allies"
+LocFlyOverText="Oscar Mike"
+LocPromotionPopupText="<Bullet/> Spend an action to give all allies within Command Range +3 Mobility for the remainder of the turn.<br/><Bullet/> Usable once per mission.<br/><Bullet/> Command Range increases with each new leader level."
+
+;displayed on other soldier that receive the effect
+[LeadByExample X2AbilityTemplate]
+LocFriendlyName="Lead By Example"
+LocLongDescription="The leader improves the Aim, Will and Hack of soldiers within Command Range by half the difference between soldier and leader."
+LocHelpText="Allies near leader may gain improved Aim, Will and Hack"
+LocFlyOverText="Lead By Example"
+;displayed for officer in Officer Ability UI
+LocPromotionPopupText="<Bullet/> If the leader's Aim, Will and/or Hack scores are higher than any soldier within Command Range, the soldier gains bonuses to those scores equal to half the difference between the leader and the soldier.<br/><Bullet/> Command Range increases with each new leader level."
+
+;Displayed on officer in tactical container
+[LeadByExamplePassive X2AbilityTemplate]
+LocFriendlyName="Lead By Example"
+LocLongDescription="The leader improves the Aim, Will and Hack of soldiers within Command Range by half the difference between soldier and leader."
+LocHelpText="Allies near leader may gain improved Aim, Will and Hack"
+LocFlyOverText="Lead By Example"
+LocPromotionPopupText="<Bullet/> If the leader's Aim, Will and/or Hack scores are higher than any soldier within Command Range, the soldier gains bonuses to those scores equal to half the difference between the leader and the soldier.<br/><Bullet/> Command Range increases with each new leader level."
+
+;this may not be displayed -- needs testing
+[LeadByExampleLeader X2AbilityTemplate]
+LocFriendlyName="Lead By Example"
+LocLongDescription="The leader improves the Aim, Will and Hack of soldiers within 10 tiles by half the difference between soldier and leader."
+LocHelpText="Allies near leader may gain improved Aim, Will and Hack"
+LocFlyOverText="Lead By Example"
+LocPromotionPopupText="<Bullet/> If the leader's Aim, Will and/or Hack scores are higher than any soldier within Command Range, the soldier gains bonuses to those scores equal to half the difference between the leader and the soldier.<br/><Bullet/> Command Range increases with each new leader level."
+
+;displayed on other soldier that receive the effect
+[CombinedArms X2AbilityTemplate]
+LocFriendlyName="Combined Arms"
+LocLongDescription="All allies within Command Range of the leader do +1 damage with all successful attacks."
+LocHelpText="Allies near leader gain bonus damage"
+LocFlyOverText="Combined Arms"
+;displayed for officer in Officer Ability UI
+LocPromotionPopupText="<Bullet/> All allies within Command Range of the leader do +1 damage with all successful attacks.<br/><Bullet/> Command Range increases with each new leader level."
+
+;Displayed on officer in tactical container
+[CombinedArmsPassive X2AbilityTemplate]
+LocFriendlyName="Combined Arms"
+LocLongDescription="All allies within Command Range of the leader do +1 damage with all successful attacks."
+LocHelpText="Allies near leader gain bonus damage"
+LocFlyOverText="Combined Arms"
+LocPromotionPopupText="<Bullet/> All allies within Command Range of the leader do +1 damage with all successful attacks.<br/><Bullet/> Command Range increases with each new leader level."
+
+;---- END ABILITIES
+
+;---- BEGIN OTS / STAFFSLOT
+
+[OfficerTrainingUnlock X2SoldierUnlockTemplate]
+DisplayName="Leader Training"
+Summary="Unlocks soldier slot to allow training of leaders."
+
+[OTSOfficerSlot X2StaffSlotTemplate]
+EmptyText="OPEN: SOLDIER REQUIRED"
+BonusEmptyText="Trains Soldiers with Leader Abilities."
+BonusText="%SKILL TRAINING"
+FilledText="%UNITNAME is now enrolled in an extensive %SKILL training program!"
+LockedText="LOCKED: PURCHASE UPGRADE"
+
+[OTS_LWOfficerTrainingUpgrade X2FacilityUpgradeTemplate]
+DisplayName="Leader Training Station"
+FacilityName="Leader Training School"
+Summary="Adds a station where soldiers of sergeant rank or greater can train special leadership abilities.\nIMPORTANT: Except in dire emergencies only one leader may go on a mission at a time, so choose carefully whom you promote, as they cannot be assigned to squads with another leader."
+
+[UIPersonnel_LWOfficer]
+m_strTitle=Soldier to Train as Leader
+EmptyListMessage=NO ELIGIBLE CANDIDATES
+
+;---- END OTS / STAFFSLOT
