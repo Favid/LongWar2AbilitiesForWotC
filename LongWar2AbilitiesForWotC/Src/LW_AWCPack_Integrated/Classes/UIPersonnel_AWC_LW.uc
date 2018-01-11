@@ -1,12 +1,12 @@
 //---------------------------------------------------------------------------------------
-//  FILE:    UIPersonnel_LWOfficer
+//  FILE:    UIPersonnel_AWC_LW
 //  AUTHOR:  Amineri
 //
-//  PURPOSE: Implements custom localization and filtering mechanism for officer selection
+//  PURPOSE: Implements custom localization and filtering mechanism for AWC selection
 //
-//--------------------------------------------------------------------------------------- 
+//---------------------------------------------------------------------------------------
 
-class UIPersonnel_LWOfficer extends UIPersonnel;
+class UIPersonnel_AWC_LW extends UIPersonnel;
 
 var public localized string EmptyListMessage;
 
@@ -29,8 +29,8 @@ simulated function UpdateData()
 	m_arrEngineers.Length = 0;
 	m_arrDeceased.Length = 0;
 
-	//Need to get the latest state here, else you may have old sata in the list upon refreshing at OnReceiveFocus, such as 
-	//still showing dismissed soldiers. 
+	//Need to get the latest state here, else you may have old sata in the list upon refreshing at OnReceiveFocus, such as
+	//still showing dismissed soldiers.
 	HQState = class'UIUtilities_Strategy'.static.GetXComHQ();
 
 	for(i = 0; i < HQState.Crew.Length; i++)
@@ -40,35 +40,37 @@ simulated function UpdateData()
 
 		if(Unit.IsAlive())
 		{
-			if (Unit.IsSoldier()) // FXS changed XCGS_Unit:IsASoldier() to XCGS_Unit:IsSoldier() because they hate compatibility
+			if (Unit.IsSoldier() &&
+				class'LWAWCUtilities'.default.ClassCannotGetAWCTraining.Find(Unit.GetSoldierClassTemplateName()) == -1)
 			{
-				//Check StaffSlot Validation function, defined in LWOfficer StaffSlot Template
-				//if (SlotState.ValidUnitForSlot(SlotUnitInfo))
-				//{
+				//Check StaffSlot Validation function, defined in AWC StaffSlot Template
+				if (SlotState.ValidUnitForSlot(SlotUnitInfo))
+				{
 					if (m_arrNeededTabs.Find(eUIPersonnel_Soldiers) != INDEX_NONE)
 					{
 						m_arrSoldiers.AddItem(Unit.GetReference());
 					}
-				//}
+				}
 			}
-		}
-		if( StatusMessage == none )
-		{
-			StatusMessage = Spawn(class'UIText', self).InitText(, "");
-			StatusMessage.SetWidth(m_kList.Width); 
-			StatusMessage.SetPosition(m_kList.X, m_kList.Y);
-		}
-	
-		if( m_arrSoldiers.length == 0 )
-		{
-			StatusMessage.SetHTMLText( EmptyListMessage );
-		}
-		else
-		{
-			StatusMessage.SetHTMLText("");
-		}
 	}
-} 
+	if( StatusMessage == none )
+	{
+		StatusMessage = Spawn(class'UIText', self).InitText(, "");
+		StatusMessage.SetWidth(m_kList.Width);
+		StatusMessage.SetPosition(m_kList.X, m_kList.Y);
+	}
+
+	if( m_arrSoldiers.length == 0 )
+	{
+		StatusMessage.SetHTMLText( EmptyListMessage );
+	}
+	else
+	{
+		StatusMessage.SetHTMLText("");
+	}
+}
+
+}
 
 defaultproperties
 {

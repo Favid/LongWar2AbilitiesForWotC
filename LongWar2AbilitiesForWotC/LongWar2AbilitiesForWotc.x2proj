@@ -10,18 +10,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Content\LW_OfficerPack_WOTC" />
     <Folder Include="Content\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Localization\" />
     <Folder Include="Content" />
     <Folder Include="Localization\AWC" />
     <Folder Include="Localization\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Src\" />
-    <Folder Include="Src\AWC\Classes" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\Classes\" />
+    <Folder Include="Src\LW_AWCPack_Integrated\Classes" />
+    <Folder Include="Src\LW_OFficerPack_WOTC\Classes" />
     <Folder Include="Src\LW_Tuple" />
     <Folder Include="Src\LW_Tuple\Classes" />
-    <Folder Include="Src\AWC" />
+    <Folder Include="Src\LW_OFficerPack_WOTC" />
+    <Folder Include="Src\LW_AWCPack_Integrated" />
     <Folder Include="Src\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Src\WOTC_LW2SecondaryWeapons\Classes" />
     <Folder Include="Src\XModBase_Interfaces" />
@@ -60,6 +63,9 @@
     <Content Include="Config\XComLW2SecondariesWOTC.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComLW_AWCPack.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComLW_OfficerPack.ini">
       <SubType>Content</SubType>
     </Content>
@@ -73,6 +79,24 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Content\LWGauntlet.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\LW_OfficerPack_WOTC\LWCommandRange.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\LW_OfficerPack_WOTC\LWOfficerPack_SoundFX.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\LW_OfficerPack_WOTC\LW_OfficerPack_ModShaderCache.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\LW_OfficerPack_WOTC\LW_OfficerPack_WOTC_ModShaderCache.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\LW_OfficerPack_WOTC\TestParticle.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\LW_OfficerPack_WOTC\UILibrary_LW_OfficerPack.upk">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Content\LW_Perk_CloseEncounters.upk">
@@ -153,45 +177,6 @@
     <Content Include="Config\XComEngine.ini" />
     <Content Include="Config\XComGame.ini" />
     <Content Include="Localization\XComGame.int" />
-    <Content Include="Src\AWC\Classes\LWOfficerUtilities.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\UIAlert_LWOfficerTrainingComplete.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\UIArmory_LWOfficerPromotion.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\UIArmory_LWOfficerPromotionItem.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\UIFacility_LWOfficerSlot.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\UIPersonnel_ListItem_SquadSelect_LWOfficerPack.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\UIPersonnel_LWOfficer.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\UIStrategyScreenListener_LWOfficerPack.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\X2DownloadableContentInfo_AWC.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\X2EventListener_LWOfficer_ArmoryMainMenu.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\X2StrategyElement_LW_OTS_OfficerStaffSlot.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\XComGameState_HeadquartersProjectTrainLWOfficer.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\AWC\Classes\XComGameState_Unit_LWOfficer.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\Examples.uc">
       <SubType>Content</SubType>
     </Content>
@@ -599,6 +584,183 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XMBValue_Visibility.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\LWAWCUtilities.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIAlert_AWCTrainingComplete_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIArmory_AWCExpandedPromotionItem_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIArmory_AWCExpandedPromotion_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIArmory_AWCExpandedSummaryItem_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIChooseAWCAbility_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIFacilityStaffContainer_AWC_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIFacility_AWCTrainingSlot_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIPersonnel_AWC_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIScreenListener_AWCEventListener.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIScreenListener_ChooseUpgrade_AWCPack_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIScreenListener_FacilityUpgrade_AWCPack_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\UIScreenListener_Facility_AWC_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\X2DownloadableContentInfo_AWCPack_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\X2StrategyElement_AWC_TrainingStaffSlot_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\XComGameState_HeadquartersProjectTrainAWC_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_AWCPack_Integrated\Classes\XComGameState_Unit_AWC_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\LWCommandRange_Actor.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\LWOfficerUtilities.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIAlert_LWOfficerTrainingComplete.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIArmory_LWOfficerPromotion.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIArmory_LWOfficerPromotionItem.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIFacility_LWOfficerSlot.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIListItemString_SelfContained.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIPersonnel_ListItem_SquadSelect_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIPersonnel_LWOfficer.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIPersonnel_SquadSelect_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIScreenListener_FacilityUpgrade_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIScreenListener_PersonnelSquadSelect_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIScreenListener_SquadSelect_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIScreenListener_TacticalHUD_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UISquadSelect_ListItem_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UISquadSelect_UtilityItem_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UIStrategyScreenListener_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\UITacticalHUD_MouseControls_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2AbilityMultiTarget_LWOfficerCommandRange.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2AbilityToHitCalc_LWCommandRange.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Ability_OfficerAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Ability_OfficerAbilitySet_PassiveAuras.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Ability_ToggleCommandRange.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2DownloadableContentInfo_LWOfficerPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Effect_Collector.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Effect_CombinedArms.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Effect_Defilade.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Effect_FallBack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Effect_FireDiscipline.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Effect_FocusFire.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Effect_LeadByExample.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Effect_LeadByExample_old.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Effect_LWOfficerCommandAura.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2Effect_Scavenger.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2EventListener_LWOfficer_ArmoryMainMenu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\X2StrategyElement_LW_OTS_OfficerStaffSlot.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\XComGameState_Effect_Collector.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\XComGameState_Effect_FocusFire.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\XComGameState_Effect_Scavenger.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\XComGameState_HeadquartersProjectTrainLWOfficer.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\XComGameState_Unit_LWOfficer.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LW_OFficerPack_WOTC\Classes\XComHQPresentationLayer_LWOfficerPack.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LW_Tuple\Classes\LWTuple.uc">

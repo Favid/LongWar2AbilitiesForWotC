@@ -199,3 +199,9 @@ m_strTitle=Soldier to Train as Leader
 EmptyListMessage=NO ELIGIBLE CANDIDATES
 
 ;---- END OTS / STAFFSLOT
+
+
+[AdvancedWarfareCenter X2FacilityTemplate_Infirmary]
+DisplayName="Advanced Warfare Center"
+CompletedSummary="Soldiers of sufficient rank may now train bonus abilities outside their normal perk tree.\nNew Staff Slot Available - Increases Soldier Healing Rate\nNew Staff Slot Available - Retrains Soldier Abilities"
+Summary="Once the AWC is built, soldiers may train bonus offensive, defensive and sidearm abilities outside of their current class tree. In addition, a scientist can be staffed in the AWC to decrease the time our soldiers need to recover from injuries."

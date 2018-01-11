@@ -4,7 +4,7 @@
 //  PURPOSE: Initializes Officer mod settings on campaign start or when loading campaign without mod previously active
 //--------------------------------------------------------------------------------------- 
 
-class X2DownloadableContentInfo_AWC extends X2DownloadableContentInfo;	
+class X2DownloadableContentInfo_LWOfficerPack extends X2DownloadableContentInfo;	
 
 /// <summary>
 /// This method is run if the player loads a saved game that was created prior to this DLC / Mod being installed, and allows the 
@@ -196,72 +196,72 @@ static function FinalizeUnitAbilitiesForInit(XComGameState_Unit UnitState, out a
 // update mission rewards for scavenger ability
 static function UpdateScavengerRewards()
 {
-	//local int idx, Bonus;
-	//local StateObjectReference UnitRef;
-	//local XComGameState_Unit UnitState;
-	//local XComGameState_Unit_LWOfficer OfficerState;
-	//local bool bHasScavenger;
-	//local XComGameStateHistory History;
-	//local XComGameStateContext_ChangeContainer ChangeContainer;
-	//local XComGameState UpdateState;
-	//local XComGameState_MissionSite MissionState;
-	//local XComGameState_Reward RewardState, UpdatedReward;
-//
-	//History = `XCOMHISTORY;
-//
-	//foreach `XCOMHQ.Squad(UnitRef)
-	//{
-		//UnitState = XComGameState_Unit(History.GetGameStateForObjectID(UnitRef.ObjectID));
-//
-		////requires unit to be alive and conscious
-		//if (UnitState == none || UnitState.IsDead() || UnitState.IsUnconscious() || !UnitState.IsSoldier())
-			//continue;
-//
-		//OfficerState = class'LWOfficerUtilities'.static.GetOfficerComponent(UnitState);
-		//if (OfficerState == none)
-			//continue;
-//
-		//if (OfficerState.HasOfficerAbility('Scavenger'))
-		//{
-			//bHasScavenger = true;
-			//break;
-		//}
-	//}
-	//if(!bHasScavenger)
-		//return;
-//
-	////requires all objectives complete
-	//if(!XComGameState_BattleData(History.GetSingleGameStateObjectForClass(class'XComGameState_BattleData')).AllStrategyObjectivesCompleted() )
-		//return;
-//
-	//MissionState = XComGameState_MissionSite(History.GetGameStateForObjectID(`XCOMHQ.MissionRef.ObjectID));
-	//ChangeContainer = class'XComGameStateContext_ChangeContainer'.static.CreateEmptyChangeContainer("Scavenger Reward Added");
-	//UpdateState = History.CreateNewGameState(true, ChangeContainer);
-//
-	//for(idx = 0; idx < MissionState.Rewards.Length; idx++)
-	//{
-		//RewardState = XComGameState_Reward(History.GetGameStateForObjectID(MissionState.Rewards[idx].ObjectID));
-		//UpdatedReward = XComGameState_Reward(UpdateState.CreateStateObject(class'XComGameState_Reward', RewardState.ObjectID));
-//
-		//switch(RewardState.GetMyTemplateName()) 
-		//{
-			//case 'Reward_Supplies': 
-			//case 'Reward_Alloys': 
-			//case 'Reward_Elerium': 
-				//Bonus = RewardState.Quantity;
-				//Bonus *= class'X2Effect_Scavenger'.default.SCAVENGER_BONUS_MULTIPLIER;
-				//UpdatedReward.Quantity += Max(1, Bonus);
-				//UpdateState.AddStateObject(UpdatedReward);
-				//`log("LW Officer Ability (Scavenger): RewardType=" $ RewardState.GetMyTemplateName() $ ", Amount=" $ Bonus);
-				//break;
-			//default:
-				//break;
-		//}
-	//}
-	//if(UpdateState.GetNumGameStateObjects() > 0)
-		//`GAMERULES.SubmitGameState(UpdateState);
-	//else
-		//History.CleanupPendingGameState(UpdateState); // TODO
+	local int idx, Bonus;
+	local StateObjectReference UnitRef;
+	local XComGameState_Unit UnitState;
+	local XComGameState_Unit_LWOfficer OfficerState;
+	local bool bHasScavenger;
+	local XComGameStateHistory History;
+	local XComGameStateContext_ChangeContainer ChangeContainer;
+	local XComGameState UpdateState;
+	local XComGameState_MissionSite MissionState;
+	local XComGameState_Reward RewardState, UpdatedReward;
+
+	History = `XCOMHISTORY;
+
+	foreach `XCOMHQ.Squad(UnitRef)
+	{
+		UnitState = XComGameState_Unit(History.GetGameStateForObjectID(UnitRef.ObjectID));
+
+		//requires unit to be alive and conscious
+		if (UnitState == none || UnitState.IsDead() || UnitState.IsUnconscious() || !UnitState.IsSoldier())
+			continue;
+
+		OfficerState = class'LWOfficerUtilities'.static.GetOfficerComponent(UnitState);
+		if (OfficerState == none)
+			continue;
+
+		if (OfficerState.HasOfficerAbility('Scavenger'))
+		{
+			bHasScavenger = true;
+			break;
+		}
+	}
+	if(!bHasScavenger)
+		return;
+
+	//requires all objectives complete
+	if(!XComGameState_BattleData(History.GetSingleGameStateObjectForClass(class'XComGameState_BattleData')).AllStrategyObjectivesCompleted() )
+		return;
+
+	MissionState = XComGameState_MissionSite(History.GetGameStateForObjectID(`XCOMHQ.MissionRef.ObjectID));
+	ChangeContainer = class'XComGameStateContext_ChangeContainer'.static.CreateEmptyChangeContainer("Scavenger Reward Added");
+	UpdateState = History.CreateNewGameState(true, ChangeContainer);
+
+	for(idx = 0; idx < MissionState.Rewards.Length; idx++)
+	{
+		RewardState = XComGameState_Reward(History.GetGameStateForObjectID(MissionState.Rewards[idx].ObjectID));
+		UpdatedReward = XComGameState_Reward(UpdateState.CreateStateObject(class'XComGameState_Reward', RewardState.ObjectID));
+
+		switch(RewardState.GetMyTemplateName()) 
+		{
+			case 'Reward_Supplies': 
+			case 'Reward_Alloys': 
+			case 'Reward_Elerium': 
+				Bonus = RewardState.Quantity;
+				Bonus *= class'X2Effect_Scavenger'.default.SCAVENGER_BONUS_MULTIPLIER;
+				UpdatedReward.Quantity += Max(1, Bonus);
+				UpdateState.AddStateObject(UpdatedReward);
+				`log("LW Officer Ability (Scavenger): RewardType=" $ RewardState.GetMyTemplateName() $ ", Amount=" $ Bonus);
+				break;
+			default:
+				break;
+		}
+	}
+	if(UpdateState.GetNumGameStateObjects() > 0)
+		`GAMERULES.SubmitGameState(UpdateState);
+	else
+		History.CleanupPendingGameState(UpdateState);
 }
 
 // ******** HANDLE UPDATING OTS FACILITY ************* //

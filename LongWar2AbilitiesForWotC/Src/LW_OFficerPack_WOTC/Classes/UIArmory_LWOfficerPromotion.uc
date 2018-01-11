@@ -26,6 +26,8 @@ simulated function PopulateData()
 
 	local bool DisplayOnly;
 
+	`LOG("LW Officer Pack, UIArmory_LWOfficerPromotion, PopulateData");
+
 	//AlwaysShow = true; // Debug switch to always show all perks
 
 	// We don't need to clear the list, or recreate the pawn here -sbatista

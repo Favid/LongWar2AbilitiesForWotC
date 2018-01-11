@@ -240,9 +240,10 @@ static function bool IsUnitValidForOTSOfficerSlot(XComGameState_StaffSlot SlotSt
 		&& !AtMaxOfficerRank
 		&& HasEligibleRegularRank)
 	{
+		`log("LW Officer Pack, Soldier is valid");
 		return true;
 	}
-
+	`log("LW Officer Pack, Soldier is NOT");
 	return false;
 }
 
