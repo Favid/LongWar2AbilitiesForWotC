@@ -9,20 +9,22 @@ class UIAlert_AWCTrainingComplete_LW extends UIAlert;
 //override for UIAlert child to trigger specific Alert built in this class
 simulated function BuildAlert()
 {
+	`RedScreen("UIAlert_AWCTrainingComplete_LW BuildAlert");
 	BindLibraryItem();
 	BuildAWCTrainingCompleteAlert();
 }
 
 //New Alert building function
 simulated function BuildAWCTrainingCompleteAlert()
-{
-
+{	
 	local XComGameState_Unit UnitState;
 	local XComGameState_Unit_AWC_LW AWCState;
 	local X2AbilityTemplate TrainedAbilityTemplate;
 	local X2AbilityTemplateManager AbilityTemplateManager;
 	local string AbilityIcon, AbilityName, AbilityDescription, ClassIcon, ClassName, RankName;
 	
+	`RedScreen("UIAlert_AWCTrainingComplete_LW BuildAWCTrainingCompleteAlert");
+
 	if( LibraryPanel == none )
 	{
 		`RedScreen("UI Problem with the alerts! Couldn't find LibraryPanel for current eAlertType: " $ eAlertName);

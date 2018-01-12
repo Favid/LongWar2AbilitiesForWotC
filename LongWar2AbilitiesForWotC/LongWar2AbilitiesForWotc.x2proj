@@ -11,10 +11,12 @@
   <ItemGroup>
     <Folder Include="Config\" />
     <Folder Include="Content\LW_OfficerPack_WOTC" />
+    <Folder Include="Content\LW_AWCPack_Integrated" />
     <Folder Include="Content\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Localization\" />
     <Folder Include="Content" />
     <Folder Include="Localization\AWC" />
+    <Folder Include="Localization\LW_AWCPack_Integrated" />
     <Folder Include="Localization\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Src\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\" />
@@ -163,6 +165,72 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Localization\LongWar2AbilitiesForWotc.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.chn">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.cht">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.deu">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.esn">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.fra">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.ita">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.jpn">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.kor">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.pol">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\LW_AWCPack_Integrated.rus">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.chn">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.cht">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.deu">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.esn">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.fra">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.ita">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.jpn">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.kor">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.pol">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LW_AWCPack_Integrated\XComGame.rus">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Localization\WOTC_LW2SecondaryWeapons\WOTC_LW2SecondaryWeapons.int">

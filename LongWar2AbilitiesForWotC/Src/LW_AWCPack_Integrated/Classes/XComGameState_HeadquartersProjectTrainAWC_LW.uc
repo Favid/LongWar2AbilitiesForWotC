@@ -94,6 +94,7 @@ function name GetTrainingAbilityName()
 // Remove the project
 function OnProjectCompleted()
 {
+
 	local XComGameStateHistory History;
 	local XComGameState_HeadquartersXCom XComHQ, NewXComHQ;
 	local XComGameState_Unit Unit;
@@ -103,6 +104,8 @@ function OnProjectCompleted()
 	local XComGameStateContext_ChangeContainer ChangeContainer;
 	local XComGameState_HeadquartersProjectTrainAWC_LW ProjectState;
 	local XComGameState_StaffSlot StaffSlotState;
+
+	`RedScreen("XComGameState_HeadquartersProjectTrainAWC_LW OnProjectCompleted");
 
 	History = `XCOMHISTORY;
 	Unit = XComGameState_Unit(History.GetGameStateForObjectID(ProjectFocus.ObjectID));

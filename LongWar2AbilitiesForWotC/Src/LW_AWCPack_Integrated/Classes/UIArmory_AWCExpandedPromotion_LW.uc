@@ -56,7 +56,7 @@ var UIButton AWCTrainButton;
 
 simulated function InitPromotion(StateObjectReference UnitRef, optional bool bInstantTransition)
 {
-	
+	`RedScreen("InitPromotion");
 	// Don't show nav help during tutorial, or during the After Action sequence.
 	bUseNavHelp = true;
 
@@ -103,16 +103,17 @@ simulated function InitPromotion(StateObjectReference UnitRef, optional bool bIn
 	Navigator.Clear();
 	Navigator.AddControl(List);
 	Navigator.SetSelected(List);
-
+	`RedScreen("InitPromotion the end");
 	MC.FunctionVoid("animateIn");
 }
 
 // callback from clicking the AWC Train button
 function EnterAWCTraining(UIButton Button)
 {
+	
 	local XComGameState_Unit Unit;
 	local XComGameState_StaffSlot StaffSlotState;
-
+	`RedScreen("EnterAWCTraining");
 	Unit = GetUnit();
 	
 	if (CanUnitEnterAWCTraining(Unit))
@@ -124,8 +125,9 @@ function EnterAWCTraining(UIButton Button)
 
 simulated function string GetCenteredTitleText(string text)
 {
-	local string OutString;
 
+	local string OutString;
+	`RedScreen("GetCenteredTitleText");
 	OutString = text;
 	OutString = class'UIUtilities_Text'.static.AddFontInfo(OutString, true,,, SummaryTitleFontSize);
 	OutString = class'UIUtilities_Text'.static.AlignCenter(OutString);
@@ -148,7 +150,7 @@ static function UIScreen GetScreen(name TestScreenClass )
 {
 	local UIScreenStack ScreenStack;
 	local int Index;
-
+	`RedScreen("GetScreen");
 	ScreenStack = `SCREENSTACK;
 	for(Index = 0; Index < ScreenStack.Screens.Length;  ++Index)
 	{
@@ -162,7 +164,8 @@ simulated function bool IsInScreenStack(name ScreenName)
 {
 	local UIScreenStack ScreenStack;
 	local int Index;
-
+	 
+	`RedScreen("IsInScreenStack");
 	ScreenStack = Movie.Pres.ScreenStack;
 	for( Index = 0; Index < ScreenStack.Screens.Length;  ++Index)
 	{
@@ -181,6 +184,8 @@ simulated function bool CanUnitEnterAWCTraining(XComGameState_Unit Unit)
 {
 	local StaffUnitInfo UnitInfo;
 	local XComGameState_StaffSlot StaffSlotState;
+
+	`RedScreen("CanUnitEnterAWCTraining");
 
 	UnitInfo.UnitRef = Unit.GetReference();
 
@@ -210,6 +215,9 @@ simulated function PopulateData()
 	local XComUnitPawn UnitPawn;
 	local array<bool> AbilitiesLocked;
 	local bool DisplayOnly;
+
+	`RedScreen("PopulateData");
+
 
 	// We don't need to clear the List, or recreate the pawn here
 	//super(UIArmory).PopulateData();
@@ -365,6 +373,8 @@ simulated function PopulateAbilitySummary(XComGameState_Unit Unit)
 	local XComGameState_Unit_AWC_LW AWCState;
 	local array<ClassAgnosticAbility> AWCAbilities;
 
+	`RedScreen("PopulaPopulateAbilitySummary");
+
 	Movie.Pres.m_kTooltipMgr.RemoveTooltipsByPartialPath(string(MCPath) $ ".abilitySummaryList");
 
 	AWCState = class'LWAWCUtilities'.static.GetAWCComponent(Unit);
@@ -406,6 +416,8 @@ simulated function PreviewRow(UIList ContainerList, int ItemIndex)
 	local XComGameState_Unit Unit;
 	local XComGameState_Unit_AWC_LW AWCState;
 	local UIArmory_AWCExpandedSummaryItem_LW Item;
+
+	`RedScreen("Preview Row");
 
 	Unit = GetUnit();
 	AWCState = class'LWAWCUtilities'.static.GetAWCComponent(Unit);
@@ -801,7 +813,7 @@ simulated static function CycleToSoldier(StateObjectReference UnitRef)
 
 defaultproperties
 {
-	Package         = "/ package/gfxArmory_LW/Armory_Expanded";
+	//Package         = "/ package/gfxArmory_LW/Armory_Expanded";
 
 	LibID = "PromotionScreenMC";
 	bHideOnLoseFocus = false;

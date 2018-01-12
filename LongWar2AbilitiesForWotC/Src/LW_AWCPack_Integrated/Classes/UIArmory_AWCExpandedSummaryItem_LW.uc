@@ -17,8 +17,8 @@ var UITextContainer AbilitySummaryText;
 
 simulated function UIArmory_AWCExpandedSummaryItem_LW InitSummaryItem()
 {
+	`RedScreen("UIArmory_AWCExpandedSummaryItem_LW InitSummaryItem");
 	InitPanel();
-
 	BGBox = Spawn(class'UIBGBox', self);
 	BGBox.InitPanel('', class'UIUtilities_Controls'.const.MC_X2Background).SetSize(Width, Height);
 
@@ -44,6 +44,7 @@ simulated function UIArmory_AWCExpandedSummaryItem_LW InitSummaryItem()
 
 simulated function SetSummaryData(string IconPath, string ClassPath, string TitleText, string SummaryText)
 {
+	`RedScreen("UIArmory_AWCExpandedSummaryItem_LW SetSummaryData");
 	if (IconPath != "")
 	{
 		AbilityIcon.LoadIcon(iconPath);
