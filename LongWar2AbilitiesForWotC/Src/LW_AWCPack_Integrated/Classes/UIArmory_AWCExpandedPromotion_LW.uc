@@ -9,7 +9,7 @@
 
 class UIArmory_AWCExpandedPromotion_LW extends UIArmory_Promotion config (LW_AWCPack); 
 
-const NUM_ABILITIES_PER_RANK_EXPANDED = 3;
+const NUM_ABILITIES_PER_RANK = 3;
 
 var config bool ALWAYSSHOW;
 var config bool ALLOWTRAININGINARMORY;
@@ -438,7 +438,7 @@ simulated function PreviewRow(UIList ContainerList, int ItemIndex)
 	SummaryList.ClearItems();
 
 	AbilityTemplateManager = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
-	for(i = 0; i < NUM_ABILITIES_PER_RANK_EXPANDED; i++)
+	for(i = 0; i < NUM_ABILITIES_PER_RANK; i++)
 	{
 		if(AWCState == none)
 		{
@@ -813,7 +813,7 @@ simulated static function CycleToSoldier(StateObjectReference UnitRef)
 
 defaultproperties
 {
-	//Package         = "/ package/gfxArmory_LW/Armory_Expanded";
+	Package         = "/ package/gfxArmory_LW/Armory_Expanded";
 
 	LibID = "PromotionScreenMC";
 	bHideOnLoseFocus = false;

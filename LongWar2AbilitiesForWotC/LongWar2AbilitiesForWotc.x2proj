@@ -83,6 +83,9 @@
     <Content Include="Content\LWGauntlet.upk">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Content\LW_AWCPack_Integrated\gfxArmory_LW.upk">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Content\LW_OfficerPack_WOTC\LWCommandRange.upk">
       <SubType>Content</SubType>
     </Content>
