@@ -214,6 +214,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_ApplyAltWeaponDamage.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_ApplyFireToWorld_Limited.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_BonusRocketCharges.uc">
       <SubType>Content</SubType>
     </Content>
