@@ -7,8 +7,6 @@
 class X2Ability_LW_TechnicalAbilitySet extends X2Ability
     dependson (XComGameStateContext_Ability) config(LW_SoldierSkills);
 
-// `include(LW_Overhaul\Src\LW_Overhaul.uci)
-
 var config int FLAMETHROWER_BURNING_BASE_DAMAGE;
 var config int FLAMETHROWER_BURNING_DAMAGE_SPREAD;
 var config int FLAMETHROWER_DIRECT_APPLY_CHANCE;
@@ -156,7 +154,7 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     local X2AbilityMultiTarget_Cone             ConeMultiTarget;
     local X2Condition_UnitProperty              UnitPropertyCondition;
     local X2AbilityTrigger_PlayerInput          InputTrigger;
-    local X2Effect_ApplyFireToWorld             FireToWorldEffect;
+    local X2Effect_ApplyFireToWorld_Limited             FireToWorldEffect;
     local X2AbilityToHitCalc_StandardAim        StandardAim;
     local X2Effect_Burning                      BurningEffect;
     local X2AbilityCharges_BonusCharges         Charges;
@@ -251,10 +249,8 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     // Grants ability that checks if user can damage robots
     Template.AdditionalAbilities.AddItem('Phosphorus');
 
-    // Sets fire to targeted world tiles
-    // NOTE: This is different than LW2, which applies a 'limited' version of the fire. This is currently using the Heavy Weapons flamethrower fire, which is A LOT OF FIRE.
-    //       Once again, a pain to port. Maybe later...
-    FireToWorldEffect = new class'X2Effect_ApplyFireToWorld';
+    // Sets fire to targeted world tiles - fire effect is more limited than most fire sources
+    FireToWorldEffect = new class'X2Effect_ApplyFireToWorld_Limited';
     FireToWorldEffect.bUseFireChanceLevel = true;
     FireToWorldEffect.bDamageFragileOnly = true;
     FireToWorldEffect.FireChance_Level1 = 0.25f;
@@ -330,7 +326,7 @@ static function X2AbilityTemplate CreateRoustAbility()
     local X2AbilityMultiTarget_Cone             ConeMultiTarget;
     local X2Condition_UnitProperty              UnitPropertyCondition, ShooterCondition;
     local X2AbilityTrigger_PlayerInput          InputTrigger;
-    local X2Effect_ApplyFireToWorld             FireToWorldEffect;
+    local X2Effect_ApplyFireToWorld_Limited             FireToWorldEffect;
     local X2AbilityToHitCalc_StandardAim        StandardAim;
     local X2Effect_Burning                      BurningEffect;
     local X2AbilityCharges_BonusCharges         Charges;
@@ -427,11 +423,9 @@ static function X2AbilityTemplate CreateRoustAbility()
     UnitPropertyCondition = new class'X2Condition_UnitProperty';
     UnitPropertyCondition.ExcludeDead = true;
     Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
-
-    // Sets fire to targeted world tiles
-    // NOTE: This is different than LW2, which applies a 'limited' version of the fire. This is currently using the Heavy Weapons flamethrower fire, which is A LOT OF FIRE.
-    //       Once again, a pain to port. Maybe later...
-    FireToWorldEffect = new class'X2Effect_ApplyFireToWorld';
+    
+    // Sets fire to targeted world tiles - fire effect is more limited than most fire sources
+    FireToWorldEffect = new class'X2Effect_ApplyFireToWorld_Limited';
     FireToWorldEffect.bUseFireChanceLevel = true;
     FireToWorldEffect.bDamageFragileOnly = true;
     FireToWorldEffect.FireChance_Level1 = 0.20f;
@@ -517,7 +511,7 @@ static function X2AbilityTemplate CreateFirestorm()
     local X2AbilityMultiTarget_Radius           RadiusMultiTarget;
     local X2Condition_UnitProperty              UnitPropertyCondition;
     local X2AbilityTrigger_PlayerInput          InputTrigger;
-    local X2Effect_ApplyFireToWorld             FireToWorldEffect;
+    local X2Effect_ApplyFireToWorld_Limited             FireToWorldEffect;
     local X2AbilityToHitCalc_StandardAim        StandardAim;
     local X2Effect_Burning                      BurningEffect;
     local X2Condition_UnitEffects               SuppressedCondition;
@@ -560,8 +554,9 @@ static function X2AbilityTemplate CreateFirestorm()
     Template.AdditionalAbilities.AddItem(default.PanicImpairingAbilityName);
     //Panic effects need to come before the damage. This is needed for proper visualization ordering.
     Template.AddMultiTargetEffect(CreateNapalmXPanicEffect());
-
-    FireToWorldEffect = new class'X2Effect_ApplyFireToWorld';
+    
+    // Sets fire to targeted world tiles - fire effect is more limited than most fire sources
+    FireToWorldEffect = new class'X2Effect_ApplyFireToWorld_Limited';
     FireToWorldEffect.bUseFireChanceLevel = true;
     FireToWorldEffect.bDamageFragileOnly = true;
     FireToWorldEffect.FireChance_Level1 = 0.10f;
