@@ -523,7 +523,7 @@ static function X2AbilityTemplate CreateChainLightningAbility()
 
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	//SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 	// Can't target these specific unit groups
 	ImmuneUnitCondition = new class'X2Condition_UnitType';

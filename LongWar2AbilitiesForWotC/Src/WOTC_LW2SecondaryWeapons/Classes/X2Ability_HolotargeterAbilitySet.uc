@@ -116,7 +116,7 @@ static function X2AbilityTemplate AddHolotarget()
 		
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	//SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
 	// Holotarget Effect
@@ -208,7 +208,7 @@ static function X2AbilityTemplate AddRapidTargeting()
 	
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	//SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
 
@@ -343,7 +343,7 @@ static function X2AbilityTemplate AddMultiTargeting()
 
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	//SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
 	// Can only shoot visible enemies

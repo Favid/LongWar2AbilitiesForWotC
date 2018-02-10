@@ -10,15 +10,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Content\WOTC_LW2Gauntlet" />
     <Folder Include="Content\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Localization\" />
     <Folder Include="Content" />
+    <Folder Include="Localization\WOTC_LW2Gauntlet" />
     <Folder Include="Localization\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Src\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\" />
     <Folder Include="Src\LongWar2AbilitiesforWotC\Classes\" />
     <Folder Include="Src\LW_Tuple" />
     <Folder Include="Src\LW_Tuple\Classes" />
+    <Folder Include="Src\WOTC_LW2Gauntlet" />
+    <Folder Include="Src\WOTC_LW2Gauntlet\Classes" />
     <Folder Include="Src\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Src\WOTC_LW2SecondaryWeapons\Classes" />
     <Folder Include="Src\XModBase_Interfaces" />
@@ -54,6 +58,9 @@
     <Content Include="Config\XComGameData_XpData.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComLW2GauntletWOTC.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComLW2SecondariesWOTC.ini">
       <SubType>Content</SubType>
     </Content>
@@ -73,6 +80,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Content\LW_Perk_Psi_MindMerge.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\UILibrary_LWGauntlet.upk">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Content\UILibrary_LW_PerkPack.upk">
@@ -126,6 +136,12 @@
     <Content Include="Localization\LongWar2AbilitiesForWotc.int">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Localization\WOTC_LW2Gauntlet\WOTC_LW2Gauntlet.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\WOTC_LW2Gauntlet\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Localization\WOTC_LW2SecondaryWeapons\WOTC_LW2SecondaryWeapons.int">
       <SubType>Content</SubType>
     </Content>
@@ -150,15 +166,6 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\NPSBDP_UIArmory_PromotionHeroColumn.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\UIScrollingTextField.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\UIUtilities_LW.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityCharges_BonusCharges.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityCharges_LW2WotC_GremlinTierBased.uc">
       <SubType>Content</SubType>
     </Content>
@@ -171,13 +178,7 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityCost_LW2WotC_ReducedActionCostByAbility.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityMultiTarget_Cone_LWFlamethrower.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityTarget_LW2WotC_Single_CCS.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityToHitCalc_StatCheck_LWFlamethrower.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Ability_LW2WotC_ActivatedAbilitySet.uc">
@@ -192,40 +193,10 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Ability_LW2WotC_SuppressionAbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Ability_LW_TechnicalAbilitySet.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Action_Fire_Firestorm.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Action_Fire_Flamethrower_LW.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Condition_LW2WotC_SupportGrenade.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Condition_Phosphorus.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2DownloadableContentInfo_LongWar2AbilitiesforWotC.uc" />
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_AbilityDamageMult.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_ApplyAltWeaponDamage.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_ApplyFireToWorld_Limited.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_BonusRocketCharges.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_ImmediateMultiTargetAbilityActivation.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_JavelinRockets.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_AddGrenadeSlotCharges.uc">
       <SubType>Content</SubType>
     </Content>
@@ -272,9 +243,6 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Executioner.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_FallBack.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_FieldSurgeon.uc">
@@ -385,46 +353,16 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_WilltoSurvive.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_Phosphorus.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_Quickburn.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_RoustDamage.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Item_LW2WotC_PCS.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Item_LW2WotC_UtilityItems.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Item_LWGauntlet.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2MultiWeaponTemplate.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2TargetingMethod_Cone_Flamethrower_LW.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2TargetingMethod_LW2WotC_AreaSuppression.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2TargetingMethod_LWBlasterLauncher.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2TargetingMethod_LWRocketLauncher.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_EffectCounter.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_ImmediateMultiTarget.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_JavelinRockets.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_LastShotDetails.uc">
@@ -551,6 +489,87 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LW_Tuple\Classes\LWTuple.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\UIScrollingTextField.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\UIUtilities_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2AbilityCharges_BonusCharges.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2AbilityMultiTarget_Cone_LWFlamethrower.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2AbilityToHitCalc_StatCheck_LWFlamethrower.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Ability_LW_TechnicalAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Action_Fire_Firestorm.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Action_Fire_Flamethrower_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Condition_Phosphorus.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2DownloadableContentInfo_WOTC_LW2Gauntlet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Effect_AbilityDamageMult.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Effect_ApplyAltWeaponDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Effect_ApplyFireToWorld_Limited.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Effect_BonusRocketCharges.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Effect_ImmediateMultiTargetAbilityActivation.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Effect_JavelinRockets.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Effect_LW2WotC_FallBack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Effect_Phosphorus.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Effect_Quickburn.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Effect_RoustDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Item_LWGauntlet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2MultiWeaponTemplate.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2TargetingMethod_Cone_Flamethrower_LW.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2TargetingMethod_LWBlasterLauncher.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2TargetingMethod_LWRocketLauncher.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\XComGameState_Effect_ImmediateMultiTarget.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\XComGameState_Effect_JavelinRockets.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\WOTC_LW2SecondaryWeapons\Classes\X2AbilityTag_LW2SecondariesWOTC.uc">

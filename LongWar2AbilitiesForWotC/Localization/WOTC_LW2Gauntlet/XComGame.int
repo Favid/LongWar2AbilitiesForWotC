@@ -1,0 +1,133 @@
+[HeavyArmaments X2AbilityTemplate]
+LocFriendlyName="Heavy Weapons"
+LocFlyOverText="Heavy Weapons"
+LocLongDescription="This soldier is trained to use the XCOM gauntlet, a combination Rocket Launcher and Flamethrower."
+LocHelpText="This soldier is trained to use the XCOM gauntlet, a combination Rocket Launcher and Flamethrower."
+LocPromotionPopupText="<Bullet/> The XCOM gauntlet is an advanced device that carries both a mini-rocket launcher and a flamethrower.<br/><Bullet/> The Rocket Launcher carries one rocket initially and that has a three-tile radius for its area of effect.<br/><Bullet/> It may target anything in sight range.<br/><Bullet/> Damage from rockets falls off from the point of impact.<br/><Bullet/> The flamethrower is a short-range weapon that causes damage to multiple targets within a cone-shaped area of effect.<br/><Bullet/> The flamethrower has two uses per battle. It does not damage mechanical units without upgrades.<br/><Bullet/> Using either gauntlet ability requires one action and ends your turn.<br/><Bullet/> Rocket accuracy is affected by the soldier's aim, target distance, and whether the soldier has used any actions already this turn. Low accuracy-rockets will have higher scatter values, meaning they are more likely to miss the target tile by greater distances. The rocket's maximum possible scatter is noted in the popup, while a value appearing with the targeting cursor will show the expected (average) scatter for a shot on that location."
+
+[LWFlamethrower X2AbilityTemplate]
+LocFriendlyName="Flamethrower"
+LocFlyOverText="Flamethrower"
+LocLongDescription="Spray flames in a cone-shaped area."
+LocHelpText="Spray flames in a cone-shaped area."
+LocPromotionPopupText="<Bullet/> The flamethrower is a short-range weapon that causes damage to multiple targets within a cone-shaped area of effect.<br/><Bullet/> The flamethrower has <Ability:FLAMETHROWER_CHARGES_LW>. It does not damage mechanical units without upgrades.<br/><Bullet/> Requires one action and ends your turn."
+
+[LWRocketLauncher X2AbilityTemplate]
+LocFriendlyName="Rocket Launcher"
+LocHelpText="Fire a rocket at target area. <Ability:ROCKETSCATTER/>"
+
+[LWBlasterLauncher X2AbilityTemplate]
+LocFriendlyName="Blaster Bomb"
+LocHelpText="Fire a guided Blaster Bomb at a target area. <Ability:ROCKETSCATTER/>"
+
+[NapalmX X2AbilityTemplate]
+LocFriendlyName="Napalm-X"
+LocFlyOverText="Napalm-X"
+LocLongDescription="Your Flamethrower can now disorient or panic enemies."
+LocHelpText="Napalm-X"
+LocPromotionPopupText="<Bullet/> Your Flamethrower can now disorient or panic enemies. Enemy units must pass a will check to avoid negative effects.<br/>"
+
+[PhosphorusPassive X2AbilityTemplate]
+LocFriendlyName="Phosphorus"
+LocFlyOverText="Phosphorus"
+LocLongDescription="Your flamethrower can now damage mechanical units and shred armor."
+LocHelpText="Your flamethrower can now damage mechanical units and shred armor."
+LocPromotionPopupText="<Bullet/> Your flamethrower can now damage mechanical units.<br/><Bullet/> Flamethrower attacks shred 1 armor.</br>"
+
+[Incinerator X2AbilityTemplate]
+LocFriendlyName="Incinerator"
+LocFlyOverText="Incinerator"
+LocLongDescription="Your flamethrower has an increased range and covers a wider area of effect."
+LocHelpText="Your flamethrower has a greater range and area of effect."
+LocPromotionPopupText="<Bullet/> Your flamethrower has an increased range and covers a wider area of effect."
+
+[Roust X2AbilityTemplate]
+LocFriendlyName="Roust"
+LocFlyOverText="Roust"
+LocLongDescription="Special Flamethrower shot that does limited damage but forces enemies to change their position."
+LocHelpText="Special flamethrower shot that forces enemies to change their location."
+LocPromotionPopupText="<Bullet/> Has a 20% chance to set enemies in the area of effect on fire and does limited damage.<br/><Bullet/> The narrow jet of flame has less impact on the environment.<br/><Bullet/> Units hit by the shot will be forced to move, often triggering overwatch fire.<br/><Bullet/> One use per mission, but can gain an additional use with additional gear.<br/><Bullet/> Cannot be used from concealment."
+
+[Burnout X2AbilityTemplate]
+LocFriendlyName="Burnout"
+LocFlyOverText="Burnout"
+LocLongDescription="Activating your Flamethrower leaves a small smoke cloud around your position, providing a defensive bonus."
+LocHelpText="Activating your Flamethrower leaves a small smoke cloud around your position, providing a defensive bonus."
+LocPromotionPopupText="<Bullet/> When fired, your Flamethrower leaves a small smoke cloud around your position, providing a +20 defensive bonus to anyone within.<br/>"
+
+[BurnoutPassive X2AbilityTemplate]
+LocFriendlyName="Burnout"
+LocFlyOverText="Burnout"
+LocLongDescription="Activating your Flamethrower leaves a small smoke cloud around your position, providing a defensive bonus."
+LocHelpText="Activating your Flamethrower leaves a small smoke cloud around your position, providing a defensive bonus."
+LocPromotionPopupText="<Bullet/> When fired, your Flamethrower leaves a small smoke cloud around your position, providing a +20 defensive bonus to anyone within.<br/>"
+
+[HighPressure X2AbilityTemplate]
+LocFriendlyName="High Pressure"
+LocFlyOverText="High Pressure"
+LocLongDescription="Your Flamethrower gains +2 charges."
+LocHelpText="Your Flamethrower gains +2 charges."
+LocPromotionPopupText="<Bullet/> Your Flamethrower gains +2 charges."
+
+[Quickburn X2AbilityTemplate]
+LocFriendlyName="Quickburn"
+LocFlyOverText="Quickburn"
+LocLongDescription="Activate so your next use of the flamethrower will not cost an action."
+LocHelpText="Activate so your next use of the flamethrower will not cost an action."
+LocPromotionPopupText="<Bullet/> Activate so your next use of the flamethrower will not cost an action.<br/><Bullet/> 5-turn cooldown.<br/>"
+
+[Firestorm X2AbilityTemplate]
+LocFriendlyName="Firestorm"
+LocFlyOverText="Firestorm"
+LocLongDescription="Once per battle, attack all units in a complete circle around the soldier's position. Also grants immunity to fire damage."
+LocHelpText="Spray fire in a complete circle around your position."
+LocPromotionPopupText="<Bullet/> This will light fires and do fire damage to all enemies in a circle around the soldier's position, doing +<ABILITY:FIRESTORM_DAMAGE_BONUS_LW> bonus damage over regular Flamethrower attacks.<br/><Bullet/> Firestorm also grants immunity to fire damage.<br/><Bullet/> Requires one action point and will end the soldier's turn when used.<br/><Bullet/> Usable once per battle.<br/><Bullet/> It is not recommended the soldier uses Firestorm on rooftops."
+
+[TechnicalFireImmunity X2AbilityTemplate]
+LocFriendlyName="Fire Immunity"
+LocFlyOverText="Fire Immunity"
+LocLongDescription="The Firestorm perk confers immunity to fire damage."
+LocHelpText="This unit is immune to fire damage."
+LocPromotionPopupText="<Bullet/> This unit is immune to fire damage.<br/>"
+
+[ShockAndAwe X2AbilityTemplate]
+LocFriendlyName="Shock and Awe"
+LocFlyOverText="Shock and Awe"
+LocLongDescription="You equip one additional rocket."
+LocHelpText="You equip one additional rocket."
+LocPromotionPopupText="<Bullet/> You equip one additional rocket.<br/>"
+
+[FireInTheHole X2AbilityTemplate]
+LocFriendlyName="Fire In The Hole"
+LocFlyOverText="Fire In The Hole"
+LocLongDescription="Your rockets are more accurate."
+LocHelpText="Your rockets are more accurate."
+LocPromotionPopupText="<Bullet/> Your rockets are more likely to hit their intended point of impact, or at least close to it.<br/><Bullet/> The maximum it can miss by is reduced by two tiles."
+
+[JavelinRockets X2AbilityTemplate]
+LocFriendlyName="Javelin Rockets"
+LocFlyOverText="Javelin Rockets"
+LocLongDescription="The range of your rockets is increased by 6 tiles and you may hit targets beyond your visual range."
+LocHelpText="The range of your rockets is increased by 6 tiles and you may hit targets beyond your visual range."
+LocPromotionPopupText="<Bullet/> The range of your rockets is increased by 6 tiles and you may hit targets beyond your visual range.<br/>"
+
+[BunkerBuster X2AbilityTemplate]
+LocFriendlyName="Bunker Buster"
+LocFlyOverText="Bunker Buster"
+LocHelpText="Fire a Bunker Buster. <Ability:ROCKETSCATTER/>"
+LocLongDescription="Fire a special rocket that destroys buildings and other objects in the environment."
+LocPromotionPopupText="<Bullet/> Fire a special rocket with a large area of effect that does moderate damage to enemies but huge damage to buildings, vehicles and other objects in the environment.<br/><Bullet/> Requires both actions and usable only once per mission.<br/>"
+
+[FireandSteel X2AbilityTemplate]
+LocFriendlyName="Fire and Steel"
+LocFlyOverText="Fire and Steel"
+LocLongDescription="Attacks with your gauntlet, and fires set by gauntlet weapons, do +1 damage."
+LocHelpText="Attacks with your gauntlet, and fires set by gauntlet weapons, do +1 damage."
+LocPromotionPopupText="<Bullet/> Attacks with your gauntlet, and fires set by gauntlet weapons, do +1 damage.<br/><Bullet/> This applies to both rocket launcher and flamethrower weapons, and the fires they set.<br/>"
+
+[ConcussionRocket X2AbilityTemplate]
+LocFriendlyName="Concussion Rocket"
+LocFlyOverText="Concussion Rocket"
+LocLongDescription="Fire a special rocket that does limited damage but has a chance to stun or disorient organic enemies within its area of effect and leaves a cloud of smoke."
+LocHelpText="Rocket that stuns or disorients targets and leaves a smoke cloud. <Ability:ROCKETSCATTER/>"
+LocPromotionPopupText="<Bullet/> One use per mission.<br/><Bullet/> Stun and disorientation chances based on target's will score.<br/><Bullet/> Requires one action and ends the soldier's turn."

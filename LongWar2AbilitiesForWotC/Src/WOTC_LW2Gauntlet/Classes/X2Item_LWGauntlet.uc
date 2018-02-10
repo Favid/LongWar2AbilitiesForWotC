@@ -49,23 +49,6 @@ var config int Gauntlet_Secondary_MAG_RADIUS;
 var config int Gauntlet_Secondary_MAG_ISOUNDRANGE;
 
 // ***** Damage arrays for attack actions  *****
-var config WeaponDamageValue Gauntlet_Primary_COIL_BASEDAMAGE;  // Rocket
-var config WeaponDamageValue Gauntlet_Secondary_COIL_BASEDAMAGE;  // Flamethrower
-
-// ***** Core properties and variables for weapons *****
-var config int Gauntlet_Primary_COIL_ICLIPSIZE;
-var config int Gauntlet_Primary_COIL_ISOUNDRANGE;
-var config int Gauntlet_Primary_COIL_IENVIRONMENTDAMAGE;
-var config int Gauntlet_Primary_COIL_RANGE;
-var config int Gauntlet_Primary_COIL_RADIUS;
-
-var config int Gauntlet_Secondary_COIL_IENVIRONMENTDAMAGE;
-var config int Gauntlet_Secondary_COIL_OPPOSED_STAT_STRENTH;
-var config int Gauntlet_Secondary_COIL_RANGE;
-var config int Gauntlet_Secondary_COIL_RADIUS;
-var config int Gauntlet_Secondary_COIL_ISOUNDRANGE;
-
-// ***** Damage arrays for attack actions  *****
 var config WeaponDamageValue Gauntlet_Primary_BEAM_BASEDAMAGE;  // Rocket
 var config WeaponDamageValue Gauntlet_Secondary_BEAM_BASEDAMAGE;  // Flamethrower
 
@@ -121,7 +104,6 @@ static function array<X2DataTemplate> CreateTemplates()
 
     Templates.AddItem(CreateTemplate_Gauntlet_Conventional());
     Templates.AddItem(CreateTemplate_Gauntlet_Mag());
-    //Templates.AddItem(CreateTemplate_Gauntlet_Coil());
     Templates.AddItem(CreateTemplate_Gauntlet_Beam());
     Templates.AddItem(CreateNapalmDamageType());
 
@@ -157,7 +139,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Conventional()
     Template.EquipSound = "Conventional_Weapon_Equip";
 
     Template.ItemCat = 'weapon';
-    Template.WeaponCat = 'gauntlet';
+    Template.WeaponCat = 'lw_gauntlet';
     Template.WeaponTech = 'conventional';
     Template.strImage = default.Gauntlet_CV_UIImage; 
     Template.EquipSound = "Secondary_Weapon_Equip_Conventional";
@@ -218,7 +200,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Mag()
     Template.EquipSound = "MAG_Weapon_Equip";
 
     Template.ItemCat = 'weapon';
-    Template.WeaponCat = 'gauntlet';
+    Template.WeaponCat = 'lw_gauntlet';
     Template.WeaponTech = 'Magnetic';
     Template.strImage = default.Gauntlet_MG_UIImage; 
     Template.EquipSound = "Secondary_Weapon_Equip_Magnetic";
@@ -259,7 +241,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Mag()
 	if (!default.bFiniteItems)
 	{
 		Template.CreatorTemplateName = 'Gauntlet_MG_Schematic'; // The schematic which creates this item
-		Template.BaseItem = 'Gauntlet_CV'; // Which item this will be upgraded from
+		Template.BaseItem = 'LWGauntlet_CV'; // Which item this will be upgraded from
 		Template.HideIfPurchased = 'Gauntlet_BM_Schematic';
 		Template.CanBeBuilt = false;
 		Template.bInfiniteItem = true;
@@ -314,117 +296,6 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Mag()
     return Template;
 }
 
-static function X2DataTemplate CreateTemplate_Gauntlet_COIL()
-{
-    local X2MultiWeaponTemplate Template;
-	local ArtifactCost		SupplyCost, AlloyCost, EleriumCost, CoreCost, ItemCost;
-	local name				TechRequirement;
-
-    `CREATE_X2TEMPLATE(class'X2MultiWeaponTemplate', Template, 'LWGauntlet_CG');
-    Template.EquipSound = "Magnetic_Weapon_Equip";
-
-    Template.ItemCat = 'weapon';
-    Template.WeaponCat = 'gauntlet';
-    Template.WeaponTech = 'Coil';
-    Template.strImage = default.Gauntlet_CG_UIImage; 
-    Template.EquipSound = "Secondary_Weapon_Equip_COIL";
-    //Template.WeaponPanelImage = "_ConventionalRifle";                       // used by the UI. Probably determines iconview of the weapon.
-    Template.Tier = 3;
-
-    Template.BaseDamage = default.Gauntlet_Primary_COIL_BASEDAMAGE;
-    Template.iSoundRange = default.Gauntlet_Primary_COIL_ISOUNDRANGE;
-    Template.iEnvironmentDamage = default.Gauntlet_Primary_COIL_IENVIRONMENTDAMAGE;
-    Template.iClipSize = default.Gauntlet_Primary_COIL_ICLIPSIZE;
-    Template.iRange = default.Gauntlet_Primary_COIL_RANGE;
-    Template.iRadius = default.Gauntlet_Primary_COIL_RADIUS;
-    Template.PointsToComplete = 0;
-    Template.DamageTypeTemplateName = 'Explosion';
-    Template.iStatStrength=0;
-    Template.bMergeAmmo=true;
-    Template.bSoundOriginatesFromOwnerLocation=false;
-
-    Template.AltBaseDamage = default.Gauntlet_Secondary_COIL_BASEDAMAGE;
-    Template.iAltEnvironmentDamage = default.Gauntlet_Secondary_COIL_IENVIRONMENTDAMAGE;
-    Template.iAltStatStrength=default.Gauntlet_Secondary_COIL_OPPOSED_STAT_STRENTH;
-    Template.iAltRange = default.Gauntlet_Secondary_COIL_RANGE;
-    Template.iAltRadius = default.Gauntlet_Secondary_COIL_RADIUS;
-    Template.iAltSoundRange = default.Gauntlet_Secondary_COIL_ISOUNDRANGE;
-
-    Template.InventorySlot = eInvSlot_SecondaryWeapon;
-    Template.StowedLocation = eSlot_HeavyWeapon;
-    
-    // This all the resources; sounds, animations, models, physics, the works.
-    Template.GameArchetype = "LWGauntlet.Archetypes.WP_Gauntlet_RocketLauncher_CG";
-
-    Template.Abilities.AddItem('LWRocketLauncher');
-    Template.Abilities.AddItem('RocketFuse');
-    Template.Abilities.AddItem('LWFlamethrower');
-
-    Template.iPhysicsImpulse = 5;
-
-	if (!default.bFiniteItems)
-	{
-		Template.CreatorTemplateName = 'Gauntlet_BM_Schematic'; // The schematic which creates this item
-		Template.BaseItem = 'Gauntlet_MG'; // Which item this will be upgraded from
-		Template.CanBeBuilt = false;
-		Template.bInfiniteItem = true;
-	}
-	else
-	{
-		foreach default.Gauntlet_BEAM_REQUIRED_TECHS(TechRequirement)
-		{
-			Template.Requirements.RequiredTechs.AddItem(TechRequirement);
-		}
-
-		if (default.Gauntlet_BEAM_INDIVIDUAL_SUPPLYCOST > 0)
-		{
-			SupplyCost.ItemTemplateName = 'Supplies';
-			SupplyCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_SUPPLYCOST;
-			Template.Cost.ResourceCosts.AddItem(SupplyCost);
-		}
-		if (default.Gauntlet_BEAM_INDIVIDUAL_ALLOYCOST > 0)
-		{
-			AlloyCost.ItemTemplateName = 'AlienAlloy';
-			AlloyCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ALLOYCOST;
-			Template.Cost.ResourceCosts.AddItem(AlloyCost);
-		}
-		if (default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCOST > 0)
-		{
-			EleriumCost.ItemTemplateName = 'EleriumDust';
-			EleriumCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCOST;
-			Template.Cost.ResourceCosts.AddItem(EleriumCost);
-		}
-		if (default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCORECOST > 0)
-		{
-			CoreCost.ItemTemplateName = 'EleriumCore';
-			CoreCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ELERIUMCORECOST;
-			Template.Cost.ResourceCosts.AddItem(CoreCost);
-		}
-		if (default.Gauntlet_BEAM_INDIVIDUAL_ITEMCOST > 0)
-		{
-			ItemCost.ItemTemplateName = 'Gauntlet_MG';
-			ItemCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ITEMCOST;
-			Template.Cost.ResourceCosts.AddItem(ItemCost);
-		}
-		if (default.Gauntlet_BEAM_INDIVIDUAL_TRADINGPOSTVALUE > 0)
-		{
-			Template.TradingPostValue = default.Gauntlet_BEAM_INDIVIDUAL_TRADINGPOSTVALUE;
-		}
-
-		Template.CanBeBuilt = true;
-		Template.bInfiniteItem = false;
-	}
-
-    Template.DamageTypeTemplateName = 'Electrical';
-
-    Template.SetUIStatMarkup(default.PrimaryRangeLabel, , default.Gauntlet_Primary_COIL_RANGE);
-    Template.SetUIStatMarkup(default.PrimaryRadiusLabel, , default.Gauntlet_Primary_COIL_RADIUS);
-    Template.SetUIStatMarkup(default.SecondaryRangeLabel, , default.Gauntlet_Secondary_COIL_RANGE);
-    Template.SetUIStatMarkup(default.SecondaryRadiusLabel, , default.Gauntlet_Secondary_COIL_RADIUS);
-
-    return Template;
-}
-
 static function X2DataTemplate CreateTemplate_Gauntlet_Beam()
 {
     local X2MultiWeaponTemplate Template;
@@ -435,7 +306,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Beam()
     Template.EquipSound = "Beam_Weapon_Equip";
 
     Template.ItemCat = 'weapon';
-    Template.WeaponCat = 'gauntlet';
+    Template.WeaponCat = 'lw_gauntlet';
     Template.WeaponTech = 'beam';
     Template.strImage = default.Gauntlet_BM_UIImage; 
     Template.EquipSound = "Secondary_Weapon_Equip_Beam";
@@ -476,7 +347,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Beam()
 	if (!default.bFiniteItems)
 	{
 		Template.CreatorTemplateName = 'Gauntlet_BM_Schematic'; // The schematic which creates this item
-		Template.BaseItem = 'Gauntlet_MG'; // Which item this will be upgraded from
+		Template.BaseItem = 'LWGauntlet_MG'; // Which item this will be upgraded from
 		Template.CanBeBuilt = false;
 		Template.bInfiniteItem = true;
 	}
@@ -513,7 +384,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Beam()
 		}
 		if (default.Gauntlet_BEAM_INDIVIDUAL_ITEMCOST > 0)
 		{
-			ItemCost.ItemTemplateName = 'Gauntlet_MG';
+			ItemCost.ItemTemplateName = 'LWGauntlet_MG';
 			ItemCost.Quantity = default.Gauntlet_BEAM_INDIVIDUAL_ITEMCOST;
 			Template.Cost.ResourceCosts.AddItem(ItemCost);
 		}
@@ -555,8 +426,8 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Magnetic_Schematic()
 	Template.OnBuiltFn = class'X2Item_DefaultSchematics'.static.UpgradeItems;
 
 	// Reference Item
-	Template.ReferenceItemTemplate = 'Gauntlet_MG';
-	Template.HideIfPurchased = 'Gauntlet_BM';
+	Template.ReferenceItemTemplate = 'LWGauntlet_MG';
+	Template.HideIfPurchased = 'LWGauntlet_BM';
 
 	// Requirements
 	foreach default.Gauntlet_MAGNETIC_REQUIRED_TECHS(TechRequirement)
@@ -615,7 +486,7 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Beam_Schematic()
 	Template.OnBuiltFn = class'X2Item_DefaultSchematics'.static.UpgradeItems;
 
 	// Reference Item
-	Template.ReferenceItemTemplate = 'Gauntlet_BM';
+	Template.ReferenceItemTemplate = 'LWGauntlet_BM';
 
 	// Requirements
 	foreach default.Gauntlet_BEAM_REQUIRED_TECHS(TechRequirement)
