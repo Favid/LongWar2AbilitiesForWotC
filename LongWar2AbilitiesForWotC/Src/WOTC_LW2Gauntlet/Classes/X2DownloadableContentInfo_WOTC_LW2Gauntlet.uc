@@ -45,6 +45,10 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 	Type = name(InString);
 	switch(Type)
 	{
+        case 'JAVELIN_ROCKETS_BONUS_RANGE_TILES':
+            OutString = string(class'X2Ability_LW_TechnicalAbilitySet'.default.JAVELIN_ROCKETS_BONUS_RANGE_TILES);
+			return true;
+
 		case 'ROCKETSCATTER':
 			TacticalHUD = UITacticalHUD(`SCREENSTACK.GetScreen(class'UITacticalHUD'));
 			if (TacticalHUD != none)

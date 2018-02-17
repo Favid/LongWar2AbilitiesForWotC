@@ -6,8 +6,6 @@
 
 class XComGameState_Effect_JavelinRockets extends XComGameState_BaseObject config(LW_SoldierSkills);
 
-var config array<name> VALID_ABILITIES;
-
 function XComGameState_Effect_JavelinRockets InitComponent()
 {
     return self;
@@ -75,11 +73,11 @@ function EventListenerReturn OnGetItemRange(Object EventData, Object EventSource
     // make sure the weapon is a gauntlet and that we are using a rocket ability
     if(WeaponTemplate != none)
     {
-        if(AbilityName == 'LWRocketLauncher' || AbilityName == 'LWBlasterLauncher' || default.VALID_ABILITIES.Find (AbilityName) != -1)
+        if(AbilityName == 'LW2WotC_RocketLauncher' || AbilityName == 'LW2WotC_BlasterLauncher' || class'X2Ability_LW_TechnicalAbilitySet'.default.JAVELIN_ROCKETS_VALID_ABILITIES.Find (AbilityName) != -1)
         {
             OverrideTuple.Data[1].i += class'X2Ability_LW_TechnicalAbilitySet'.default.JAVELIN_ROCKETS_BONUS_RANGE_TILES;
         }
     }
-
+    
     return ELR_NoInterrupt;
 }

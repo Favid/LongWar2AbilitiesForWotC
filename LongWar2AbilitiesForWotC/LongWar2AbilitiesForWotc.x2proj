@@ -73,19 +73,19 @@
     <Content Include="Config\XComUI.ini">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Content\LWGauntlet.upk">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Content\LW_Perk_CloseEncounters.upk">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Content\LW_Perk_Psi_MindMerge.upk">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Content\UILibrary_LWGauntlet.upk">
+    <Content Include="Content\UILibrary_LW_PerkPack.upk">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Content\UILibrary_LW_PerkPack.upk">
+    <Content Include="Content\WOTC_LW2Gauntlet\LWGauntlet.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WOTC_LW2Gauntlet\UILibrary_LWGauntlet.upk">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Content\WOTC_LW2SecondaryWeapons\FX_CHA_SectopodDrone.upk">

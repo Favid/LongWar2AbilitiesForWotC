@@ -19,7 +19,7 @@ function int GetExtraShredValue(XComGameState_Effect EffectState, XComGameState_
         AbilityName = AbilityState.GetMyTemplateName();
         switch (AbilityName)
         {
-            case 'LWFlamethrower':
+            case 'LW2WotC_Flamethrower':
             case 'Roust':
             case 'Firestorm':
                 `LOG ("Testing New Phos Effect 4" @ BonusShred);

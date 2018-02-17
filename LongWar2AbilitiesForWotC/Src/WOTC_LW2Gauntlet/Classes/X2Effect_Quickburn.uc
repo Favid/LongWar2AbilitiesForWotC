@@ -17,7 +17,7 @@ function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStat
     AbilityName = kAbility.GetMyTemplateName();
     switch (AbilityName)
     {
-        case 'LWFlamethrower':
+        case 'LW2WotC_Flamethrower':
         case 'Roust':
         case 'Firestorm':
             bFreeActivation = true;

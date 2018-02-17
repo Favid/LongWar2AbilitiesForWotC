@@ -171,9 +171,9 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Conventional()
     // This all the resources; sounds, animations, models, physics, the works.
     Template.GameArchetype = "LWGauntlet.Archetypes.WP_Gauntlet_RocketLauncher_CV";
 
-    Template.Abilities.AddItem('LWRocketLauncher');
+    Template.Abilities.AddItem('LW2WotC_RocketLauncher');
     Template.Abilities.AddItem('RocketFuse');
-    Template.Abilities.AddItem('LWFlamethrower');
+    Template.Abilities.AddItem('LW2WotC_Flamethrower');
 
     Template.iPhysicsImpulse = 5;
 
@@ -232,9 +232,9 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Mag()
     // This all the resources; sounds, animations, models, physics, the works.
     Template.GameArchetype = "LWGauntlet.Archetypes.WP_Gauntlet_RocketLauncher_MG";
 
-    Template.Abilities.AddItem('LWRocketLauncher');
+    Template.Abilities.AddItem('LW2WotC_RocketLauncher');
     Template.Abilities.AddItem('RocketFuse');
-    Template.Abilities.AddItem('LWFlamethrower');
+    Template.Abilities.AddItem('LW2WotC_Flamethrower');
 
     Template.iPhysicsImpulse = 5;
 
@@ -338,9 +338,9 @@ static function X2DataTemplate CreateTemplate_Gauntlet_Beam()
     // This all the resources; sounds, animations, models, physics, the works.
     Template.GameArchetype = "LWGauntlet.Archetypes.WP_Gauntlet_BlasterLauncher_BM";
 
-    Template.Abilities.AddItem('LWBlasterLauncher');
+    Template.Abilities.AddItem('LW2WotC_BlasterLauncher');
     Template.Abilities.AddItem('RocketFuse');
-    Template.Abilities.AddItem('LWFlamethrower');
+    Template.Abilities.AddItem('LW2WotC_Flamethrower');
 
     Template.iPhysicsImpulse = 5;
 
