@@ -27,7 +27,7 @@ LocLongDescription="Your Flamethrower can now disorient or panic enemies."
 LocHelpText="Napalm-X"
 LocPromotionPopupText="<Bullet/> Your Flamethrower can now disorient or panic enemies. Enemy units must pass a will check to avoid negative effects.<br/>"
 
-[PhosphorusPassive X2AbilityTemplate]
+[LW2WotC_Phosphorus X2AbilityTemplate]
 LocFriendlyName="Phosphorus"
 LocFlyOverText="Phosphorus"
 LocLongDescription="Your flamethrower can now damage mechanical units and shred armor."

@@ -27,7 +27,10 @@ var config int FIRESTORM_HIGH_PRESSURE_CHARGES;
 var config int FIRESTORM_RADIUS_METERS;
 var config float FIRESTORM_DAMAGE_BONUS;
 var config int SHOCK_AND_AWE_BONUS_CHARGES;
+
 var config int JAVELIN_ROCKETS_BONUS_RANGE_TILES;
+var config array<name> JAVELIN_ROCKETS_VALID_ABILITIES;
+
 var config WeaponDamageValue BUNKER_BUSTER_DAMAGE_VALUE;
 var config float BUNKER_BUSTER_RADIUS_METERS;
 var config int BUNKER_BUSTER_ENV_DAMAGE;
@@ -55,11 +58,19 @@ static function array<X2DataTemplate> CreateTemplates()
 {
     local array<X2DataTemplate> Templates;
 
-    Templates.AddItem(PurePassive('HeavyArmaments', "img:///UILibrary_LW_PerkPack.LW_AbilityHeavyArmaments"));
+    Templates.AddItem(PurePassive('LW2WotC_HeavyArmaments', "img:///UILibrary_LW_PerkPack.LW_AbilityHeavyArmaments"));
+    
+    Templates.AddItem(RocketLauncher());
+    Templates.AddItem(BlasterLauncher());
+    Templates.AddItem(PurePassive('LW2WotC_FireInTheHole', "img:///UILibrary_LW_PerkPack.LW_AbilityFireInTheHole"));
+    Templates.AddItem(JavelinRockets());
+    Templates.AddItem(ShockAndAwe());
+    Templates.AddItem(ConcussionRocket());
+    Templates.AddItem(BunkerBuster());
 
-    Templates.AddItem(CreateLWFlamethrowerAbility());
+    Templates.AddItem(Flamethrower());
 
-    Templates.AddItem(PurePassive('PhosphorusPassive', "img:///UILibrary_LW_PerkPack.LW_AbilityPhosphorus"));
+    Templates.AddItem(PurePassive('LW2WotC_Phosphorus', "img:///UILibrary_LW_PerkPack.LW_AbilityPhosphorus"));
     Templates.AddItem(PurePassive('NapalmX', "img:///UILibrary_LW_PerkPack.LW_AbilityNapalmX"));
     Templates.AddItem(PurePassive('Incinerator', "img:///UILibrary_LW_PerkPack.LW_AbilityHighPressure"));
     Templates.AddItem(AddQuickburn());
@@ -69,17 +80,10 @@ static function array<X2DataTemplate> CreateTemplates()
     Templates.AddItem(RoustDamage());
     Templates.AddItem(CreateFirestorm());
     Templates.AddItem(FirestormDamage());
-    Templates.AddItem(CreateHighPressureAbility());
     Templates.AddItem(CreateTechnicalFireImmunityAbility());
-    Templates.AddItem(CreatePhosphorusBonusAbility());
+    Templates.AddItem(CreateHighPressureAbility());
+    Templates.AddItem(PhosphorusBonus());
 
-    Templates.AddItem(LWRocketLauncherAbility());
-    Templates.AddItem(LWBlasterLauncherAbility());
-    Templates.AddItem(PurePassive('FireInTheHole', "img:///UILibrary_LW_PerkPack.LW_AbilityFireInTheHole"));
-    Templates.AddItem(AddShockAndAwe());
-    Templates.AddItem(AddJavelinRockets());
-    Templates.AddItem(CreateConcussionRocketAbility());
-    Templates.AddItem(CreateBunkerBusterAbility());
 
     Templates.AddItem(CreateNapalmXPanicEffectAbility());
 
@@ -92,13 +96,193 @@ static function array<X2DataTemplate> CreateTemplates()
 //-----------------------  ROCKET ABILITIES --------------------------------------------------
 //--------------------------------------------------------------------------------------------
 
-//this ability increase the range of rockets fire from gauntlet
-static function X2AbilityTemplate AddJavelinRockets()
+// Perk name:		Rocket Launcher
+// Perk effect:		Fire a rocket at target area with the Gauntlet. Can scatter. 
+// Localized text:	"Fire a rocket at target area. <Ability:ROCKETSCATTER/>"
+// Config:			(AbilityName="LW2WotC_RocketLauncher", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate RocketLauncher()
+{
+    local X2AbilityTemplate                 Template;
+    local X2AbilityCost_Ammo                AmmoCost;
+    local X2AbilityCost_ActionPoints        ActionPointCost;
+    local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
+    local X2AbilityTarget_Cursor            CursorTarget;
+    local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
+    local X2Condition_UnitProperty          UnitPropertyCondition;
+    local X2AbilityToHitCalc_StandardAim    StandardAim;
+    local X2Condition_UnitEffects           SuppressedCondition;
+
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_RocketLauncher');
+    Template.Hostility = eHostility_Offensive;
+    Template.AbilitySourceName = 'eAbilitySource_Standard';
+    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+    Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_firerocket";
+
+    // Activated ability
+    Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+
+    // Uses weapon ammo instead of ability charges
+    AmmoCost = new class'X2AbilityCost_Ammo';
+    AmmoCost.iAmmo = 1;
+    Template.AbilityCosts.AddItem(AmmoCost);
+    Template.bUseAmmoAsChargesForHUD = true;
+
+    // Ends turn unless the user has Salvo
+    ActionPointCost = new class'X2AbilityCost_HeavyWeaponActionPoints';
+    Template.AbilityCosts.AddItem(ActionPointCost);
+
+    // Cannot miss or crit
+    StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+    StandardAim.bAllowCrit = false;
+    StandardAim.bGuaranteedHit = true;
+    Template.AbilityToHitCalc = StandardAim;
+
+    // Gets damage from the equipped Gauntlet
+    WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
+    WeaponDamageEffect.bExplosiveDamage = true;
+    Template.AddMultiTargetEffect(WeaponDamageEffect);
+
+    // Target with mouse cursor
+    CursorTarget = new class'X2AbilityTarget_Cursor';
+    CursorTarget.bRestrictToWeaponRange = true;
+    Template.AbilityTargetStyle = CursorTarget;
+
+    // Radius based on equipped Gauntlet
+    RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+    RadiusMultiTarget.bUseWeaponRadius = true;
+    Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+
+    // Ignores the dead
+    UnitPropertyCondition = new class'X2Condition_UnitProperty';
+    UnitPropertyCondition.ExcludeDead = true;
+    Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
+
+    // Cannot be used while disoriented, burning, etc.
+    Template.AddShooterEffectExclusions();
+
+    // Cannot be used while suppressed
+    SuppressedCondition = new class'X2Condition_UnitEffects';
+    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
+    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+
+    // Controls rocket pathing and scatter
+    Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';
+    
+    // Typical heavy weapon visualizations
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+    Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+    Template.ActivationSpeech = 'RocketLauncher';
+    Template.CinescriptCameraType = "Soldier_HeavyWeapons";
+    
+    // Spawns more lost and always breaks Shadow
+	Template.SuperConcealmentLoss = 100;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.GrenadeLostSpawnIncreasePerUse;
+
+    return Template;
+}
+
+// Perk name:		Blaster Launcher
+// Perk effect:		Fire a guided Blaster Bomb at a target area with the Gauntlet. Can scatter. 
+// Localized text:	"Fire a guided Blaster Bomb at a target area. <Ability:ROCKETSCATTER/>"
+// Config:			(AbilityName="LW2WotC_BlasterLauncher", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate BlasterLauncher()
+{
+    local X2AbilityTemplate                 Template;
+    local X2AbilityCost_Ammo                AmmoCost;
+    local X2AbilityCost_ActionPoints        ActionPointCost;
+    local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
+    local X2AbilityTarget_Cursor            CursorTarget;
+    local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
+    local X2Condition_UnitProperty          UnitPropertyCondition;
+    local X2AbilityToHitCalc_StandardAim    StandardAim;
+    local X2Condition_UnitEffects           SuppressedCondition;
+
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_BlasterLauncher');
+    Template.Hostility = eHostility_Offensive;
+    Template.AbilitySourceName = 'eAbilitySource_Standard';
+    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
+    Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_blasterlauncher";
+
+    // Activated ability
+    Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+    
+    // Uses weapon ammo instead of ability charges
+    AmmoCost = new class'X2AbilityCost_Ammo';
+    AmmoCost.iAmmo = 1;
+    Template.AbilityCosts.AddItem(AmmoCost);
+    Template.bUseAmmoAsChargesForHUD = true;
+    
+    // Ends turn unless the user has Salvo
+    ActionPointCost = new class'X2AbilityCost_HeavyWeaponActionPoints';
+    Template.AbilityCosts.AddItem(ActionPointCost);
+    
+    // Cannot miss or crit
+    StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+    StandardAim.bAllowCrit = false;
+    StandardAim.bGuaranteedHit = true;
+    Template.AbilityToHitCalc = StandardAim;
+    
+    // Gets damage from the equipped Gauntlet
+    WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
+    WeaponDamageEffect.bExplosiveDamage = true;
+    Template.AddMultiTargetEffect(WeaponDamageEffect);
+    
+    // Target with mouse cursor
+    CursorTarget = new class'X2AbilityTarget_Cursor';
+    CursorTarget.bRestrictToWeaponRange = true;
+    Template.AbilityTargetStyle = CursorTarget;
+    
+    // Radius based on equipped Gauntlet
+    RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+    RadiusMultiTarget.bUseWeaponRadius = true;
+    Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+    
+    // Ignores the dead
+    UnitPropertyCondition = new class'X2Condition_UnitProperty';
+    UnitPropertyCondition.ExcludeDead = true;
+    Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
+    
+    // Cannot be used while disoriented, burning, etc.
+    Template.AddShooterEffectExclusions();
+    
+    // Cannot be used while suppressed
+    SuppressedCondition = new class'X2Condition_UnitEffects';
+    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
+    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    
+    // Controls blaster bomb pathing and scatter
+    Template.TargetingMethod = class'X2TargetingMethod_LWBlasterLauncher';
+    
+    // Typical heavy weapon visualizations
+    Template.ActivationSpeech = 'BlasterLauncher';
+    Template.CinescriptCameraType = "Soldier_HeavyWeapons";
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+    Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+    
+    // Spawns more lost and always breaks Shadow
+	Template.SuperConcealmentLoss = 100;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.GrenadeLostSpawnIncreasePerUse;
+
+    return Template;
+}
+
+// Perk name:		Javelin Rockets
+// Perk effect:		Increases the range of the Gauntlet's rockets
+// Localized text:	"The range of your rockets is increased by <Ability:JAVELIN_ROCKETS_BONUS_RANGE_TILES> tiles and you may hit targets beyond your visual range."
+// Config:			(AbilityName="LW2WotC_JavelinRockets", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate JavelinRockets()
 {
     local X2AbilityTemplate             Template;
     local X2Effect_JavelinRockets       JavelinRocketsEffect;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'JavelinRockets');
+    // Standard passive ability setup
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_JavelinRockets');
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityJavelinRockets";
     Template.AbilitySourceName = 'eAbilitySource_Perk';
     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -108,6 +292,7 @@ static function X2AbilityTemplate AddJavelinRockets()
     Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
     Template.bIsPassive = true;
 
+    // Effect that grants bonus range to valid abilities
     JavelinRocketsEffect = new class 'X2Effect_JavelinRockets';
     JavelinRocketsEffect.BuildPersistentEffect (1, true, false);
     JavelinRocketsEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
@@ -119,13 +304,17 @@ static function X2AbilityTemplate AddJavelinRockets()
     return Template;
 }
 
-//this ability will add +1 charge to the rocket launcher portion of gauntlet
-static function X2AbilityTemplate AddShockAndAwe()
+// Perk name:		Shock and Awe
+// Perk effect:		You equip one additional rocket.
+// Localized text:	"You equip one additional rocket."
+// Config:			(AbilityName="LW2WotC_ShockAndAwe", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate ShockAndAwe()
 {
     local X2AbilityTemplate             Template;
     local X2Effect_BonusRocketCharges   RocketChargesEffect;
-
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'ShockAndAwe');
+    
+    // Standard passive ability setup
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_ShockAndAwe');
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityShockAndAwe";
     Template.AbilitySourceName = 'eAbilitySource_Perk';
     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -135,10 +324,10 @@ static function X2AbilityTemplate AddShockAndAwe()
     Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
     Template.bIsPassive = true;
 
+    // Effect granting a bonus rocket
     RocketChargesEffect = new class 'X2Effect_BonusRocketCharges';
     RocketChargesEffect.BonusUses=default.SHOCK_AND_AWE_BONUS_CHARGES;
     RocketChargesEffect.SlotType=eInvSlot_SecondaryWeapon;
-
     RocketChargesEffect.BuildPersistentEffect (1, true, false);
     RocketChargesEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
     Template.AddTargetEffect (RocketChargesEffect);
@@ -149,152 +338,13 @@ static function X2AbilityTemplate AddShockAndAwe()
     return Template;
 }
 
-// Perk name:		Rocket Launcher
-// Perk effect:		Fire a rocket at target area with the Gauntlet. Can scatter. 
-// Localized text:	"Fire a rocket at target area. <Ability:ROCKETSCATTER/>"
-// Config:			(AbilityName="LW2WotC_RocketLauncher", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
-static function X2AbilityTemplate LWRocketLauncherAbility()
+// Perk name:		Concussion Rocket
+// Perk effect:		Fire a special rocket that does limited damage but has a chance to stun or disorient organic enemies within its area of effect and leaves a cloud of smoke.
+// Localized text:	"Fire a special rocket that does limited damage but has a chance to stun or disorient organic enemies within its area of effect and leaves a cloud of smoke."
+// Config:			(AbilityName="LW2WotC_ConcussionRocket", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate ConcussionRocket()
 {
     local X2AbilityTemplate                 Template;
-    local X2AbilityCost_Ammo                AmmoCost;
-    local X2AbilityCost_ActionPoints        ActionPointCost;
-    local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
-    local X2AbilityTarget_Cursor            CursorTarget;
-    local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
-    local X2Condition_UnitProperty          UnitPropertyCondition;
-    local X2AbilityToHitCalc_StandardAim    StandardAim;
-    local X2Condition_UnitEffects           SuppressedCondition;
-
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'LWRocketLauncher');
-    Template.Hostility = eHostility_Offensive;
-    Template.AbilitySourceName = 'eAbilitySource_Standard';
-    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
-    Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_firerocket";
-    Template.bUseAmmoAsChargesForHUD = true;
-
-    Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-
-    AmmoCost = new class'X2AbilityCost_Ammo';
-    AmmoCost.iAmmo = 1;
-    Template.AbilityCosts.AddItem(AmmoCost);
-
-    ActionPointCost = new class'X2AbilityCost_HeavyWeaponActionPoints';
-    Template.AbilityCosts.AddItem(ActionPointCost);
-
-    StandardAim = new class'X2AbilityToHitCalc_StandardAim';
-    StandardAim.bAllowCrit = false;
-    StandardAim.bGuaranteedHit = true;
-    Template.AbilityToHitCalc = StandardAim;
-
-    WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
-    WeaponDamageEffect.bExplosiveDamage = true;
-    Template.AddMultiTargetEffect(WeaponDamageEffect);
-
-    CursorTarget = new class'X2AbilityTarget_Cursor';
-    CursorTarget.bRestrictToWeaponRange = true;
-    Template.AbilityTargetStyle = CursorTarget;
-
-    RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
-    RadiusMultiTarget.bUseWeaponRadius = true;
-    Template.AbilityMultiTargetStyle = RadiusMultiTarget;
-
-    UnitPropertyCondition = new class'X2Condition_UnitProperty';
-    UnitPropertyCondition.ExcludeDead = true;
-    Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
-
-    Template.AddShooterEffectExclusions();
-
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
-
-    Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';
-
-    Template.ActivationSpeech = 'RocketLauncher';
-    Template.CinescriptCameraType = "Soldier_HeavyWeapons";
-
-    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-    Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
-
-    return Template;
-}
-
-static function X2AbilityTemplate LWBlasterLauncherAbility()
-{
-    local X2AbilityTemplate                 Template;
-    local X2AbilityCost_Ammo                AmmoCost;
-    local X2AbilityCost_ActionPoints        ActionPointCost;
-    local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
-    local X2AbilityTarget_Cursor            CursorTarget;
-    local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
-    local X2Condition_UnitProperty          UnitPropertyCondition;
-    local X2AbilityTrigger_PlayerInput      InputTrigger;
-    local X2AbilityToHitCalc_StandardAim    StandardAim;
-    local X2Condition_UnitEffects           SuppressedCondition;
-
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'LWBlasterLauncher');
-    Template.Hostility = eHostility_Offensive;
-
-    Template.AbilitySourceName = 'eAbilitySource_Standard';
-    Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
-    Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_blasterlauncher";
-    Template.bUseAmmoAsChargesForHUD = true;
-    Template.TargetingMethod = class'X2TargetingMethod_LWBlasterLauncher'; // this version includes scatter
-    // Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';  
-
-    AmmoCost = new class'X2AbilityCost_Ammo';
-    AmmoCost.iAmmo = 1;
-    Template.AbilityCosts.AddItem(AmmoCost);
-
-    ActionPointCost = new class'X2AbilityCost_HeavyWeaponActionPoints';
-    Template.AbilityCosts.AddItem(ActionPointCost);
-
-    StandardAim = new class'X2AbilityToHitCalc_StandardAim';
-    StandardAim.bAllowCrit = false;
-    StandardAim.bGuaranteedHit = true;
-    Template.AbilityToHitCalc = StandardAim;
-
-    WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
-    WeaponDamageEffect.bExplosiveDamage = true;
-    Template.AddMultiTargetEffect(WeaponDamageEffect);
-
-    CursorTarget = new class'X2AbilityTarget_Cursor';
-    CursorTarget.bRestrictToWeaponRange = true;
-    Template.AbilityTargetStyle = CursorTarget;
-
-    RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
-    RadiusMultiTarget.bUseWeaponRadius = true;
-    Template.AbilityMultiTargetStyle = RadiusMultiTarget;
-
-    UnitPropertyCondition = new class'X2Condition_UnitProperty';
-    UnitPropertyCondition.ExcludeDead = true;
-    Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
-
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
-
-    Template.AddShooterEffectExclusions();
-
-    InputTrigger = new class'X2AbilityTrigger_PlayerInput';
-    Template.AbilityTriggers.AddItem(InputTrigger);
-
-    Template.ActivationSpeech = 'BlasterLauncher';
-    Template.CinescriptCameraType = "Soldier_HeavyWeapons";
-
-    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-    Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
-
-    return Template;
-}
-
-static function X2AbilityTemplate CreateConcussionRocketAbility()
-{
-    local X2AbilityTemplate                     Template;
     local X2AbilityCharges                  Charges;
     local X2AbilityCost_Charges             ChargeCost;
     local X2AbilityCost_ActionPoints        ActionPointCost;
@@ -303,15 +353,13 @@ static function X2AbilityTemplate CreateConcussionRocketAbility()
     local X2AbilityToHitCalc_StandardAim    StandardAim;
     local X2Effect_PersistentStatChange     DisorientedEffect;
     local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
-    //local X2Effect_SmokeGrenade               SmokeEffect;
     local X2Effect_ApplySmokeGrenadeToWorld WeaponEffect;
     local X2Effect_Stunned                  StunnedEffect;
     local X2Condition_UnitEffects           SuppressedCondition;
     local X2Condition_UnitProperty          UnitPropertyCondition;
     local X2Condition_UnitType              ImmuneUnitCondition;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'ConcussionRocket');
-
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_ConcussionRocket');
     Template.AbilitySourceName = 'eAbilitySource_Perk';
     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityConcussionRocket";
@@ -320,8 +368,7 @@ static function X2AbilityTemplate CreateConcussionRocketAbility()
     Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY;
 
     Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-    Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';  // this version includes scatter
-    // Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
+    Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';
     Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
     Template.AddShooterEffectExclusions();
 
@@ -376,18 +423,15 @@ static function X2AbilityTemplate CreateConcussionRocketAbility()
     WeaponDamageEffect.EffectDamageValue=default.CONCUSSION_ROCKET_DAMAGE_VALUE;
     WeaponDamageEffect.bExplosiveDamage = true;
     WeaponDamageEffect.EnvironmentalDamageAmount=default.CONCUSSION_ROCKET_ENV_DAMAGE;
-    //Template.AddTargetEffect(WeaponDamageEffect);
     Template.AddMultiTargetEffect(WeaponDamageEffect);
 
     StunnedEffect = class'X2StatusEffects'.static.CreateStunnedStatusEffect(2,100,false);
     StunnedEffect.bRemoveWhenSourceDies = false;
     StunnedEffect.ApplyChanceFn = ApplyChance_Concussion_Stunned;
-    //Template.AddTargetEffect(StunnedEffect);
     Template.AddMultiTargetEffect(StunnedEffect);
 
     DisorientedEffect = class'X2StatusEffects'.static.CreateDisorientedStatusEffect();
     DisorientedEffect.ApplyChanceFn = ApplyChance_Concussion_Disoriented;
-    //Template.AddTargetEffect(DisorientedEffect);
     Template.AddMultiTargetEffect(DisorientedEffect);
 
     WeaponEffect = new class'X2Effect_ApplySmokeGrenadeToWorld';
@@ -401,6 +445,12 @@ static function X2AbilityTemplate CreateConcussionRocketAbility()
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
     Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
     Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+    
+    // Spawns more lost and always breaks Shadow
+	Template.SuperConcealmentLoss = 100;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.GrenadeLostSpawnIncreasePerUse;
+
     return Template;
 }
 
@@ -442,8 +492,11 @@ static function name ApplyChance_Concussion_Disoriented (const out EffectApplied
     return 'AA_EffectChanceFailed';
 }
 
-
-static function X2AbilityTemplate CreateBunkerBusterAbility()
+// Perk name:		Bunker Buster
+// Perk effect:		"Fire a Bunker Buster. <Ability:ROCKETSCATTER/>"
+// Localized text:	"Fire a Bunker Buster. <Ability:ROCKETSCATTER/>"
+// Config:			(AbilityName="LW2WotC_BunkerBuster", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate BunkerBuster()
 {
     local X2AbilityTemplate                 Template;
     local X2AbilityCharges                  Charges;
@@ -455,7 +508,7 @@ static function X2AbilityTemplate CreateBunkerBusterAbility()
     local X2AbilityToHitCalc_StandardAim    StandardAim;
     local X2Condition_UnitEffects           SuppressedCondition;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'BunkerBuster');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_BunkerBuster');
 
     Template.AbilitySourceName = 'eAbilitySource_Perk';
     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
@@ -465,8 +518,7 @@ static function X2AbilityTemplate CreateBunkerBusterAbility()
     Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY;
 
     Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
-    Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';  // this version includes scatter
-    // Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
+    Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';
     Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
     Template.AddShooterEffectExclusions();
 
@@ -515,6 +567,12 @@ static function X2AbilityTemplate CreateBunkerBusterAbility()
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
     Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
     Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+    
+    // Spawns more lost and always breaks Shadow
+	Template.SuperConcealmentLoss = 100;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.GrenadeLostSpawnIncreasePerUse;
+
     return Template;
 }
 
@@ -635,7 +693,11 @@ static function int TileDistanceBetween(XComGameState_Unit Unit, vector TargetLo
 //-----------------------  FLAMETHROWER ABILITIES --------------------------------------------
 //--------------------------------------------------------------------------------------------
 
-static function X2AbilityTemplate CreateLWFlamethrowerAbility()
+// Perk name:		Flamethrower
+// Perk effect:		Spray flames in a cone-shaped area.
+// Localized text:	"Spray flames in a cone-shaped area."
+// Config:			(AbilityName="LW2WotC_Flamethrower", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Flamethrower()
 {
     local X2AbilityTemplate                     Template;
     local X2AbilityCost_ActionPoints            ActionPointCost;
@@ -651,7 +713,7 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     local X2Condition_UnitEffects               SuppressedCondition;
     local AbilityGrantedBonusCone               IncineratorBonusCone;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'LWFlamethrower');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Flamethrower');
 
     Template.AbilitySourceName = 'eAbilitySource_Standard';
     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
@@ -702,18 +764,12 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     CursorTarget.bRestrictToWeaponRange = true;
     Template.AbilityTargetStyle = CursorTarget;
 
-    // Targeting works like the Heavy Weapon cone weapons (e.g. the flamethrower and shred cannon)
-    // NOTE: This is different than how it operates in LW2, where the technical flamethrower can wrap around cover.
-    //       That's a bitch to port though. Maybe later...
+    // Flamethrower can wrap around cover.
     Template.TargetingMethod = class'X2TargetingMethod_Cone_Flamethrower_LW';
 
-    // Multi target effects apply like the Heavy Weapon cone weapons
-    // NOTE: This is different than LW2. LW2 allowed different Gauntlet tiers to have a different cone length/radius, and some other stuff.
-    //       This is also hard to port. Maybe later...
+    // Allows different Gauntlet tiers to have a different cone length/radius, and some other stuff.
     ConeMultiTarget = new class'X2AbilityMultiTarget_Cone_LWFlamethrower';
     ConeMultiTarget.bUseWeaponRadius = true;
-    // ConeMultiTarget.ConeEndDiameter = class'X2Item_LWGauntlet'.default.Gauntlet_Secondary_CONVENTIONAL_RADIUS * class'XComWorldData'.const.WORLD_StepSize;
-    // ConeMultiTarget.ConeLength = class'X2Item_LWGauntlet'.default.Gauntlet_Secondary_CONVENTIONAL_RANGE * class'XComWorldData'.const.WORLD_StepSize;
     ConeMultiTarget.bIgnoreBlockingCover = true;
 
     // Allow the Incinerator ability to increase the cone length/radius
@@ -736,7 +792,7 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     Template.AddMultiTargetEffect(CreateNapalmXPanicEffect());
 
     // Grants ability that checks if user can damage robots
-    Template.AdditionalAbilities.AddItem('Phosphorus');
+    Template.AdditionalAbilities.AddItem('LW2WotC_Phosphorus_Bonus');
 
     // Sets fire to targeted world tiles - fire effect is more limited than most fire sources
     FireToWorldEffect = new class'X2Effect_ApplyFireToWorld_Limited';
@@ -772,18 +828,21 @@ static function X2AbilityTemplate CreateLWFlamethrowerAbility()
     Template.BuildVisualizationFn = LWFlamethrower_BuildVisualization;
 
     // Interactions with the Chosen and Shadow
+    // NOTE: Does NOT increase rate of Lost spawns
     Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
     Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
 
     return Template;
 }
 
-static function X2AbilityTemplate CreatePhosphorusBonusAbility()
+// This ability is granted automatically by the LW2WotC_Flamethrower
+// It checks if the user of the Flamethrower ability has the LW2WotC_Phosphorus ability, and if so, lets the Flamethrower damage robots
+static function X2AbilityTemplate PhosphorusBonus()
 {
     local X2AbilityTemplate         Template;
     local X2Effect_Phosphorus       PhosphorusEffect;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'Phosphorus');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Phosphorus_Bonus');
 
     Template.AbilitySourceName = 'eAbilitySource_Perk';
     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -804,7 +863,6 @@ static function X2AbilityTemplate CreatePhosphorusBonusAbility()
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 
     return Template;
-
 }
 
 static function X2AbilityTemplate CreateRoustAbility()

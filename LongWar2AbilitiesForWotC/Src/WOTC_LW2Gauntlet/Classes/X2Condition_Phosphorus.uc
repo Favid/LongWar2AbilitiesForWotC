@@ -15,7 +15,7 @@ event name CallMeetsConditionWithSource(XComGameState_BaseObject kTarget, XComGa
     if (SourceUnit == none || TargetUnit == none)
         return 'AA_AbilityUnavailable';
 
-    if (SourceUnit.FindAbility('PhosphorusPassive').ObjectID == 0)
+    if (SourceUnit.FindAbility('LW2WotC_Phosphorus').ObjectID == 0)
     {
         if (TargetUnit.IsImmuneToDamage('Fire'))
             return 'AA_UnitIsImmune';

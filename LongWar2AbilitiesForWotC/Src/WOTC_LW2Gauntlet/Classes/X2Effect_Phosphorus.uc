@@ -13,7 +13,7 @@ function int GetExtraShredValue(XComGameState_Effect EffectState, XComGameState_
 
     `LOG ("TEsting New Phos Effect 2");
 
-    if (Attacker.HasSoldierAbility('PhosphorusPassive'))
+    if (Attacker.HasSoldierAbility('LW2WotC_Phosphorus'))
     {
         `LOG ("TEsting New Phos Effect 3");     
         AbilityName = AbilityState.GetMyTemplateName();
