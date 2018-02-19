@@ -18,8 +18,8 @@ function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStat
     switch (AbilityName)
     {
         case 'LW2WotC_Flamethrower':
-        case 'Roust':
-        case 'Firestorm':
+        case 'LW2WotC_Roust':
+        case 'LW2WotC_Firestorm':
             bFreeActivation = true;
             break;
         default:

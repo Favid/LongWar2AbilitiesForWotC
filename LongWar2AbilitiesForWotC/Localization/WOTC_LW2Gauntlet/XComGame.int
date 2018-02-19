@@ -20,7 +20,7 @@ LocHelpText="Fire a rocket at target area. <Ability:ROCKETSCATTER/>"
 LocFriendlyName="Blaster Bomb"
 LocHelpText="Fire a guided Blaster Bomb at a target area. <Ability:ROCKETSCATTER/>"
 
-[NapalmX X2AbilityTemplate]
+[LW2WotC_NapalmX X2AbilityTemplate]
 LocFriendlyName="Napalm-X"
 LocFlyOverText="Napalm-X"
 LocLongDescription="Your Flamethrower can now disorient or panic enemies."
@@ -34,56 +34,56 @@ LocLongDescription="Your flamethrower can now damage mechanical units and shred 
 LocHelpText="Your flamethrower can now damage mechanical units and shred armor."
 LocPromotionPopupText="<Bullet/> Your flamethrower can now damage mechanical units.<br/><Bullet/> Flamethrower attacks shred 1 armor.</br>"
 
-[Incinerator X2AbilityTemplate]
+[LW2WotC_Incinerator X2AbilityTemplate]
 LocFriendlyName="Incinerator"
 LocFlyOverText="Incinerator"
 LocLongDescription="Your flamethrower has an increased range and covers a wider area of effect."
 LocHelpText="Your flamethrower has a greater range and area of effect."
 LocPromotionPopupText="<Bullet/> Your flamethrower has an increased range and covers a wider area of effect."
 
-[Roust X2AbilityTemplate]
+[LW2WotC_Roust X2AbilityTemplate]
 LocFriendlyName="Roust"
 LocFlyOverText="Roust"
 LocLongDescription="Special Flamethrower shot that does limited damage but forces enemies to change their position."
 LocHelpText="Special flamethrower shot that forces enemies to change their location."
 LocPromotionPopupText="<Bullet/> Has a 20% chance to set enemies in the area of effect on fire and does limited damage.<br/><Bullet/> The narrow jet of flame has less impact on the environment.<br/><Bullet/> Units hit by the shot will be forced to move, often triggering overwatch fire.<br/><Bullet/> One use per mission, but can gain an additional use with additional gear.<br/><Bullet/> Cannot be used from concealment."
 
-[Burnout X2AbilityTemplate]
+[LW2WotC_Burnout X2AbilityTemplate]
 LocFriendlyName="Burnout"
 LocFlyOverText="Burnout"
 LocLongDescription="Activating your Flamethrower leaves a small smoke cloud around your position, providing a defensive bonus."
 LocHelpText="Activating your Flamethrower leaves a small smoke cloud around your position, providing a defensive bonus."
 LocPromotionPopupText="<Bullet/> When fired, your Flamethrower leaves a small smoke cloud around your position, providing a +20 defensive bonus to anyone within.<br/>"
 
-[BurnoutPassive X2AbilityTemplate]
+[LW2WotC_Burnout_Passive X2AbilityTemplate]
 LocFriendlyName="Burnout"
 LocFlyOverText="Burnout"
 LocLongDescription="Activating your Flamethrower leaves a small smoke cloud around your position, providing a defensive bonus."
 LocHelpText="Activating your Flamethrower leaves a small smoke cloud around your position, providing a defensive bonus."
 LocPromotionPopupText="<Bullet/> When fired, your Flamethrower leaves a small smoke cloud around your position, providing a +20 defensive bonus to anyone within.<br/>"
 
-[HighPressure X2AbilityTemplate]
+[LW2WotC_HighPressure X2AbilityTemplate]
 LocFriendlyName="High Pressure"
 LocFlyOverText="High Pressure"
 LocLongDescription="Your Flamethrower gains +2 charges."
 LocHelpText="Your Flamethrower gains +2 charges."
 LocPromotionPopupText="<Bullet/> Your Flamethrower gains +2 charges."
 
-[Quickburn X2AbilityTemplate]
+[LW2WotC_Quickburn X2AbilityTemplate]
 LocFriendlyName="Quickburn"
 LocFlyOverText="Quickburn"
 LocLongDescription="Activate so your next use of the flamethrower will not cost an action."
 LocHelpText="Activate so your next use of the flamethrower will not cost an action."
 LocPromotionPopupText="<Bullet/> Activate so your next use of the flamethrower will not cost an action.<br/><Bullet/> 5-turn cooldown.<br/>"
 
-[Firestorm X2AbilityTemplate]
+[LW2WotC_Firestorm X2AbilityTemplate]
 LocFriendlyName="Firestorm"
 LocFlyOverText="Firestorm"
 LocLongDescription="Once per battle, attack all units in a complete circle around the soldier's position. Also grants immunity to fire damage."
 LocHelpText="Spray fire in a complete circle around your position."
 LocPromotionPopupText="<Bullet/> This will light fires and do fire damage to all enemies in a circle around the soldier's position, doing +<ABILITY:FIRESTORM_DAMAGE_BONUS_LW> bonus damage over regular Flamethrower attacks.<br/><Bullet/> Firestorm also grants immunity to fire damage.<br/><Bullet/> Requires one action point and will end the soldier's turn when used.<br/><Bullet/> Usable once per battle.<br/><Bullet/> It is not recommended the soldier uses Firestorm on rooftops."
 
-[TechnicalFireImmunity X2AbilityTemplate]
+[LW2WotC_Firestorm_FireImmunity X2AbilityTemplate]
 LocFriendlyName="Fire Immunity"
 LocFlyOverText="Fire Immunity"
 LocLongDescription="The Firestorm perk confers immunity to fire damage."
@@ -118,7 +118,7 @@ LocHelpText="Fire a Bunker Buster. <Ability:ROCKETSCATTER/>"
 LocLongDescription="Fire a special rocket that destroys buildings and other objects in the environment."
 LocPromotionPopupText="<Bullet/> Fire a special rocket with a large area of effect that does moderate damage to enemies but huge damage to buildings, vehicles and other objects in the environment.<br/><Bullet/> Requires both actions and usable only once per mission.<br/>"
 
-[FireandSteel X2AbilityTemplate]
+[LW2WotC_FireAndSteel X2AbilityTemplate]
 LocFriendlyName="Fire and Steel"
 LocFlyOverText="Fire and Steel"
 LocLongDescription="Attacks with your gauntlet, and fires set by gauntlet weapons, do +1 damage."

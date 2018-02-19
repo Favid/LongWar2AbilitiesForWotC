@@ -22,7 +22,7 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
         }
     }
 
-    if(AbilityState.GetMyTemplateName() == 'Roust')
+    if(AbilityState.GetMyTemplateName() == 'LW2WotC_Roust')
     {
         if (class'XComGameStateContext_Ability'.static.IsHitResultHit(AppliedData.AbilityResultContext.HitResult))
         {

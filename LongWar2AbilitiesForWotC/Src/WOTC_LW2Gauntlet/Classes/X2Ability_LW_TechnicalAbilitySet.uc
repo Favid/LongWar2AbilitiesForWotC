@@ -58,6 +58,8 @@ static function array<X2DataTemplate> CreateTemplates()
 {
     local array<X2DataTemplate> Templates;
 
+    // This ability doesn't actually do anything - it's just for show for the player
+    // The Rocket Launcher and Flamethrower abilities are granted by the Gauntlet items themselves
     Templates.AddItem(PurePassive('LW2WotC_HeavyArmaments', "img:///UILibrary_LW_PerkPack.LW_AbilityHeavyArmaments"));
     
     Templates.AddItem(RocketLauncher());
@@ -71,23 +73,22 @@ static function array<X2DataTemplate> CreateTemplates()
     Templates.AddItem(Flamethrower());
 
     Templates.AddItem(PurePassive('LW2WotC_Phosphorus', "img:///UILibrary_LW_PerkPack.LW_AbilityPhosphorus"));
-    Templates.AddItem(PurePassive('NapalmX', "img:///UILibrary_LW_PerkPack.LW_AbilityNapalmX"));
-    Templates.AddItem(PurePassive('Incinerator', "img:///UILibrary_LW_PerkPack.LW_AbilityHighPressure"));
-    Templates.AddItem(AddQuickburn());
-    Templates.AddItem(CreateRoustAbility());
-    Templates.AddItem(CreateBurnoutAbility());
+    Templates.AddItem(PurePassive('LW2WotC_NapalmX', "img:///UILibrary_LW_PerkPack.LW_AbilityNapalmX"));
+    Templates.AddItem(PurePassive('LW2WotC_Incinerator', "img:///UILibrary_LW_PerkPack.LW_AbilityHighPressure"));
+    Templates.AddItem(Quickburn());
+    Templates.AddItem(Roust());
+    Templates.AddItem(Burnout());
     Templates.AddItem(BurnoutPassive());
     Templates.AddItem(RoustDamage());
-    Templates.AddItem(CreateFirestorm());
+    Templates.AddItem(Firestorm());
     Templates.AddItem(FirestormDamage());
-    Templates.AddItem(CreateTechnicalFireImmunityAbility());
-    Templates.AddItem(CreateHighPressureAbility());
+    Templates.AddItem(FirestormFireImmunity());
+    Templates.AddItem(HighPressure());
     Templates.AddItem(PhosphorusBonus());
-
 
     Templates.AddItem(CreateNapalmXPanicEffectAbility());
 
-    Templates.AddItem(CreateFireandSteelAbility());
+    Templates.AddItem(FireAndSteel());
 
     return Templates;
 }
@@ -728,7 +729,7 @@ static function X2AbilityTemplate Flamethrower()
     // Configurable charges, but if the user has the HighPressure ability or the HighPressureTanks item, they get bonus charges
     Charges = new class'X2AbilityCharges_BonusCharges';
     Charges.InitialCharges = default.FLAMETHROWER_CHARGES;
-    Charges.BonusAbility = 'HighPressure';
+    Charges.BonusAbility = 'LW2WotC_HighPressure';
     Charges.BonusItem = 'HighPressureTanks';
     Charges.BonusCharges =  default.FLAMETHROWER_HIGH_PRESSURE_CHARGES;
     Template.AbilityCharges = Charges;
@@ -865,7 +866,11 @@ static function X2AbilityTemplate PhosphorusBonus()
     return Template;
 }
 
-static function X2AbilityTemplate CreateRoustAbility()
+// Perk name:		Roust
+// Perk effect:		Special Flamethrower shot that does limited damage but forces enemies to change their position.
+// Localized text:	"Special Flamethrower shot that does limited damage but forces enemies to change their position."
+// Config:			(AbilityName="LW2WotC_Roust", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Roust()
 {
     local X2AbilityTemplate                     Template;
     local X2AbilityCost_ActionPoints            ActionPointCost;
@@ -883,7 +888,7 @@ static function X2AbilityTemplate CreateRoustAbility()
     local AbilityGrantedBonusCone               IncineratorBonusCone;
     local AbilityGrantedBonusCone               RoustBonusCone;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'Roust');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Roust');
 
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityRoust";
 
@@ -899,7 +904,7 @@ static function X2AbilityTemplate CreateRoustAbility()
     // Configurable charges, but if the user has the HighPressure ability or the HighPressureTanks item, they get bonus charges
     Charges = new class 'X2AbilityCharges_BonusCharges';
     Charges.InitialCharges = default.ROUST_CHARGES;
-    Charges.BonusAbility = 'HighPressure';
+    Charges.BonusAbility = 'LW2WotC_HighPressure';
     Charges.BonusItem = 'HighPressureTanks';
     Charges.BonusCharges =  default.ROUST_HIGH_PRESSURE_CHARGES;
     Template.AbilityCharges = Charges;
@@ -953,13 +958,13 @@ static function X2AbilityTemplate CreateRoustAbility()
     ConeMultiTarget.bIgnoreBlockingCover = true;
 
     // Allow the Incinerator ability to increase the cone length/radius
-    IncineratorBonusCone.RequiredAbility = 'Incinerator';
+    IncineratorBonusCone.RequiredAbility = 'LW2WotC_Incinerator';
     IncineratorBonusCone.fBonusDiameter = default.INCINERATOR_CONEEND_DIAMETER_MODIFIER;
     IncineratorBonusCone.fBonusLength = default.INCINERATOR_CONELENGTH_MODIFIER;
     ConeMultiTarget.AbilityBonusCones.AddItem(IncineratorBonusCone);
 
     // Allow the Roust ability to increase the cone length/radius
-    RoustBonusCone.RequiredAbility = 'Roust';
+    RoustBonusCone.RequiredAbility = 'LW2WotC_Roust';
     RoustBonusCone.fBonusDiameter = default.ROUST_CONEEND_DIAMETER_MODIFIER;
     RoustBonusCone.fBonusLength = default.ROUST_CONELENGTH_MODIFIER;
     ConeMultiTarget.AbilityBonusCones.AddItem(RoustBonusCone);
@@ -1020,6 +1025,7 @@ static function X2AbilityTemplate CreateRoustAbility()
     return Template;
 }
 
+// Ability granted by LW2WotC_Roust that reduces its damage
 static function X2AbilityTemplate RoustDamage()
 {
     local X2AbilityTemplate                     Template;
@@ -1047,8 +1053,11 @@ static function X2AbilityTemplate RoustDamage()
     return Template;
 }
 
-
-static function X2AbilityTemplate CreateFirestorm()
+// Perk name:		Firestorm
+// Perk effect:		Once per battle, attack all units in a complete circle around the soldier's position. Also grants immunity to fire damage.
+// Localized text:	"Once per battle, attack all units in a complete circle around the soldier's position. Also grants immunity to fire damage."
+// Config:			(AbilityName="LW2WotC_Firestorm", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Firestorm()
 {
     local X2AbilityTemplate                     Template;
     local X2AbilityCharges_BonusCharges         Charges;
@@ -1063,7 +1072,7 @@ static function X2AbilityTemplate CreateFirestorm()
     local X2Effect_Burning                      BurningEffect;
     local X2Condition_UnitEffects               SuppressedCondition;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'Firestorm');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Firestorm');
 
     Template.AbilitySourceName = 'eAbilitySource_Perk';
     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_AlwaysShow;
@@ -1074,7 +1083,7 @@ static function X2AbilityTemplate CreateFirestorm()
 
     Charges = new class 'X2AbilityCharges_BonusCharges';
     Charges.InitialCharges = default.FIRESTORM_NUM_CHARGES;
-    Charges.BonusAbility = 'HighPressure';
+    Charges.BonusAbility = 'LW2WotC_HighPressure';
     Charges.BonusItem = 'HighPressureTanks';
     Charges.BonusCharges = default.FIRESTORM_HIGH_PRESSURE_CHARGES;
     Template.AbilityCharges = Charges;
@@ -1140,16 +1149,14 @@ static function X2AbilityTemplate CreateFirestorm()
     Template.bAffectNeighboringTiles = true;
     Template.bFragileDamageOnly = true;
 
-    // TODO: Port custom firestorm animation
     Template.ActionFireClass = class'X2Action_Fire_Firestorm';
-    // Template.ActionFireClass = class'X2Action_Fire_Flamethrower';
     Template.TargetingMethod = class'X2TargetingMethod_Grenade';
 
     Template.ActivationSpeech = 'Flamethrower';
     Template.CinescriptCameraType = "Soldier_HeavyWeapons";
 
-    Template.AdditionalAbilities.AddItem('TechnicalFireImmunity');
-    Template.AdditionalAbilities.AddItem('FirestormDamage');
+    Template.AdditionalAbilities.AddItem('LW2WotC_Firestorm_FireImmunity');
+    Template.AdditionalAbilities.AddItem('LW2WotC_Firestorm_Damage');
 
     Template.PostActivationEvents.AddItem('FlamethrowerActivated');
 
@@ -1166,12 +1173,14 @@ static function X2AbilityTemplate CreateFirestorm()
     return Template;
 }
 
+// Granted by LW2WotC_Firestorm 
+// Handles the damage for the Firestorm ability
 static function X2AbilityTemplate FirestormDamage()
 {
     local X2AbilityTemplate                     Template;
     local X2Effect_AbilityDamageMult            DamageBonus;
 
-    `CREATE_X2ABILITY_TEMPLATE (Template, 'FirestormDamage');
+    `CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_Firestorm_Damage');
     Template.bDontDisplayInAbilitySummary = true;
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityFirestorm";
     Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
@@ -1187,7 +1196,7 @@ static function X2AbilityTemplate FirestormDamage()
     DamageBonus.Penalty = false;
     DamageBonus.Mult = false;
     DamageBonus.DamageMod = default.FIRESTORM_DAMAGE_BONUS;
-    DamageBonus.ActiveAbility = 'Firestorm';
+    DamageBonus.ActiveAbility = 'LW2WotC_Firestorm';
     DamageBonus.BuildPersistentEffect(1, true, false, false);
     Template.AddTargetEffect(DamageBonus);
 
@@ -1196,13 +1205,14 @@ static function X2AbilityTemplate FirestormDamage()
     return Template;
 }
 
-
-static function X2AbilityTemplate CreateTechnicalFireImmunityAbility()
+// Granted by LW2WotC_Firestorm 
+// Provides immunity to fire
+static function X2AbilityTemplate FirestormFireImmunity()
 {
     local X2AbilityTemplate                 Template;
     local X2Effect_DamageImmunity           DamageImmunity;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'TechnicalFireImmunity');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Firestorm_FireImmunity');
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityFirestorm";
 
     Template.AbilitySourceName = 'eAbilitySource_Perk';
@@ -1244,14 +1254,18 @@ static function X2Effect_ApplyAltWeaponDamage CreateFlamethrowerDamageAbility()
     return WeaponDamageEffect;
 }
 
-static function X2AbilityTemplate CreateBurnoutAbility()
+// Perk name:		Burnout
+// Perk effect:		Activating your Flamethrower leaves a small smoke cloud around your position, providing a defensive bonus.
+// Localized text:	"Activating your Flamethrower leaves a small smoke cloud around your position, providing a defensive bonus."
+// Config:			(AbilityName="LW2WotC_Burnout", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Burnout()
 {
     local X2AbilityTemplate                 Template;
     local X2AbilityTrigger_EventListener    Trigger;
     local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
     local X2Effect_ApplySmokeGrenadeToWorld WeaponEffect;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'Burnout');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Burnout');
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityIgnition";
 
     Template.AbilitySourceName = 'eAbilitySource_Perk';
@@ -1282,19 +1296,20 @@ static function X2AbilityTemplate CreateBurnoutAbility()
 
     Template.AddMultiTargetEffect(class'X2Item_DefaultGrenades'.static.SmokeGrenadeEffect());
 
-    Template.AdditionalAbilities.AddItem('BurnoutPassive');
+    Template.AdditionalAbilities.AddItem('LW2WotC_Burnout_Passive');
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
     Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 
     return Template;
 }
 
+// Dummy ability granted by LW2WotC_Burnout so that Burnout shows up as a passive ability
 static function X2AbilityTemplate BurnoutPassive()
 {
-    return PurePassive('BurnoutPassive', "img:///UILibrary_LW_PerkPack.LW_AbilityIgnition", false, 'eAbilitySource_Perk', true);
+    return PurePassive('LW2WotC_Burnout_Passive', "img:///UILibrary_LW_PerkPack.LW_AbilityIgnition", false, 'eAbilitySource_Perk', true);
 }
 
-
+// Effect that is added to Gauntlet flamethrower abilities to handle the panic roll if the user has LW2WotC_NapalmX
 static function X2Effect_ImmediateMultiTargetAbilityActivation CreateNapalmXPanicEffect()
 {
     local X2Effect_ImmediateMultiTargetAbilityActivation    NapalmXEffect;
@@ -1317,7 +1332,7 @@ static function X2Effect_ImmediateMultiTargetAbilityActivation CreateNapalmXPani
     UnitCondition.ExcludeFriendlyToSource = true;
 
     NapalmXCondition = new class'X2Condition_AbilityProperty';
-    NapalmXCondition.OwnerHasSoldierAbilities.AddItem('NapalmX');
+    NapalmXCondition.OwnerHasSoldierAbilities.AddItem('LW2WotC_NapalmX');
 
     NapalmXEffect.TargetConditions.AddItem(UnitCondition);
     NapalmXEffect.TargetConditions.AddItem(NapalmXCondition);
@@ -1325,6 +1340,7 @@ static function X2Effect_ImmediateMultiTargetAbilityActivation CreateNapalmXPani
     return NapalmXEffect;
 }
 
+// Effect that is added to Gauntlet flamethrower abilities to handle the panic roll if the user has LW2WotC_NapalmX
 static function X2DataTemplate CreateNapalmXPanicEffectAbility()
 {
     local X2AbilityTemplate             Template;
@@ -1373,12 +1389,16 @@ static function X2DataTemplate CreateNapalmXPanicEffectAbility()
     return Template;
 }
 
-static function X2AbilityTemplate CreateFireandSteelAbility()
+// Perk name:		Fire and Steel
+// Perk effect:		Attacks with your gauntlet, and fires set by gauntlet weapons, do +1 damage.
+// Localized text:	"Attacks with your gauntlet, and fires set by gauntlet weapons, do +1 damage."
+// Config:			(AbilityName="LW2WotC_FireAndSteel", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate FireAndSteel()
 {
     local X2AbilityTemplate                 Template;
     local X2Effect_BonusWeaponDamage        DamageEffect;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'FireandSteel');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_FireAndSteel');
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityFireandSteel";
     Template.AbilitySourceName = 'eAbilitySource_Perk';
     Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
@@ -1387,23 +1407,31 @@ static function X2AbilityTemplate CreateFireandSteelAbility()
     Template.AbilityTargetStyle = default.SelfTarget;
     Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
     Template.bIsPassive = true;
+
     DamageEffect = new class'X2Effect_BonusWeaponDamage';
     DamageEffect.BonusDmg = default.FIRE_AND_STEEL_DAMAGE_BONUS;
     DamageEffect.BuildPersistentEffect(1, true, false, false);
     DamageEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,,Template.AbilitySourceName);
     Template.AddTargetEffect(DamageEffect);
+
     Template.bCrossClassEligible = false;
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+
     return Template;
 }
 
-static function X2AbilityTemplate CreateHighPressureAbility()
+// Perk name:		High Pressure
+// Perk effect:	    Your Flamethrower gains +2 charges.
+// Localized text:	"Your Flamethrower gains +2 charges."
+// Config:			(AbilityName="LW2WotC_HighPressure", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate HighPressure()
 {
     local X2AbilityTemplate                     Template;
     local X2AbilityTrigger_UnitPostBeginPlay    PostBeginPlayTrigger;
     local X2Effect_Persistent                   PersistentEffect;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'HighPressure');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_HighPressure');
+
     PostBeginPlayTrigger = new class'X2AbilityTrigger_UnitPostBeginPlay';
     PostBeginPlayTrigger.Priority = 40;
     Template.AbilityTriggers.AddItem(PostBeginPlayTrigger);
@@ -1415,23 +1443,29 @@ static function X2AbilityTemplate CreateHighPressureAbility()
     Template.AbilityToHitCalc = default.DeadEye;
     Template.AbilityTargetStyle = default.SelfTarget;
     Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+
     PersistentEffect = new class'X2Effect_Persistent';
     PersistentEffect.BuildPersistentEffect(1, true, false);
     PersistentEffect.SetDisplayInfo(0, Template.LocFriendlyName, Template.LocLongDescription, Template.IconImage, true,, Template.AbilitySourceName);
     Template.AddTargetEffect(PersistentEffect);
+
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
     Template.bCrossClassEligible =false;
     return Template;
 }
 
 
-static function X2AbilityTemplate AddQuickburn()
+// Perk name:		Quickburn
+// Perk effect:	    Activate so your next use of the flamethrower will not cost an action.
+// Localized text:	"Activate so your next use of the flamethrower will not cost an action."
+// Config:			(AbilityName="LW2WotC_HighPressure", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Quickburn()
 {
     local X2AbilityTemplate                 Template;
     local X2Effect_Quickburn            QuickburnEffect;
     local X2AbilityCooldown                 Cooldown;
 
-    `CREATE_X2ABILITY_TEMPLATE(Template, 'Quickburn');
+    `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Quickburn');
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityQuickburn";
     Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.STASIS_LANCE_PRIORITY;
     Template.AbilitySourceName = 'eAbilitySource_Perk';

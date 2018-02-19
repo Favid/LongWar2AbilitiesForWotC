@@ -20,8 +20,8 @@ function int GetExtraShredValue(XComGameState_Effect EffectState, XComGameState_
         switch (AbilityName)
         {
             case 'LW2WotC_Flamethrower':
-            case 'Roust':
-            case 'Firestorm':
+            case 'LW2WotC_Roust':
+            case 'LW2WotC_Firestorm':
                 `LOG ("Testing New Phos Effect 4" @ BonusShred);
                 return BonusShred;
             default:
