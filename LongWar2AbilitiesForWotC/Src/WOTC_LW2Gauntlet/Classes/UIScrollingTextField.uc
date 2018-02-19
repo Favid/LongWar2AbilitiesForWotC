@@ -2,6 +2,7 @@
 //  FILE:    UIScrollingTextField.uc
 //  AUTHOR:  Amineri / Pavonis Interactive
 //  PURPOSE: Alternate text scroller that links to XComScrollingTextField, allowing shadows to be placed
+//           Also used to display the Gauntlet's Rocket Launcher's scatter in the UI
 //----------------------------------------------------------------------------
 class UIScrollingTextField extends UIPanel;
 

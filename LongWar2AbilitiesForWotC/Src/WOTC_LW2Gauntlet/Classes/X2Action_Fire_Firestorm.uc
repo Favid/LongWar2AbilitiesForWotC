@@ -1,3 +1,9 @@
+//---------------------------------------------------------------------------------------
+//  FILE:    X2Action_Fire_Flamethrower.uc
+//  AUTHOR:  Amineri / Pavonis Interactive
+//  PURPOSE: Action animation data for the Gauntlet's Firestorm ability
+//---------------------------------------------------------------------------------------
+
 //-----------------------------------------------------------
 // Used by the visualizer system to control a Visualization Actor
 //-----------------------------------------------------------

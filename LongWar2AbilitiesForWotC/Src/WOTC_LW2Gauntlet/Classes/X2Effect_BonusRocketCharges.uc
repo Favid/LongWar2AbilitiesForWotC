@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------------------
 //  FILE:    X2Effect_BonusRocketCharges
 //  AUTHOR:  Amineri (Pavonis Interactive)
-//  PURPOSE: General effect for granting extra uses of rocket-type items -- technical class only
+//  PURPOSE: General effect for granting extra uses of rocket-type items -- Gauntlet only
 //--------------------------------------------------------------------------------------- 
 
 class X2Effect_BonusRocketCharges extends X2Effect_Persistent;

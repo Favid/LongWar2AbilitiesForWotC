@@ -1,3 +1,9 @@
+//--------------------------------------------------------------------------------------- 
+//  FILE:    X2Effect_Phosphorus
+//  AUTHOR:  John Lumpkin (Pavonis Interactive)
+//  PURPOSE: Applies bonus shred effect if the user has Phosphorus and uses a Gauntlet flamethrower ability
+//--------------------------------------------------------------------------------------
+
 class X2Effect_Phosphorus extends X2Effect_Persistent;
 
 var int BonusShred;

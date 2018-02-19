@@ -54,7 +54,8 @@ simulated function GetValidTilesForLocation(const XComGameState_Ability Ability,
     local TTile SourceTile, TestTile;
     local TileDistancePair TempTile, CurrentTile;
     local VoxelRaytraceCheckResult VoxelRaytraceCheckResult;
-    local int idx, VoxelChecks;
+    local int idx;
+    //local int VoxelChecks;
     local array<int> UpdateChecks;
     local GameRulesCache_VisibilityInfo OutVisibilityInfo;
 
@@ -108,7 +109,7 @@ simulated function GetValidTilesForLocation(const XComGameState_Ability Ability,
     {
         TempTile = UnvisitedTiles[idx];
         TestTile = TempTile.Tile;
-        VoxelChecks++;
+        //VoxelChecks++;
         if (!WorldData.VoxelRaytrace_Tiles(SourceTile, TestTile, VoxelRaytraceCheckResult))
         {
             UnvisitedTiles[idx].Distance = VoxelRaytraceCheckResult.Distance;
@@ -125,7 +126,7 @@ simulated function GetValidTilesForLocation(const XComGameState_Ability Ability,
         foreach UpdateChecks(idx)
         {
             TestTile = UnvisitedTiles[idx].Tile;
-            VoxelChecks++;
+            //VoxelChecks++;
             if (!WorldData.VoxelRaytrace_Tiles(SourceTile, TestTile, VoxelRaytraceCheckResult))
             {
                 // TODO : implement distancesorted insertion for O(n log n) instead of O(n^2) if performance required

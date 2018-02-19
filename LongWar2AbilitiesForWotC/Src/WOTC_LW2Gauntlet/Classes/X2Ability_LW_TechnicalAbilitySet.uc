@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------------------
 //  FILE:    X2Ability_LW_TechnicalAbilitySet.uc
 //  AUTHOR:  Amineri (Pavonis Interactive)
-//  PURPOSE: Defines all Long War Specialist-specific abilities
+//  PURPOSE: Defines all Long War Gauntlet-specific abilities
 //---------------------------------------------------------------------------------------
 
 class X2Ability_LW_TechnicalAbilitySet extends X2Ability
@@ -626,13 +626,12 @@ static function vector GetScatterAmount(XComGameState_Unit Unit, vector Scattere
 
 static function float GetExpectedScatter(XComGameState_Unit Unit, vector TargetLoc)
 {
-    local float ExpectedScatter, EffectiveOffense;
+    local float ExpectedScatter;
     local int TileDistance;
 
     TileDistance = TileDistanceBetween(Unit, TargetLoc);
-    EffectiveOffense = GetEffectiveOffense(Unit, TileDistance);
     ExpectedScatter = (100.0 - GetEffectiveOffense(Unit, TileDistance))/100.0 * float(GetNumAimRolls(Unit));
-    // `LWTRACE("ExpectedScatter=" $ ExpectedScatter $ ", EffectiveOffense=" $ EffectiveOffense $ ", TileDistance=" $ TileDistance);
+
     return ExpectedScatter;
 }
 
@@ -731,7 +730,7 @@ static function X2AbilityTemplate Flamethrower()
     Charges.InitialCharges = default.FLAMETHROWER_CHARGES;
     Charges.BonusAbility = 'LW2WotC_HighPressure';
     Charges.BonusItem = 'HighPressureTanks';
-    Charges.BonusCharges =  default.FLAMETHROWER_HIGH_PRESSURE_CHARGES;
+    Charges.BonusAbilityCharges =  default.FLAMETHROWER_HIGH_PRESSURE_CHARGES;
     Template.AbilityCharges = Charges;
 
     // Each attack costs one charge
@@ -836,6 +835,25 @@ static function X2AbilityTemplate Flamethrower()
     return Template;
 }
 
+static function X2Effect_ApplyAltWeaponDamage CreateFlamethrowerDamageAbility()
+{
+    local X2Effect_ApplyAltWeaponDamage WeaponDamageEffect;
+    local X2Condition_UnitProperty      Condition_UnitProperty;
+    local X2Condition_Phosphorus        PhosphorusCondition;
+
+    WeaponDamageEffect = new class'X2Effect_ApplyAltWeaponDamage';
+    WeaponDamageEffect.bExplosiveDamage = true;
+
+    PhosphorusCondition = new class'X2Condition_Phosphorus';
+    WeaponDamageEffect.TargetConditions.AddItem(PhosphorusCondition);
+
+    Condition_UnitProperty = new class'X2Condition_UnitProperty';
+    Condition_UnitProperty.ExcludeFriendlyToSource = false;
+    WeaponDamageEffect.TargetConditions.AddItem(Condition_UnitProperty);
+
+    return WeaponDamageEffect;
+}
+
 // This ability is granted automatically by the LW2WotC_Flamethrower
 // It checks if the user of the Flamethrower ability has the LW2WotC_Phosphorus ability, and if so, lets the Flamethrower damage robots
 static function X2AbilityTemplate PhosphorusBonus()
@@ -906,7 +924,7 @@ static function X2AbilityTemplate Roust()
     Charges.InitialCharges = default.ROUST_CHARGES;
     Charges.BonusAbility = 'LW2WotC_HighPressure';
     Charges.BonusItem = 'HighPressureTanks';
-    Charges.BonusCharges =  default.ROUST_HIGH_PRESSURE_CHARGES;
+    Charges.BonusAbilityCharges =  default.ROUST_HIGH_PRESSURE_CHARGES;
     Template.AbilityCharges = Charges;
 
     // Each attack costs one charge
@@ -944,15 +962,11 @@ static function X2AbilityTemplate Roust()
     CursorTarget = new class'X2AbilityTarget_Cursor';
     CursorTarget.bRestrictToWeaponRange = true;
     Template.AbilityTargetStyle = CursorTarget;
-
-    // Targeting works like the Heavy Weapon cone weapons (e.g. the flamethrower and shred cannon)
-    // NOTE: This is different than how it operates in LW2, where the technical flamethrower can wrap around cover
-    //       That's a bitch to port though. Maybe later...
+    
+    // Flamethrower can wrap around cover.
     Template.TargetingMethod = class'X2TargetingMethod_Cone_Flamethrower_LW';
-
-    // Multi target effects use a modified cone that can 'curve' around high cover
-    // NOTE: This is different than LW2. LW2 allowed different Gauntlet tiers to have a different cone length/radius, and some other stuff.
-    //       This is also hard to port. Maybe later...
+    
+    // Allows different Gauntlet tiers to have a different cone length/radius, and some other stuff.
     ConeMultiTarget = new class'X2AbilityMultiTarget_Cone_LWFlamethrower';
     ConeMultiTarget.bUseWeaponRadius = true;
     ConeMultiTarget.bIgnoreBlockingCover = true;
@@ -1005,7 +1019,6 @@ static function X2AbilityTemplate Roust()
     Template.bFragileDamageOnly = true;
 
     // Flamthrower animations and stuff
-    // Template.ActionFireClass = class'X2Action_Fire_Flamethrower';
     Template.ActionFireClass = class'X2Action_Fire_Flamethrower_LW';
     Template.ActivationSpeech = 'Flamethrower';
     Template.CinescriptCameraType = "Soldier_HeavyWeapons";
@@ -1085,7 +1098,7 @@ static function X2AbilityTemplate Firestorm()
     Charges.InitialCharges = default.FIRESTORM_NUM_CHARGES;
     Charges.BonusAbility = 'LW2WotC_HighPressure';
     Charges.BonusItem = 'HighPressureTanks';
-    Charges.BonusCharges = default.FIRESTORM_HIGH_PRESSURE_CHARGES;
+    Charges.BonusAbilityCharges = default.FIRESTORM_HIGH_PRESSURE_CHARGES;
     Template.AbilityCharges = Charges;
 
     ChargeCost = new class'X2AbilityCost_Charges';
@@ -1233,25 +1246,6 @@ static function X2AbilityTemplate FirestormFireImmunity()
 
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
     return Template;
-}
-
-static function X2Effect_ApplyAltWeaponDamage CreateFlamethrowerDamageAbility()
-{
-    local X2Effect_ApplyAltWeaponDamage WeaponDamageEffect;
-    local X2Condition_UnitProperty      Condition_UnitProperty;
-    local X2Condition_Phosphorus        PhosphorusCondition;
-
-    WeaponDamageEffect = new class'X2Effect_ApplyAltWeaponDamage';
-    WeaponDamageEffect.bExplosiveDamage = true;
-
-    PhosphorusCondition = new class'X2Condition_Phosphorus';
-    WeaponDamageEffect.TargetConditions.AddItem(PhosphorusCondition);
-
-    Condition_UnitProperty = new class'X2Condition_UnitProperty';
-    Condition_UnitProperty.ExcludeFriendlyToSource = false;
-    WeaponDamageEffect.TargetConditions.AddItem(Condition_UnitProperty);
-
-    return WeaponDamageEffect;
 }
 
 // Perk name:		Burnout

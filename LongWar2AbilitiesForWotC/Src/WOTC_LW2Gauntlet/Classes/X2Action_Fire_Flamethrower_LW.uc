@@ -1,3 +1,9 @@
+//---------------------------------------------------------------------------------------
+//  FILE:    X2Action_Fire_Flamethrower.uc
+//  AUTHOR:  Amineri / Pavonis Interactive
+//  PURPOSE: Action animation data for the Gauntlet's Flamethrower ability
+//---------------------------------------------------------------------------------------
+
 //-----------------------------------------------------------
 // Used by the visualizer system to control a Visualization Actor
 //-----------------------------------------------------------
@@ -19,28 +25,28 @@ class X2Action_Fire_Flamethrower_LW extends X2Action_Fire_Flamethrower config(Ga
 // var float ArcDelta, ConeAngle;
 
 
-var private bool beginAimingAnim; //need to know when aiming has occurred and is finished
-var private bool endAimingAnim;
+var private bool beginAimingAnim_LW; //need to know when aiming has occurred and is finished
+var private bool endAimingAnim_LW;
 
-var private float currDuration;
+var private float currDuration_LW;
 
 // var XComGameState_Ability AbilityState;
 // var array<TTile> SecondaryTiles;
 
-var private float CurrentFlameLength;
-var private float TargetFlameLength;
-var private bool bWaitingToFire;
+var private float CurrentFlameLength_LW;
+var private float TargetFlameLength_LW;
+var private bool bWaitingToFire_LW;
 
-var private array<StateObjectReference> alreadySignaledTracks;
+var private array<StateObjectReference> alreadySignaledTracks_LW;
 
-var private float AimZOffset;
+var private float AimZOffset_LW;
 
 function bool FindTrack(StateObjectReference find)
 {
     local int i;
-    for (i = 0; i < alreadySignaledTracks.Length; i++)
+    for (i = 0; i < alreadySignaledTracks_LW.Length; i++)
     {
-        if (find == alreadySignaledTracks[i])
+        if (find == alreadySignaledTracks_LW[i])
         {
             return true;
         }
@@ -103,8 +109,8 @@ function Init()
 
         // Update Z
         ShootAtLocation = Unit.GetShootAtLocation(eHit_Success, Unit.GetVisualizedStateReference());
-        AimZOffset = ShootAtLocation.Z - WorldData.GetFloorZForPosition(Unit.Location, true);
-        EndLocation.Z = WorldData.GetFloorZForPosition(EndLocation, true) + AimZOffset;
+        AimZOffset_LW = ShootAtLocation.Z - WorldData.GetFloorZForPosition(Unit.Location, true);
+        EndLocation.Z = WorldData.GetFloorZForPosition(EndLocation, true) + AimZOffset_LW;
 
         StartLocation.Z = EndLocation.Z;
         
@@ -132,17 +138,17 @@ function Init()
 //      `SHAPEMGR.DrawSphere(EndLocation, vect(15, 15, 15), MakeLinearColor(1, 0, 0, 1), true);
     }
 
-    currDuration = 0.0;
-    beginAimingAnim = false;
-    endAimingAnim = false;
+    currDuration_LW = 0.0;
+    beginAimingAnim_LW = false;
+    endAimingAnim_LW = false;
 
-    CurrentFlameLength = -1.0;
-    TargetFlameLength = -1.0;
+    CurrentFlameLength_LW = -1.0;
+    TargetFlameLength_LW = -1.0;
 }
 
 function AddProjectileVolley(X2UnifiedProjectile NewProjectile)
 {
-    bWaitingToFire = false;
+    bWaitingToFire_LW = false;
 }
 
 simulated state Executing
@@ -184,7 +190,7 @@ simulated state Executing
         VisMgr = `XCOMVISUALIZATIONMGR;
 
         //find endlocation of target arc
-        angle = ArcDelta * currDuration;
+        angle = ArcDelta * currDuration_LW;
         angle = angle - (ConeAngle / 2);
 
         TempDir.x = UnitDir.x * cos(angle) - UnitDir.y * sin(angle);
@@ -203,9 +209,9 @@ simulated state Executing
 
         if( UnitPawn.AimEnabled )
         {
-            if( !beginAimingAnim )
+            if( !beginAimingAnim_LW )
             {
-                beginAimingAnim = true;
+                beginAimingAnim_LW = true;
             }
 
             tile = `XWORLD.GetTileCoordinatesFromPosition(EndLocation);
@@ -271,9 +277,9 @@ simulated state Executing
 //          `SHAPEMGR.DrawLine(StartLocation, EndLocation, 6, MakeLinearColor(1.0f, 0.5f, 0.5f, 0.7f));
         }
 
-        if( beginAimingAnim && !UnitPawn.AimEnabled && !bWaitingToFire )
+        if( beginAimingAnim_LW && !UnitPawn.AimEnabled && !bWaitingToFire_LW )
         {
-            endAimingAnim = true;
+            endAimingAnim_LW = true;
         }
 
         //foreach AbilityContext.InputContext.VisibleTargetedTiles(iterTile)
@@ -299,41 +305,41 @@ simulated state Executing
 
         length = VSize(EndLocation - StartLocation);
 
-        TargetFlameLength = length;
+        TargetFlameLength_LW = length;
 
-        if( CurrentFlameLength == -1.0 )
+        if( CurrentFlameLength_LW == -1.0 )
         {
-            CurrentFlameLength = length;
+            CurrentFlameLength_LW = length;
         }
         else
         {
-            if( CurrentFlameLength < TargetFlameLength )
+            if( CurrentFlameLength_LW < TargetFlameLength_LW )
             {
-                CurrentFlameLength = Min(TargetFlameLength, CurrentFlameLength + (LengthUpdateSpeed / DT));
+                CurrentFlameLength_LW = Min(TargetFlameLength_LW, CurrentFlameLength_LW + (LengthUpdateSpeed / DT));
 
             }
-            else if( CurrentFlameLength > TargetFlameLength )
+            else if( CurrentFlameLength_LW > TargetFlameLength_LW )
             {
-                CurrentFlameLength = Max(TargetFlameLength, CurrentFlameLength - (LengthUpdateSpeed / DT));
+                CurrentFlameLength_LW = Max(TargetFlameLength_LW, CurrentFlameLength_LW - (LengthUpdateSpeed / DT));
             }
         }
 
 
-        SetParticleVector.X = CurrentFlameLength;
-        SetParticleVector.Y = CurrentFlameLength;
-        SetParticleVector.Z = CurrentFlameLength;
+        SetParticleVector.X = CurrentFlameLength_LW;
+        SetParticleVector.Y = CurrentFlameLength_LW;
+        SetParticleVector.Z = CurrentFlameLength_LW;
 
         foreach UnitPawn.AllOwnedComponents(class'ParticleSystemComponent', p)
         {
             if( ParticleSystemsForLength.Find(p.Template.Name) != INDEX_NONE )
             {
-                p.SetFloatParameter('Flamethrower_Length', CurrentFlameLength);
+                p.SetFloatParameter('Flamethrower_Length', CurrentFlameLength_LW);
                 p.SetVectorParameter('Flamethrower_Length', SetParticleVector);
             }
         }
 
         //Force the "impact" of the flame to have a delay so that the jet has time to spread out visibly before we apply damage
-        if (currDuration >= (SweepDuration * 0.35f))
+        if (currDuration_LW >= (SweepDuration * 0.35f))
         {
             //send intertract updates if the tiles are in line
             foreach AbilityContext.InputContext.MultiTargets(Target)
@@ -342,7 +348,7 @@ simulated state Executing
                 if (FindSameXYTile(targetObject.TileLocation, lineTiles) && (!FindTrack(Target)))
                 {
                     `XEVENTMGR.TriggerEvent('Visualizer_ProjectileHit', targetObject, self);
-                    alreadySignaledTracks.AddItem(Target);
+                    alreadySignaledTracks_LW.AddItem(Target);
                 }
             }
 
@@ -354,7 +360,7 @@ simulated state Executing
                 if (!FindTrack(Target))
                 {
                     `XEVENTMGR.TriggerEvent('Visualizer_WorldDamage', EnvironmentDamageEvent, self);
-                    alreadySignaledTracks.AddItem(Target);
+                    alreadySignaledTracks_LW.AddItem(Target);
                 }
 
                 for (i = 0; i < worldEffectFireActionArray.length; i++)
@@ -362,7 +368,7 @@ simulated state Executing
                     terrainDamage = X2Action_ApplyWeaponDamageToTerrain(worldEffectFireActionArray[i]);
                     if (terrainDamage != none && terrainDamage.Metadata.StateObject_NewState.ObjectID == EnvironmentDamageEvent.ObjectID)
                     {
-                        if (!endAimingAnim)
+                        if (!endAimingAnim_LW)
                         {
                             terrainDamage.DoPartialTileUpdate(lineTiles);
                         }
@@ -380,7 +386,7 @@ simulated state Executing
                 if (FindSameXYTile(InteractiveObject.TileLocation, lineTiles) && (!FindTrack(Target)))
                 {
                     `XEVENTMGR.TriggerEvent('Visualizer_ProjectileHit', InteractiveObject, self);
-                    alreadySignaledTracks.AddItem(Target);
+                    alreadySignaledTracks_LW.AddItem(Target);
                 }
             }
 
@@ -389,20 +395,20 @@ simulated state Executing
             foreach VisualizeGameState.IterateByClassType(class'XComGameState_WorldEffectTileData', WorldEffectTileData)
             {
                 Target = WorldEffectTileData.GetReference();
-                if (worldEffectFireActionArray.length > 0 && beginAimingAnim)
+                if (worldEffectFireActionArray.length > 0 && beginAimingAnim_LW)
                 {
                     for (i = 0; i < worldEffectFireActionArray.length; i++)
                     {
                         worldEffectFireAction = X2Action_UpdateWorldEffects_Fire(worldEffectFireActionArray[i]);
                         if (worldEffectFireAction != none && worldEffectFireAction.Metadata.StateObject_NewState.ObjectID == WorldEffectTileData.ObjectID)
                         {
-                            if (!endAimingAnim)
+                            if (!endAimingAnim_LW)
                             {
                                 if (!FindTrack(Target))
                                 {
                                     worldEffectFireAction.BeginSyncWithOtherAction();
                                     `XEVENTMGR.TriggerEvent('Visualizer_TileData', WorldEffectTileData, self);
-                                    alreadySignaledTracks.AddItem(Target);
+                                    alreadySignaledTracks_LW.AddItem(Target);
                                 }
 
                                 worldEffectFireAction.SetActiveTiles(lineTiles);
@@ -428,13 +434,13 @@ simulated state Executing
             }
         }
 
-        if( !bWaitingToFire )
+        if( !bWaitingToFire_LW )
         {
             //update tick
-            currDuration += DT;
+            currDuration_LW += DT;
         }
 
-        if( endAimingAnim && currDuration >= SweepDuration )
+        if( endAimingAnim_LW && currDuration_LW >= SweepDuration )
         {
             CompleteAction();
         }
@@ -465,5 +471,5 @@ DefaultProperties
     NotifyTargetTimer = 0.75;
     TimeoutSeconds = 10.0f; //Should eventually be an estimate of how long we will run
     bNotifyMultiTargetsAtOnce = true
-    bWaitingToFire = true;  
+    bWaitingToFire_LW = true;  
 }

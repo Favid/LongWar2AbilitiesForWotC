@@ -7,43 +7,50 @@
 
 class UIUtilities_LW extends Object config(LW_Overhaul);
 
+//========================================================
+// Favid Note: Most of the code in this file is for misc. UI stuff, mostly dealing with new mission types.
+//             For the Gauntlet, we only needed this for the helper functions dealing with the rocket launcher
+//             and its scatter.
+//             I am leaving the rest of the code here, commented out, soley for context and future reference.
+//========================================================
+
 // `include(LW_Overhaul\Src\LW_Overhaul.uci)
 
-var config array<name> EvacFlareMissions;
-var config array<name> EvacFlareEscapeMissions;
-var config array<name> FixedExitMissions;
-var config array<name> DelayedEvacMissions;
-var config array<name> NoEvacMissions;
-var config array<name> ObjectiveTimerMissions;
-var config array<name> EvacTimerMissions;
-
-var localized string m_strInfiltrationMission;
-var localized string m_strQuickResponseMission;
-var localized string m_strFixedEvacLocation;
-var localized string m_strFlareEvac;
-var localized string m_strDelayedEvac;
-var localized string m_strNoEvac;
-var localized string m_strMaxSquadSize;
-var localized string m_strConcealedStart;
-var localized string m_strRevealedStart;
-var localized string m_strObjectiveTimer;
-var localized string m_strExtractionTimer;
-var localized string m_strGetCorpses;
-var localized string m_strSweepObjective;
-var localized string m_strEvacRequired;
-var localized string m_strTurnSingular;
-var localized string m_strTurnPlural;
-var localized string m_strMinimumInfiltration;
-var localized string m_strYellowAlert;
+//var config array<name> EvacFlareMissions;
+//var config array<name> EvacFlareEscapeMissions;
+//var config array<name> FixedExitMissions;
+//var config array<name> DelayedEvacMissions;
+//var config array<name> NoEvacMissions;
+//var config array<name> ObjectiveTimerMissions;
+//var config array<name> EvacTimerMissions;
+//
+//var localized string m_strInfiltrationMission;
+//var localized string m_strQuickResponseMission;
+//var localized string m_strFixedEvacLocation;
+//var localized string m_strFlareEvac;
+//var localized string m_strDelayedEvac;
+//var localized string m_strNoEvac;
+//var localized string m_strMaxSquadSize;
+//var localized string m_strConcealedStart;
+//var localized string m_strRevealedStart;
+//var localized string m_strObjectiveTimer;
+//var localized string m_strExtractionTimer;
+//var localized string m_strGetCorpses;
+//var localized string m_strSweepObjective;
+//var localized string m_strEvacRequired;
+//var localized string m_strTurnSingular;
+//var localized string m_strTurnPlural;
+//var localized string m_strMinimumInfiltration;
+//var localized string m_strYellowAlert;
 var localized string m_sAverageScatterText;
-var localized string m_strBullet;
-
-var localized string m_strStripWeaponUpgrades;
-var localized string m_strStripWeaponUpgradesLower;
-var localized string m_strStripWeaponUpgradesConfirm;
-var localized string m_strStripWeaponUpgradesConfirmDesc;
-var localized string m_strTooltipStripWeapons;
-var localized string m_strVIPCaptureReward;
+//var localized string m_strBullet;
+//
+//var localized string m_strStripWeaponUpgrades;
+//var localized string m_strStripWeaponUpgradesLower;
+//var localized string m_strStripWeaponUpgradesConfirm;
+//var localized string m_strStripWeaponUpgradesConfirmDesc;
+//var localized string m_strTooltipStripWeapons;
+//var localized string m_strVIPCaptureReward;
 
 // Initiate the process of taking a unit's picture. May immediately return the picture if it's available, or return none if the
 // picture isn't yet available but will be taken asynchronously. The provided callback will be invoked when the picture is ready, and
