@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------------------
-//  FILE:    X2Ability_LW_TechnicalAbilitySet.uc
+//  FILE:    X2Ability_LW2WotC_GauntletAbilitySet.uc
 //  AUTHOR:  Amineri (Pavonis Interactive)
 //  PURPOSE: Defines all Long War Gauntlet-specific abilities
 //---------------------------------------------------------------------------------------
 
-class X2Ability_LW_TechnicalAbilitySet extends X2Ability
+class X2Ability_LW2WotC_GauntletAbilitySet extends X2Ability
     dependson (XComGameStateContext_Ability) config(LW2GauntletWOTC);
 
 var config int FLAMETHROWER_BURNING_BASE_DAMAGE;

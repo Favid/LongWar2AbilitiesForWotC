@@ -10,22 +10,6 @@ static event OnLoadedSavedGame()
 
 static event OnPostTemplatesCreated()
 {
-	local X2ItemTemplateManager				ItemTemplateMgr;
-	
-	`REDSCREEN("LW2 Gauntlet");
-	ItemTemplateMgr = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
-    if(ItemTemplateMgr.FindItemTemplate('LWGauntlet_CV') == none)
-    {
-        `REDSCREEN("LWGauntlet_CV not found");
-    }
-    if(ItemTemplateMgr.FindItemTemplate('LWGauntlet_MG') == none)
-    {
-        `REDSCREEN("LWGauntlet_MG not found");
-    }
-    if(ItemTemplateMgr.FindItemTemplate('LWGauntlet_BM') == none)
-    {
-        `REDSCREEN("LWGauntlet_BM not found");
-    }
 }
 
 /// <summary>
@@ -46,7 +30,7 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 	switch(Type)
 	{
         case 'JAVELIN_ROCKETS_BONUS_RANGE_TILES':
-            OutString = string(class'X2Ability_LW_TechnicalAbilitySet'.default.JAVELIN_ROCKETS_BONUS_RANGE_TILES);
+            OutString = string(class'X2Ability_LW2WotC_GauntletAbilitySet'.default.JAVELIN_ROCKETS_BONUS_RANGE_TILES);
 			return true;
 
 		case 'ROCKETSCATTER':
@@ -58,8 +42,8 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 
 			if (TacticalHUD != none && TacticalHUD.GetTargetingMethod() != none && UnitState != none)
 			{
-				NumTiles = class'X2Ability_LW_TechnicalAbilitySet'.static.GetNumAimRolls(UnitState);
-				Outstring = class'X2Ability_LW_TechnicalAbilitySet'.default.strMaxScatter $ string(NumTiles);
+				NumTiles = class'X2Ability_LW2WotC_GauntletAbilitySet'.static.GetNumAimRolls(UnitState);
+				Outstring = class'X2Ability_LW2WotC_GauntletAbilitySet'.default.strMaxScatter $ string(NumTiles);
 			}
 			else
 			{

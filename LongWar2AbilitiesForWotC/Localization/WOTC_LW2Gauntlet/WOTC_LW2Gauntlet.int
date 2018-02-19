@@ -35,5 +35,5 @@ AbilityDescName="lw_gauntlet"
 [UIUtilities_LW]
 m_sAverageScatterText="± <XGParam:StrValue0/> Tiles"
 
-[X2Ability_LW_TechnicalAbilitySet]
+[X2Ability_LW2WotC_GauntletAbilitySet]
 strMaxScatter="\nMax Scatter (Tiles): "

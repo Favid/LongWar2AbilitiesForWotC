@@ -506,7 +506,7 @@
     <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2AbilityToHitCalc_StatCheck_LWFlamethrower.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Ability_LW_TechnicalAbilitySet.uc">
+    <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Ability_LW2WotC_GauntletAbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\WOTC_LW2Gauntlet\Classes\X2Action_Fire_Firestorm.uc">

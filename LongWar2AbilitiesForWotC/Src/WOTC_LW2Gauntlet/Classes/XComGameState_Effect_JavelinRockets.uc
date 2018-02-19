@@ -73,9 +73,9 @@ function EventListenerReturn OnGetItemRange(Object EventData, Object EventSource
     // make sure the weapon is a gauntlet and that we are using a rocket ability
     if(WeaponTemplate != none)
     {
-        if(AbilityName == 'LW2WotC_RocketLauncher' || AbilityName == 'LW2WotC_BlasterLauncher' || class'X2Ability_LW_TechnicalAbilitySet'.default.JAVELIN_ROCKETS_VALID_ABILITIES.Find (AbilityName) != -1)
+        if(AbilityName == 'LW2WotC_RocketLauncher' || AbilityName == 'LW2WotC_BlasterLauncher' || class'X2Ability_LW2WotC_GauntletAbilitySet'.default.JAVELIN_ROCKETS_VALID_ABILITIES.Find (AbilityName) != -1)
         {
-            OverrideTuple.Data[1].i += class'X2Ability_LW_TechnicalAbilitySet'.default.JAVELIN_ROCKETS_BONUS_RANGE_TILES;
+            OverrideTuple.Data[1].i += class'X2Ability_LW2WotC_GauntletAbilitySet'.default.JAVELIN_ROCKETS_BONUS_RANGE_TILES;
         }
     }
     

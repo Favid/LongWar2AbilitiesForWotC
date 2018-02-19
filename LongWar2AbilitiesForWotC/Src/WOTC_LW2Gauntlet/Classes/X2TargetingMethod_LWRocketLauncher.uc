@@ -28,7 +28,7 @@ function GetTargetLocations(out array<Vector> TargetLocations)
     local vector ScatteredTargetLoc;
 
     ScatteredTargetLoc = NewTargetLocation;
-    ScatteredTargetLoc = class'X2Ability_LW_TechnicalAbilitySet'.static.GetScatterAmount(UnitState, ScatteredTargetLoc);
+    ScatteredTargetLoc = class'X2Ability_LW2WotC_GauntletAbilitySet'.static.GetScatterAmount(UnitState, ScatteredTargetLoc);
 
     NewTargetLocation = ScatteredTargetLoc;
     TargetLocations.Length = 0;
@@ -118,7 +118,7 @@ function Update(float DeltaTime)
         //update expected scatter amount display
         vMouseCursorPos = class'UIUtilities_LW'.static.GetMouseCoords();
         ScatterAmountText.SetPosition(vMouseCursorPos.X + 2, vMouseCursorPos.Y + 14); // this follows cursor
-        ExpectedScatter = class'X2Ability_LW_TechnicalAbilitySet'.static.GetExpectedScatter(UnitState, NewTargetLocation);
+        ExpectedScatter = class'X2Ability_LW2WotC_GauntletAbilitySet'.static.GetExpectedScatter(UnitState, NewTargetLocation);
         ScatterAmountText.SetHTMLText(class'UIUtilities_LW'.static.GetHTMLAverageScatterText(ExpectedScatter));
     }
 
