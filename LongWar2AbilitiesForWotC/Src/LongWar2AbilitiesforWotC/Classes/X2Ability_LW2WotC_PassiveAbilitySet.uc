@@ -55,6 +55,7 @@ var config int STING_GRENADE_STUN_LEVEL;
 var config int BLUESCREENBOMB_HACK_DEFENSE_CHANGE;
 var config int COMMISSAR_HIT_BONUS;
 var config int BOMBARDIER_BONUS_RANGE_TILES;
+var config int FAILSAFE_PCT_CHANCE;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -130,6 +131,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Whirlwind());
 	Templates.AddItem(Commissar());
 	Templates.AddItem(Bombardier());
+	Templates.AddItem(Failsafe());
 
 	//Templates.AddItem(AddSoulStealTriggered2());
 	//Templates.AddItem(AddBastion());
@@ -1725,4 +1727,19 @@ static function X2AbilityTemplate Bombardier()
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_Bombardier', "img:///UILibrary_LW_PerkPack.LW_AbilityBombard", false, BombardierEffect);
+}
+
+// Perk name:		Failsafe
+// Perk effect:		If you fail a hack, you prevent any negative effects from occurring.
+// Localized text:	"If you fail a hack, you prevent any negative effects from occurring."
+// Config:			(AbilityName="LW2WotC_Failsafe")
+static function X2AbilityTemplate Failsafe()
+{
+	local X2Effect_LW2WotC_Failsafe	FailsafeEffect;
+
+    // Effect that grants the failsafe effect
+	FailsafeEffect = new class 'X2Effect_LW2WotC_Failsafe';
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_Failsafe', "img:///UILibrary_LW_PerkPack.LW_AbilityFailsafe", false, FailsafeEffect);
 }

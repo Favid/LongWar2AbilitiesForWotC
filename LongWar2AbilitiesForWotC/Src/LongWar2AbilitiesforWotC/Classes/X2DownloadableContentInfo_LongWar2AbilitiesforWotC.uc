@@ -213,10 +213,6 @@ static event InstallNewCampaign(XComGameState StartState)
 static function bool AbilityTagExpandHandler(string InString, out string OutString)
 {
 	local name Type;
-	local UITacticalHUD TacticalHUD;
-	local StateObjectReference UnitRef;
-	local XComGameState_Unit UnitState;
-	local int NumTiles;
 
 	Type = name(InString);
 	switch(Type)
