@@ -26,7 +26,7 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
 		{
 			return 0;
 		}
-		if (AbilityState.GetMyTemplateName() == 'LWRocketLauncher' || AbilityState.GetMyTemplateName() == 'LWBlasterLauncher' || AbilityState.GetMyTemplateName() == 'MicroMissiles')
+		if (AbilityState.GetMyTemplateName() == 'LW2WotC_RocketLauncher' || AbilityState.GetMyTemplateName() == 'LW2WotC_BlasterLauncher' || AbilityState.GetMyTemplateName() == 'MicroMissiles')
 		{
 			return 0;
 		}
