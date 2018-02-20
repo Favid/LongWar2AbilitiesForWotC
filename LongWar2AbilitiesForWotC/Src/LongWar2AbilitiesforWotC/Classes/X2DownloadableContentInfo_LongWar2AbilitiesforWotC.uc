@@ -602,6 +602,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'STEADY_WEAPON_AIM_BONUS':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.STEADY_WEAPON_AIM_BONUS);
 			return true;
+		case 'BOMBARDIER_BONUS_RANGE_TILES':
+			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.BOMBARDIER_BONUS_RANGE_TILES);
+			return true;
 		default: 
 			return false;
 	}

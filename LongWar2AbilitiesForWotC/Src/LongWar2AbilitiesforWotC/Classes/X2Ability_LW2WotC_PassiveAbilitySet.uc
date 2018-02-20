@@ -54,6 +54,7 @@ var config int STING_GRENADE_STUN_CHANCE;
 var config int STING_GRENADE_STUN_LEVEL;
 var config int BLUESCREENBOMB_HACK_DEFENSE_CHANGE;
 var config int COMMISSAR_HIT_BONUS;
+var config int BOMBARDIER_BONUS_RANGE_TILES;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -128,6 +129,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(BluescreenBombs());
 	Templates.AddItem(Whirlwind());
 	Templates.AddItem(Commissar());
+	Templates.AddItem(Bombardier());
 
 	//Templates.AddItem(AddSoulStealTriggered2());
 	//Templates.AddItem(AddBastion());
@@ -1708,4 +1710,19 @@ static function X2AbilityTemplate Commissar()
 	Template.AddTargetEffect (DamageModifier);
 
 	return Template;		
+}
+
+// Perk name:		Bombardier
+// Perk effect:		You may throw or launch grenades with additional range.
+// Localized text:	"You may throw or launch grenades <Ability:BOMBARDIER_BONUS_RANGE_TILES> additional tiles."
+// Config:			(AbilityName="X2Effect_LW2WotC_Bombardier")
+static function X2AbilityTemplate Bombardier()
+{
+	local X2Effect_LW2WotC_Bombardier	BombardierEffect;
+
+    // Effect that grants additional throw range with grenades
+	BombardierEffect = new class 'X2Effect_LW2WotC_Bombardier';
+
+	// Create the template using a helper function
+	return Passive('LW2WotC_Bombardier', "img:///UILibrary_LW_PerkPack.LW_AbilityBombard", false, BombardierEffect);
 }
