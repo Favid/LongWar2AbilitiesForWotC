@@ -132,6 +132,9 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Commissar());
 	Templates.AddItem(Bombardier());
 	Templates.AddItem(Failsafe());
+	Templates.AddItem(Bastion());
+	Templates.AddItem(BastionPassive());
+	Templates.AddItem(BastionCleanse());
 
 	//Templates.AddItem(AddSoulStealTriggered2());
 	//Templates.AddItem(AddBastion());
@@ -1742,4 +1745,105 @@ static function X2AbilityTemplate Failsafe()
 
 	// Create the template using a helper function
 	return Passive('LW2WotC_Failsafe', "img:///UILibrary_LW_PerkPack.LW_AbilityFailsafe", false, FailsafeEffect);
+}
+
+// Perk name:		Bastion
+// Perk effect:		Fortress now provides immunity to nearby teammates.
+// Localized text:	"Fortress now provides immunity to nearby teammates."
+// Config:			(AbilityName="LW2WotC_Bastion",  ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Bastion()
+{
+	local X2AbilityTemplate             Template;
+	local X2Effect_LW2WotC_Bastion      Effect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Bastion');
+
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityBastion";
+	Template.AbilitySourceName = 'eAbilitySource_Psionic';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.bCrossClassEligible = false;
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+	Template.AbilityMultiTargetStyle = new class'X2AbilityMultiTarget_AllAllies';
+
+	Effect = new class'X2Effect_LW2WotC_Bastion';
+	Effect.BuildPersistentEffect(1, true, false);
+	Effect.SetDisplayInfo(ePerkBuff_Bonus, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, true,, Template.AbilitySourceName);
+	Template.AddMultiTargetEffect(Effect);
+
+	Template.AdditionalAbilities.AddItem('LW2WotC_Bastion_Cleanse');
+	Template.AdditionalAbilities.AddItem('LW2WotC_Bastion_Passive');
+
+	Template.bSkipFireAction = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	Template.PrerequisiteAbilities.AddItem('Fortress');
+	Template.PrerequisiteAbilities.AddItem('LW2WotC_Solace');
+
+	return Template;
+}
+
+// Granted by LW2WotC_Bastion
+// Its purpose is to simply add a passive icon for Bastion
+static function X2AbilityTemplate BastionPassive()
+{
+	return PurePassive('LW2WotC_Bastion_Passive', "img:///UILibrary_LW_PerkPack.LW_AbilityBastion", , 'eAbilitySource_Psionic');
+}
+
+// Granted by LW2WotC_Bastion
+// Removes physical status effects from nearby allies
+static function X2AbilityTemplate BastionCleanse()
+{
+	local X2AbilityTemplate                     Template;
+	local X2AbilityTrigger_EventListener        EventListener;
+	local X2Condition_UnitProperty              DistanceCondition;
+	local X2Effect_RemoveEffects				FortressRemoveEffect;
+	local X2Condition_UnitProperty              FriendCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Bastion_Cleanse');
+
+	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityBastion";
+	Template.AbilitySourceName = 'eAbilitySource_Psionic';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+
+	EventListener = new class'X2AbilityTrigger_EventListener';
+	EventListener.ListenerData.Deferral = ELD_OnStateSubmitted;
+	EventListener.ListenerData.EventID = 'UnitMoveFinished';
+	EventListener.ListenerData.Filter = eFilter_None;
+	EventListener.ListenerData.EventFn = class'XComGameState_Ability'.static.SolaceCleanseListener;  // keep this, since it's generically just calling the associate ability
+	Template.AbilityTriggers.AddItem(EventListener);
+
+	//removes any ongoing effects
+	FortressRemoveEffect = new class'X2Effect_RemoveEffects';
+	FortressRemoveEffect.EffectNamesToRemove.AddItem(class'X2StatusEffects'.default.AcidBurningName);
+	FortressRemoveEffect.EffectNamesToRemove.AddItem(class'X2StatusEffects'.default.BurningName);
+	FortressRemoveEffect.EffectNamesToRemove.AddItem(class'X2StatusEffects'.default.PoisonedName);
+	FortressRemoveEffect.EffectNamesToRemove.AddItem(class'X2Effect_ParthenogenicPoison'.default.EffectName);
+	FriendCondition = new class'X2Condition_UnitProperty';
+	FriendCondition.ExcludeFriendlyToSource = false;
+	FriendCondition.ExcludeHostileToSource = true;
+	FortressRemoveEffect.TargetConditions.AddItem(FriendCondition);
+	Template.AddTargetEffect(FortressRemoveEffect);
+
+	DistanceCondition = new class'X2Condition_UnitProperty';
+	DistanceCondition.RequireWithinRange = true;
+	DistanceCondition.WithinRange = Sqrt(class'X2Effect_LW2WotC_Bastion'.default.BASTION_DISTANCE_SQ) *  class'XComWorldData'.const.WORLD_StepSize; // same as Solace for now
+	DistanceCondition.ExcludeFriendlyToSource = false;
+	DistanceCondition.ExcludeHostileToSource = false;
+	Template.AbilityTargetConditions.AddItem(DistanceCondition);
+
+	Template.bSkipFireAction = true;
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	return Template;
 }
