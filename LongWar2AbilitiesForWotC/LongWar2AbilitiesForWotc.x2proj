@@ -193,6 +193,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Ability_LW2WotC_SuppressionAbilitySet.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Condition_LW2WotC_Solace.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Condition_LW2WotC_SupportGrenade.uc">
       <SubType>Content</SubType>
     </Content>

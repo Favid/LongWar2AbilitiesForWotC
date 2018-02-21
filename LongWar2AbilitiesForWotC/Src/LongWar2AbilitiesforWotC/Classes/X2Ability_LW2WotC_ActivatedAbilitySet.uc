@@ -105,6 +105,8 @@ var config int FLUSH_DAMAGE_PERCENT_MALUS;
 var config int CLUTCH_SHOT_CHARGES;
 var config int GUNSLINGER_COOLDOWN;
 var config int GUNSLINGER_TILES_RANGE;
+var config int SOLACE_ACTION_POINTS;
+var config int SOLACE_COOLDOWN;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -144,6 +146,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(SteadyWeapon());
 	Templates.AddItem(MindMerge());
 	Templates.AddItem(SoulMerge());
+	Templates.AddItem(Solace());
 	
 	return Templates;
 }
@@ -2268,6 +2271,93 @@ static function X2AbilityTemplate SoulMerge()
 
 	Template = PurePassive('LW2WotC_SoulMerge', "img:///UILibrary_LW_PerkPack.LW_AbilitySoulMerge", false, 'eAbilitySource_Psionic');
 	Template.PrerequisiteAbilities.AddItem('LW2WotC_MindMerge');
+
+	return Template;
+}
+
+// Perk name:		Solace
+// Perk effect:		The Psi Operative may immediately extinguish mental impairments for a squadmate.
+// Localized text:	"The Psi Operative may immediately extinguish mental impairments for a squadmate."
+// Config:			(AbilityName="LW2WotC_Solace", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
+static function X2AbilityTemplate Solace()
+{
+	local X2AbilityTemplate						Template;
+	local X2AbilityCooldown						Cooldown;
+	local X2AbilityCost_ActionPoints			ActionPointCost;
+	local X2Effect_RemoveEffects                MentalEffectRemovalEffect;
+	local X2Effect_RemoveEffects                MindControlRemovalEffect;
+	local X2Condition_UnitProperty              EnemyCondition;
+	local X2Condition_UnitProperty              FriendCondition;
+	local X2Condition_LW2WotC_Solace			SolaceCondition;
+    local X2Effect_StunRecover                  StunRecoverEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Solace');
+
+    // Standard setup for an activated ability
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_solace";
+    Template.AbilitySourceName = 'eAbilitySource_Psionic';
+	Template.Hostility = eHostility_Neutral;
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SimpleSingleTarget;
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.bCrossClassEligible = false;
+	Template.bDisplayInUITooltip = true;
+	Template.bDisplayInUITacticalText = true;
+	Template.DisplayTargetHitChance = false;
+	Template.bLimitTargetIcons = true;
+
+    // Configurable action point cost, does not end user's turn
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = default.SOLACE_ACTION_POINTS;
+	ActionPointCost.bConsumeAllPoints = false;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+    // Configurable cooldown
+	Cooldown = new class'X2AbilityCooldown';
+	Cooldown.iNumTurns = default.SOLACE_COOLDOWN;
+	Template.AbilityCooldown = Cooldown;
+
+    // Targets must be visible
+	Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
+
+    // This condition defines target conditions - must be a human ally suffering from a mental status effect
+	SolaceCondition = new class'X2Condition_LW2WotC_Solace';
+	Template.AbilityTargetConditions.AddItem(SolaceCondition);
+
+	//Naming confusion: CreateMindControlRemoveEffects removes everything _except_ mind control, and is used when mind-controlling an enemy.
+	//We want to remove all those other status effects on friendly units; we want to remove mind-control itself from enemy units.
+	//(Enemy units with mind-control will be back on our team once it's removed.)
+
+	StunRecoverEffect = class'X2StatusEffects'.static.CreateStunRecoverEffect();
+    Template.AddTargetEffect(StunRecoverEffect);
+
+	MentalEffectRemovalEffect = class'X2StatusEffects'.static.CreateMindControlRemoveEffects();
+	FriendCondition = new class'X2Condition_UnitProperty';
+	FriendCondition.ExcludeFriendlyToSource = false;
+	FriendCondition.ExcludeHostileToSource = true;
+	MentalEffectRemovalEffect.TargetConditions.AddItem(FriendCondition);
+	Template.AddTargetEffect(MentalEffectRemovalEffect);
+
+	MindControlRemovalEffect = new class'X2Effect_RemoveEffects';
+	MindControlRemovalEffect.EffectNamesToRemove.AddItem(class'X2Effect_MindControl'.default.EffectName);
+	EnemyCondition = new class'X2Condition_UnitProperty';
+	EnemyCondition.ExcludeFriendlyToSource = true;
+	EnemyCondition.ExcludeHostileToSource = false;
+	MindControlRemovalEffect.TargetConditions.AddItem(EnemyCondition);
+	Template.AddTargetEffect(MindControlRemovalEffect);
+
+	// Solace recovers action points like Revival Protocol
+	Template.AddTargetEffect(new class'X2Effect_RestoreActionPoints');
+
+    Template.ActivationSpeech = 'Inspire';
+    Template.bShowActivation = true;
+    Template.CustomFireAnim = 'HL_Psi_ProjectileMedium';
+    Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+    Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+    Template.CinescriptCameraType = "Psionic_FireAtUnit";
 
 	return Template;
 }

@@ -625,6 +625,9 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'SOUL_MERGE_COOLDOWN_REDUCTION':
 			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SOUL_MERGE_COOLDOWN_REDUCTION);
 			return true;
+		case 'SOLACE_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SOLACE_COOLDOWN);
+			return true;
 		default: 
 			return false;
 	}
