@@ -23,7 +23,6 @@ protected simulated function OnEffectAdded(const out EffectAppliedData ApplyEffe
     local XComGameState_Unit    Caster, Target;
     local XComGameState_Item    SourceItem;
     local StateObjectReference  SoulMergeRef;
-    //local UnitValue               MindMergeShieldHP;
 
     WillChange.StatType = eStat_Will;
     ShieldHPChange.StatType = eStat_ShieldHP;
@@ -41,7 +40,7 @@ protected simulated function OnEffectAdded(const out EffectAppliedData ApplyEffe
         SourceItem = XComGameState_Item(class'XComGameStateHistory'.static.GetGameStateHistory().GetGameStateForObjectID(ApplyEffectParameters.ItemStateObjectRef.ObjectID));
     }
     
-    SoulMergeRef = Caster.FindAbility('SoulMerge');
+    SoulMergeRef = Caster.FindAbility('LW2WotC_SoulMerge');
     if (SoulMergeRef.ObjectID == 0)
     {
         WillChange.StatAmount = BaseWillIncrease + (Caster.GetCurrentStat(eStat_PsiOffense) / MindMergeWillDivisor);
@@ -116,7 +115,6 @@ simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParame
     MindMergeGrantedShieldHP = int(MindMergeShieldHP.fValue);       // How many you got
     PreMindMergeShieldHP = int(OtherShieldHP.fValue);               // how many you had
     FullyShieldedHP = PreMindMergeShieldHP + MindMergeGrantedShieldHP;
-    //ShieldHP = UnitState.GetCurrentStat(eStat_ShieldHP);                      // how many you have now
 
     ShieldHPDamage = FullyShieldedHP - PreRemovalShieldHP;
     if (ShieldHPDamage > 0 && PremindMergeShieldHP > 0 && ShieldHPDamage < FullyShieldedHP)

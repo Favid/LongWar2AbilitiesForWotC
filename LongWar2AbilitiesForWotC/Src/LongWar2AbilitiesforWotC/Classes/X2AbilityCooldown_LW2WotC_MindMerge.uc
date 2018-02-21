@@ -7,7 +7,7 @@ simulated function int GetNumTurns(XComGameState_Ability kAbility, XComGameState
 {
     local StateObjectReference  SoulMergeRef;
 
-    SoulMergeRef = XComGameState_Unit(AffectState).FindAbility('SoulMerge');
+    SoulMergeRef = XComGameState_Unit(AffectState).FindAbility('LW2WotC_SoulMerge');
     if (SoulMergeRef.ObjectID != 0)
     {
         return MIND_MERGE_COOLDOWN - SOUL_MERGE_COOLDOWN_REDUCTION;

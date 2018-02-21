@@ -601,6 +601,30 @@ static function bool AbilityTagExpandHandler(string InString, out string OutStri
 		case 'BOMBARDIER_BONUS_RANGE_TILES':
 			OutString = string(class'X2Ability_LW2WotC_PassiveAbilitySet'.default.BOMBARDIER_BONUS_RANGE_TILES);
 			return true;
+		case 'MIND_MERGE_SHIELDHP_DIVISOR':
+			OutString = string(int(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.MIND_MERGE_SHIELDHP_DIVISOR));
+			return true;
+		case 'MIND_MERGE_WILL_DIVISOR':
+			OutString = string(int(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.MIND_MERGE_WILL_DIVISOR));
+			return true;
+		case 'MIND_MERGE_CRIT_DIVISOR':
+			OutString = string(int(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.MIND_MERGE_CRIT_DIVISOR));
+			return true;
+		case 'MIND_MERGE_COOLDOWN':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.MIND_MERGE_COOLDOWN);
+			return true;
+		case 'SOUL_MERGE_SHIELDHP_DIVISOR':
+			OutString = string(int(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SOUL_MERGE_SHIELDHP_DIVISOR));
+			return true;
+		case 'SOUL_MERGE_WILL_DIVISOR':
+			OutString = string(int(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SOUL_MERGE_WILL_DIVISOR));
+			return true;
+		case 'SOUL_MERGE_CRIT_DIVISOR':
+			OutString = string(int(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SOUL_MERGE_CRIT_DIVISOR));
+			return true;
+		case 'SOUL_MERGE_COOLDOWN_REDUCTION':
+			OutString = string(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SOUL_MERGE_COOLDOWN_REDUCTION);
+			return true;
 		default: 
 			return false;
 	}

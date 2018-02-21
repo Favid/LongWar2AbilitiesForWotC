@@ -2169,6 +2169,10 @@ static function X2AbilityTemplate SteadyWeapon()
 	return Template;
 }
 
+// Perk name:		Mind Merge
+// Perk effect:		Grants bonus will, critical chance and ablative hit points to an ally until the beginning of the player's next turn.
+// Localized text:	"Grants bonus will, critical chance and ablative hit points to an ally until the beginning of the player's next turn."
+// Config:			(AbilityName="LW2WotC_MindMerge", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
 static function X2AbilityTemplate MindMerge()
 {
 	local X2AbilityTemplate				Template;
@@ -2244,7 +2248,7 @@ static function X2AbilityTemplate MindMerge()
 	MindMergeEFfect.SetDisplayInfo (ePerkBuff_Bonus, Template.LocFriendlyName, Template.GetMyHelpText(), Template.IconImage,,, Template.AbilitySourceName);
 	Template.AddTargetEffect (MindMergeEffect);
 
-	Template.AssociatedPassives.AddItem('SoulMerge');
+	Template.AssociatedPassives.AddItem('LW2WotC_SoulMerge');
 
 	Template.ActivationSpeech = 'PsionicsInspiration';
 	Template.CinescriptCameraType = "Psionic_FireAtUnit";
@@ -2254,11 +2258,16 @@ static function X2AbilityTemplate MindMerge()
 	return Template;
 }
 
+// Perk name:		Soul Merge
+// Perk effect:		Increases effectiveness of Mind Merge by conferring larger bonuses to critical chance, will and ablative hit points, and reducing its cooldown period.
+// Localized text:	"Increases effectiveness of Mind Merge by conferring larger bonuses to critical chance, will and ablative hit points, and reducing its cooldown period."
+// Config:			(AbilityName="LW2WotC_SoulMerge", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
 static function X2AbilityTemplate SoulMerge()
 {
 	local X2AbilityTemplate                 Template;
 
 	Template = PurePassive('LW2WotC_SoulMerge', "img:///UILibrary_LW_PerkPack.LW_AbilitySoulMerge", false, 'eAbilitySource_Psionic');
 	Template.PrerequisiteAbilities.AddItem('LW2WotC_MindMerge');
+
 	return Template;
 }
