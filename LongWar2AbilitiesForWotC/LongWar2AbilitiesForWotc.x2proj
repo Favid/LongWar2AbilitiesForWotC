@@ -10,10 +10,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Config\NewPromotionScreenbyDefault" />
     <Folder Include="Content\WOTC_LW2Gauntlet" />
     <Folder Include="Content\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Localization\" />
     <Folder Include="Content" />
+    <Folder Include="Localization\NewPromotionScreenbyDefault" />
     <Folder Include="Localization\WOTC_LW2Gauntlet" />
     <Folder Include="Localization\WOTC_LW2SecondaryWeapons" />
     <Folder Include="Src\" />
@@ -21,6 +23,8 @@
     <Folder Include="Src\LongWar2AbilitiesforWotC\Classes\" />
     <Folder Include="Src\LW_Tuple" />
     <Folder Include="Src\LW_Tuple\Classes" />
+    <Folder Include="Src\NewPromotionScreenbyDefault" />
+    <Folder Include="Src\NewPromotionScreenbyDefault\Classes" />
     <Folder Include="Src\WOTC_LW2Gauntlet" />
     <Folder Include="Src\WOTC_LW2Gauntlet\Classes" />
     <Folder Include="Src\WOTC_LW2SecondaryWeapons" />
@@ -31,6 +35,9 @@
     <Folder Include="Src\XModBase_Interfaces\Classes" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config\NewPromotionScreenbyDefault\XComPromotionUIMod.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComAI.ini">
       <SubType>Content</SubType>
     </Content>
@@ -65,9 +72,6 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComLW_SoldierSkills.ini">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Config\XComPromotionUIMod.ini">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComUI.ini">
@@ -136,6 +140,9 @@
     <Content Include="Localization\LongWar2AbilitiesForWotc.int">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Localization\NewPromotionScreenbyDefault\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Localization\WOTC_LW2Gauntlet\WOTC_LW2Gauntlet.int">
       <SubType>Content</SubType>
     </Content>
@@ -155,15 +162,6 @@
     <Content Include="Config\XComGame.ini" />
     <Content Include="Localization\XComGame.int" />
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\Examples.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\NewPromotionScreenByDefault_PromotionScreenListener.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\NPSBDP_UIArmory_PromotionHero.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\NPSBDP_UIArmory_PromotionHeroColumn.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityCharges_LW2WotC_GremlinTierBased.uc">
@@ -507,6 +505,18 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LW_Tuple\Classes\LWTuple.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\NewPromotionScreenbyDefault\Classes\NewPromotionScreenByDefault_PromotionScreenListener.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\NewPromotionScreenbyDefault\Classes\NPSBDP_UIArmory_PromotionHero.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\NewPromotionScreenbyDefault\Classes\NPSBDP_UIArmory_PromotionHeroColumn.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\NewPromotionScreenbyDefault\Classes\X2DownloadableContentInfo_NewPromotionScreenbyDefault.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\WOTC_LW2Gauntlet\Classes\UIScrollingTextField.uc">
