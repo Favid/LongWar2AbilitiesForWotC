@@ -126,7 +126,6 @@ static function X2AbilityTemplate Suppression()
     local X2Effect_Suppression              SuppressionEffect;
     local X2Condition_UnitInventory         UnitInventoryCondition;
     local name                              WeaponCategory;
-    local X2Condition_UnitEffects           SuppressedCondition;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Suppression');
     Template.AbilitySourceName = 'eAbilitySource_Perk';
@@ -158,10 +157,8 @@ static function X2AbilityTemplate Suppression()
 
     Template.AddShooterEffectExclusions();
     
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+	// Cannot use while suppressed, if configured
+	HandleSuppressionRestriction(Template);
 
     ReserveActionPointsEffect = new class'X2Effect_ReserveActionPoints';
     ReserveActionPointsEffect.ReserveType = 'Suppression';
@@ -382,7 +379,6 @@ static function X2AbilityTemplate AreaSuppression()
     local X2AbilityTarget_Single                        PrimaryTarget;
     local AbilityGrantedBonusRadius                     DangerZoneBonus;
     local X2Condition_UnitProperty                      ShooterCondition;
-    local X2Condition_UnitEffects                       SuppressedCondition;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_AreaSuppression');
     Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AreaSuppression";
@@ -399,10 +395,9 @@ static function X2AbilityTemplate AreaSuppression()
 
     Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);   
     Template.AddShooterEffectExclusions();
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    
+	// Cannot use while suppressed, if configured
+	HandleSuppressionRestriction(Template);
 
     ShooterCondition=new class'X2Condition_UnitProperty';
     ShooterCondition.ExcludeConcealed = true;
@@ -434,7 +429,7 @@ static function X2AbilityTemplate AreaSuppression()
     ReserveActionPointsEffect.NumPoints = default.AREA_SUPPRESSION_MAX_SHOTS;
     Template.AddShooterEffect(ReserveActionPointsEffect);
 
-    Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitOnlyProperty);
+    Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitDisallowMindControlProperty);
     Template.AbilityTargetConditions.AddItem(default.GameplayVisibilityCondition);
 
     PrimaryTarget = new class'X2AbilityTarget_Single';
@@ -457,7 +452,7 @@ static function X2AbilityTemplate AreaSuppression()
     RadiusMultiTarget.AbilityBonusRadii.AddItem (DangerZoneBonus);
     Template.AbilityMultiTargetStyle = RadiusMultiTarget;
     
-    Template.AbilityMultiTargetConditions.AddItem(default.LivingHostileUnitOnlyProperty);
+    Template.AbilityMultiTargetConditions.AddItem(default.LivingHostileUnitDisallowMindControlProperty);
 
     SuppressionEffect = new class'X2Effect_LW2WotC_AreaSuppression';
     SuppressionEffect.BuildPersistentEffect(1, false, true, false, eGameRule_PlayerTurnBegin);

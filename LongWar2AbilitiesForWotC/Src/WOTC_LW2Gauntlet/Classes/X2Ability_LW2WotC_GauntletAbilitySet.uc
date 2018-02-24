@@ -6,6 +6,9 @@
 
 class X2Ability_LW2WotC_GauntletAbilitySet extends X2Ability
     dependson (XComGameStateContext_Ability) config(LW2GauntletWOTC);
+    
+var config bool SUPPRESSION_PREVENTS_ABILITIES;
+var config array<name> SUPPRESSION_EFFECTS;
 
 var config int FLAMETHROWER_BURNING_BASE_DAMAGE;
 var config int FLAMETHROWER_BURNING_DAMAGE_SPREAD;
@@ -111,7 +114,6 @@ static function X2AbilityTemplate RocketLauncher()
     local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
     local X2Condition_UnitProperty          UnitPropertyCondition;
     local X2AbilityToHitCalc_StandardAim    StandardAim;
-    local X2Condition_UnitEffects           SuppressedCondition;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_RocketLauncher');
     Template.Hostility = eHostility_Offensive;
@@ -160,12 +162,9 @@ static function X2AbilityTemplate RocketLauncher()
 
     // Cannot be used while disoriented, burning, etc.
     Template.AddShooterEffectExclusions();
-
-    // Cannot be used while suppressed
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    
+    // Adds Suppression restrictions to the ability, depending on config values
+	HandleSuppressionRestriction(Template);
 
     // Controls rocket pathing and scatter
     Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';
@@ -199,7 +198,6 @@ static function X2AbilityTemplate BlasterLauncher()
     local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
     local X2Condition_UnitProperty          UnitPropertyCondition;
     local X2AbilityToHitCalc_StandardAim    StandardAim;
-    local X2Condition_UnitEffects           SuppressedCondition;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_BlasterLauncher');
     Template.Hostility = eHostility_Offensive;
@@ -249,11 +247,8 @@ static function X2AbilityTemplate BlasterLauncher()
     // Cannot be used while disoriented, burning, etc.
     Template.AddShooterEffectExclusions();
     
-    // Cannot be used while suppressed
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    // Adds Suppression restrictions to the ability, depending on config values
+	HandleSuppressionRestriction(Template);
     
     // Controls blaster bomb pathing and scatter
     Template.TargetingMethod = class'X2TargetingMethod_LWBlasterLauncher';
@@ -356,7 +351,6 @@ static function X2AbilityTemplate ConcussionRocket()
     local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
     local X2Effect_ApplySmokeGrenadeToWorld WeaponEffect;
     local X2Effect_Stunned                  StunnedEffect;
-    local X2Condition_UnitEffects           SuppressedCondition;
     local X2Condition_UnitProperty          UnitPropertyCondition;
     local X2Condition_UnitType              ImmuneUnitCondition;
 
@@ -372,11 +366,9 @@ static function X2AbilityTemplate ConcussionRocket()
     Template.TargetingMethod = class'X2TargetingMethod_LWRocketLauncher';
     Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
     Template.AddShooterEffectExclusions();
-
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    
+    // Adds Suppression restrictions to the ability, depending on config values
+	HandleSuppressionRestriction(Template);
 
     CursorTarget = new class'X2AbilityTarget_Cursor';
     CursorTarget.bRestrictToWeaponRange = true;
@@ -507,7 +499,6 @@ static function X2AbilityTemplate BunkerBuster()
     local X2AbilityTarget_Cursor            CursorTarget;
     local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
     local X2AbilityToHitCalc_StandardAim    StandardAim;
-    local X2Condition_UnitEffects           SuppressedCondition;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_BunkerBuster');
 
@@ -544,11 +535,9 @@ static function X2AbilityTemplate BunkerBuster()
     ChargeCost = new class'X2AbilityCost_Charges';
     ChargeCost.NumCharges = 1;
     Template.AbilityCosts.AddItem(ChargeCost);
-
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    
+    // Adds Suppression restrictions to the ability, depending on config values
+	HandleSuppressionRestriction(Template);
 
     RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
     RadiusMultiTarget.bUseWeaponRadius = false;
@@ -710,7 +699,6 @@ static function X2AbilityTemplate Flamethrower()
     local X2Effect_Burning                      BurningEffect;
     local X2AbilityCharges_BonusCharges         Charges;
     local X2AbilityCost_Charges                 ChargeCost;
-    local X2Condition_UnitEffects               SuppressedCondition;
     local AbilityGrantedBonusCone               IncineratorBonusCone;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Flamethrower');
@@ -752,12 +740,9 @@ static function X2AbilityTemplate Flamethrower()
 
     // Cannot be used while disoriented, burning, etc.
     Template.AddShooterEffectExclusions();
-
-    // Cannot be used while suppressed
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    
+    // Adds Suppression restrictions to the ability, depending on config values
+	HandleSuppressionRestriction(Template);
 
     // Player aims with the mouse cursor
     CursorTarget = new class'X2AbilityTarget_Cursor';
@@ -902,7 +887,6 @@ static function X2AbilityTemplate Roust()
     local X2AbilityCharges_BonusCharges         Charges;
     local X2AbilityCost_Charges                 ChargeCost;
     local X2Effect_LW2WotC_FallBack             FallBackEffect;
-    local X2Condition_UnitEffects               SuppressedCondition;
     local AbilityGrantedBonusCone               IncineratorBonusCone;
     local AbilityGrantedBonusCone               RoustBonusCone;
 
@@ -951,12 +935,9 @@ static function X2AbilityTemplate Roust()
     ShooterCondition=new class'X2Condition_UnitProperty';
     ShooterCondition.ExcludeConcealed = true;
     Template.AbilityShooterConditions.AddItem(ShooterCondition);
-
-    // Cannot be used while suppressed
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    
+    // Adds Suppression restrictions to the ability, depending on config values
+	HandleSuppressionRestriction(Template);
 
     // Player aims with the mouse cursor
     CursorTarget = new class'X2AbilityTarget_Cursor';
@@ -1083,7 +1064,6 @@ static function X2AbilityTemplate Firestorm()
     local X2Effect_ApplyFireToWorld_Limited             FireToWorldEffect;
     local X2AbilityToHitCalc_StandardAim        StandardAim;
     local X2Effect_Burning                      BurningEffect;
-    local X2Condition_UnitEffects               SuppressedCondition;
 
     `CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_Firestorm');
 
@@ -1114,11 +1094,9 @@ static function X2AbilityTemplate Firestorm()
     StandardAim.bAllowCrit = false;
     StandardAim.bGuaranteedHit = true;
     Template.AbilityToHitCalc = StandardAim;
-
-    SuppressedCondition = new class'X2Condition_UnitEffects';
-    SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-    //SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed'); // TODO
-    Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    
+    // Adds Suppression restrictions to the ability, depending on config values
+	HandleSuppressionRestriction(Template);
 
     Template.AdditionalAbilities.AddItem(default.PanicImpairingAbilityName);
     //Panic effects need to come before the damage. This is needed for proper visualization ordering.
@@ -1528,6 +1506,25 @@ function LWFlamethrower_BuildVisualization(XComGameState VisualizeGameState)
 
     //Continue building the visualization as normal.
     TypicalAbility_BuildVisualization(VisualizeGameState);
+}
+
+// Helper function for adding Suppression restrictions to abilities
+static function HandleSuppressionRestriction(X2AbilityTemplate Template)
+{
+    local X2Condition_UnitEffects SuppressedCondition;
+    local name SuppressionEffect;
+
+    if(default.SUPPRESSION_PREVENTS_ABILITIES)
+	{   
+        SuppressedCondition = new class'X2Condition_UnitEffects';
+
+        foreach default.SUPPRESSION_EFFECTS(SuppressionEffect)
+	    {
+		    SuppressedCondition.AddExcludeEffect(SuppressionEffect, 'AA_UnitIsSuppressed');
+	    }
+
+		Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+	}
 }
 
 defaultProperties

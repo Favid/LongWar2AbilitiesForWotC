@@ -27,6 +27,8 @@ var config array<name> VALID_WEAPON_CATEGORIES_FOR_MELEE_SKILLS;
 var config array<name> EDIT_ABILITIES_LAUNCHER;
 var config array<name> VALID_WEAPON_CATEGORIES_FOR_LAUNCHER_SKILLS;
 
+var config bool SUPPRESSION_PREVENTS_ABILITIES;
+var config array<name> SUPPRESSION_EFFECTS;
 
 // Events to manage loading mod templates into an existing save
 // Backup methods to handle loading after the first time because I can't get it to work consistently
@@ -230,3 +232,23 @@ static function string DLCAppendSockets(XComUnitPawn Pawn)
 	}
 	return ReturnString;
 }
+
+// Helper function for adding Suppression restrictions to abilities
+static function HandleSuppressionRestriction(X2AbilityTemplate Template)
+{
+    local X2Condition_UnitEffects SuppressedCondition;
+    local name SuppressionEffect;
+
+    if(default.SUPPRESSION_PREVENTS_ABILITIES)
+	{   
+        SuppressedCondition = new class'X2Condition_UnitEffects';
+
+        foreach default.SUPPRESSION_EFFECTS(SuppressionEffect)
+	    {
+		    SuppressedCondition.AddExcludeEffect(SuppressionEffect, 'AA_UnitIsSuppressed');
+	    }
+
+		Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+	}
+}
+

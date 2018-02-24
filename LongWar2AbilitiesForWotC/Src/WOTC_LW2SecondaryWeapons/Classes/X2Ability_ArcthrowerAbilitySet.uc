@@ -145,6 +145,9 @@ static function X2AbilityTemplate AddArcthrowerStun()
 	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
 	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
 
+    // Adds Suppression restrictions to the ability, depending on config values
+	class'X2DownloadableContentInfo_WOTC_LW2SecondaryWeapons'.static.HandleSuppressionRestriction(Template);
+
 	return Template;	
 }
 
@@ -302,6 +305,9 @@ static function X2AbilityTemplate AddEMPulser()
 	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
 	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
 	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
+    
+    // Adds Suppression restrictions to the ability, depending on config values
+	class'X2DownloadableContentInfo_WOTC_LW2SecondaryWeapons'.static.HandleSuppressionRestriction(Template);
 
 	return Template;	
 }
@@ -473,7 +479,6 @@ static function X2AbilityTemplate CreateChainLightningAbility()
 	local X2AbilityToHitCalc_StandardAim    ToHitCalc;
 	local X2AbilityCooldown					Cooldown;	
 	local X2Condition_UnitType				ImmuneUnitCondition;
-	local X2Condition_UnitEffects			SuppressedCondition;
 	local X2Condition_ValidWeaponType		WeaponCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ChainLightning');
@@ -520,11 +525,10 @@ static function X2AbilityTemplate CreateChainLightningAbility()
 	UnitPropertyCondition2=new class'X2Condition_UnitProperty';
 	UnitPropertyCondition2.ExcludeConcealed = true;
 	Template.AbilityShooterConditions.AddItem(UnitPropertyCondition2);
+    
+    // Adds Suppression restrictions to the ability, depending on config values
+	class'X2DownloadableContentInfo_WOTC_LW2SecondaryWeapons'.static.HandleSuppressionRestriction(Template);
 
-	SuppressedCondition = new class'X2Condition_UnitEffects';
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	//SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 	// Can't target these specific unit groups
 	ImmuneUnitCondition = new class'X2Condition_UnitType';
 	ImmuneUnitCondition.ExcludeTypes.AddItem('PsiZombie');

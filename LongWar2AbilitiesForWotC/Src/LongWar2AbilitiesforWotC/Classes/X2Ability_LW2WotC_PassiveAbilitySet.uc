@@ -240,7 +240,6 @@ static function X2AbilityTemplate CloseCombatSpecialistAttack()
 	local X2Condition_UnitEffectsWithAbilitySource		CloseCombatSpecialistTargetCondition;
 	local X2AbilityTrigger_EventListener				EventListener;
 	local X2Condition_UnitProperty						SourceNotConcealedCondition;
-	local X2Condition_UnitEffects						SuppressedCondition;
 	local X2Condition_Visibility						TargetVisibilityCondition;
 	local X2AbilityCost_Ammo							AmmoCost;
 	local X2AbilityTarget_LW2WotC_Single_CCS			SingleTarget;
@@ -308,11 +307,8 @@ static function X2AbilityTemplate CloseCombatSpecialistAttack()
 	SourceNotConcealedCondition.ExcludeConcealed = true;
 	Template.AbilityShooterConditions.AddItem(SourceNotConcealedCondition);
 
-	// Don't trigger while suppressed
-	SuppressedCondition = new class'X2Condition_UnitEffects';
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+	// Don't trigger while suppressed, if configured
+	HandleSuppressionRestriction(Template);
 
 	// Effect that limits the range of the reaction shot
 	SingleTarget = new class 'X2AbilityTarget_LW2WotC_Single_CCS';

@@ -255,7 +255,7 @@ static function X2AbilityTemplate SelfTargetActivated(name DataName, string Icon
 }
 
 // Helper function for creating a typical weapon attack.
-static function X2AbilityTemplate Attack(name DataName, string IconImage, optional bool bCrossClassEligible = false, optional X2Effect Effect = none, optional int ShotHUDPriority = default.AUTO_PRIORITY, optional EActionPointCost Cost = eCost_SingleConsumeAll, optional int iAmmo = 1, optional bool PreventedBySuppression = true)
+static function X2AbilityTemplate Attack(name DataName, string IconImage, optional bool bCrossClassEligible = false, optional X2Effect Effect = none, optional int ShotHUDPriority = default.AUTO_PRIORITY, optional EActionPointCost Cost = eCost_SingleConsumeAll, optional int iAmmo = 1)
 {
 	local X2AbilityTemplate                 Template;	
 	local X2Condition_Visibility            VisibilityCondition;
@@ -286,13 +286,8 @@ static function X2AbilityTemplate Attack(name DataName, string IconImage, option
 	// Don't allow the ability to be used while the unit is disoriented, burning, unconscious, etc.
 	Template.AddShooterEffectExclusions();
 
-	if(PreventedBySuppression)
-	{
-		SuppressedCondition = new class'X2Condition_UnitEffects';
-		SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-		SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-		Template.AbilityShooterConditions.AddItem(SuppressedCondition);
-	}
+    // Adds Suppression restrictions to the ability, depending on config values
+	HandleSuppressionRestriction(Template);
 
 	Template.AbilityTargetStyle = default.SimpleSingleTarget;
 
@@ -353,6 +348,25 @@ static function X2AbilityTemplate Attack(name DataName, string IconImage, option
     Template.AbilityConfirmSound = "TacticalUI_ActivateAbility";
 
 	return Template;	
+}
+
+// Helper function for adding Suppression restrictions to abilities
+static function HandleSuppressionRestriction(X2AbilityTemplate Template)
+{
+    local X2Condition_UnitEffects SuppressedCondition;
+    local name SuppressionEffect;
+
+    if(class'X2DownloadableContentInfo_LongWar2AbilitiesforWotC'.default.SUPPRESSION_PREVENTS_ABILITIES)
+	{   
+        SuppressedCondition = new class'X2Condition_UnitEffects';
+
+        foreach class'X2DownloadableContentInfo_LongWar2AbilitiesforWotC'.default.SUPPRESSION_EFFECTS(SuppressionEffect)
+	    {
+		    SuppressedCondition.AddExcludeEffect(SuppressionEffect, 'AA_UnitIsSuppressed');
+	    }
+
+		Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+	}
 }
 
 static function X2AbilityTemplate MeleeAttack(name DataName, string IconImage, optional bool bCrossClassEligible = false, optional X2Effect Effect = none, optional int ShotHUDPriority = default.AUTO_PRIORITY, optional EActionPointCost Cost = eCost_SingleConsumeAll)

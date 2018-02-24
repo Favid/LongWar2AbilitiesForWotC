@@ -156,9 +156,10 @@ static function X2AbilityTemplate ShootAnyone()
 {
 	local X2AbilityTemplate Template;
 	local X2Condition_Visibility            VisibilityCondition;
+    local X2Effect_PersistentStatChange DisorientedEffect;
 
 	// Create a standard attack that doesn't cost an action.
-	Template = Attack('LW2WotC_ShootAnyone', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, none, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_Free, 1, true);
+	Template = Attack('LW2WotC_ShootAnyone', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, none, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_Free, 1);
 
 	VisibilityCondition = new class'X2Condition_Visibility';
 	VisibilityCondition.bRequireGameplayVisible = true;
@@ -167,6 +168,9 @@ static function X2AbilityTemplate ShootAnyone()
 	Template.AbilityTargetConditions.Length = 0;
 	Template.AbilityTargetConditions.AddItem(VisibilityCondition);
 	Template.AbilityTargetConditions.AddItem(default.LivingTargetOnlyProperty);
+
+    DisorientedEffect = class'X2StatusEffects'.static.CreateDisorientedStatusEffect();
+    Template.AddTargetEffect(DisorientedEffect);
 
 	return Template;
 }
@@ -182,7 +186,7 @@ static function X2AbilityTemplate WalkFire()
     local X2Condition_UnitInventory NoSniperRiflesCondition;
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_WalkFire', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.WALK_FIRE_AMMO_COST, true);
+	Template = Attack('LW2WotC_WalkFire', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.WALK_FIRE_AMMO_COST);
 
 	// Add a cooldown.
 	AddCooldown(Template, default.WALK_FIRE_COOLDOWN);
@@ -248,7 +252,7 @@ static function X2AbilityTemplate PrecisionShot()
 	local X2AbilityTemplate Template;
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_PrecisionShot', "img:///UILibrary_LW_PerkPack.LW_AbilityPrecisionShot", true, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.PRECISION_SHOT_AMMO_COST, true);
+	Template = Attack('LW2WotC_PrecisionShot', "img:///UILibrary_LW_PerkPack.LW_AbilityPrecisionShot", true, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.PRECISION_SHOT_AMMO_COST);
 
 	// Add a cooldown.
 	AddCooldown(Template, default.PRECISION_SHOT_COOLDOWN);
@@ -301,7 +305,7 @@ static function X2AbilityTemplate SlugShot()
 	local X2Condition_UnitInventory ShotgunOnlyCondition;
 	
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_SlugShot', "img:///UILibrary_LW_PerkPack.LW_AbilitySlugShot", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.SLUG_SHOT_AMMO_COST, true);
+	Template = Attack('LW2WotC_SlugShot', "img:///UILibrary_LW_PerkPack.LW_AbilitySlugShot", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.SLUG_SHOT_AMMO_COST);
 
 	// Create that sweet knockback effect for kills
 	KnockbackEffect = new class'X2Effect_Knockback';
@@ -536,7 +540,6 @@ static function X2AbilityTemplate TrenchGun()
 	local X2AbilityCooldown                 Cooldown;
 	local X2Condition_UnitInventory			InventoryCondition;
 	local X2Effect_Shredder					WeaponDamageEffect;
-	local X2Condition_UnitEffects			SuppressedCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_TrenchGun');
 
@@ -591,11 +594,8 @@ static function X2AbilityTemplate TrenchGun()
 	// Cannot be used while disoriented, burning, etc.
 	Template.AddShooterEffectExclusions();
 	
-	// Cannot use while suppressed
-	SuppressedCondition = new class'X2Condition_UnitEffects';
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+	// Cannot use while suppressed, if configured
+	HandleSuppressionRestriction(Template);
 
 	// Standard aim calculation
 	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
@@ -656,7 +656,6 @@ static function X2AbilityTemplate StreetSweeper()
 	local X2AbilityCooldown                 Cooldown;
 	local X2Condition_UnitInventory			InventoryCondition;
 	local X2Effect_Shredder					WeaponDamageEffect;
-	local X2Condition_UnitEffects			SuppressedCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_StreetSweeper');
 
@@ -705,11 +704,8 @@ static function X2AbilityTemplate StreetSweeper()
 	UnitPropertyCondition.ExcludeFriendlyToSource = false;
 	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
 	
-	// Cannot be used while suppressed
-	SuppressedCondition = new class'X2Condition_UnitEffects';
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+	// Cannot use while suppressed, if configured
+	HandleSuppressionRestriction(Template);
 
 	// Shotgun only
 	InventoryCondition = new class'X2Condition_UnitInventory';
@@ -1194,7 +1190,7 @@ static function X2AbilityTemplate CyclicFire()
 
 	// Create template with helper function - normally we could pass in none for the effect and let the function give this ability template the default weapon damage effect
 	// However, the game will not display the damage numbers for the additional hits properly unless the first shot and the following burst shots use the same instance of of the damage effect
-	Template = Attack('LW2WotC_CyclicFire', "img:///UILibrary_LW_PerkPack.LW_AbilityCyclicFire", false, class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect(), class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY, ActionPointCost, default.CYCLIC_FIRE_AMMO, true);
+	Template = Attack('LW2WotC_CyclicFire', "img:///UILibrary_LW_PerkPack.LW_AbilityCyclicFire", false, class'X2Ability_GrenadierAbilitySet'.static.HoloTargetEffect(), class'UIUtilities_Tactical'.const.CLASS_MAJOR_PRIORITY, ActionPointCost, default.CYCLIC_FIRE_AMMO);
 
     // Do not allow this ability to be used with Shotguns
     NoShotgunsCondition = new class'X2Condition_UnitInventory';
@@ -1257,7 +1253,7 @@ static function X2AbilityTemplate Kubikuri()
 	}
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_Kubikuri', "img:///UILibrary_LW_PerkPack.LW_AbilityKubikuri", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, ActionPointCost, default.KUBIKURI_AMMO_COST, true);
+	Template = Attack('LW2WotC_Kubikuri', "img:///UILibrary_LW_PerkPack.LW_AbilityKubikuri", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, ActionPointCost, default.KUBIKURI_AMMO_COST);
 
 	// Specific voice line
 	Template.ActivationSpeech = 'Reaper';
@@ -1577,7 +1573,7 @@ static function X2AbilityTemplate DoubleTap()
 	local X2Effect_Knockback				KnockbackEffect;
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_DoubleTap', "img:///UILibrary_LW_PerkPack.LW_AbilityDoubleTap", false, none, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_DoubleConsumeAll, 1, true);
+	Template = Attack('LW2WotC_DoubleTap', "img:///UILibrary_LW_PerkPack.LW_AbilityDoubleTap", false, none, class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY, eCost_DoubleConsumeAll, 1);
 
 	// Knockback effect on kill
 	KnockbackEffect = new class'X2Effect_Knockback';
@@ -1629,7 +1625,7 @@ static function X2AbilityTemplate SnapShot()
 	local X2Effect_Knockback				KnockbackEffect;
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_SnapShot', "img:///UILibrary_LW_PerkPack.LW_AbilitySnapShot", false, none, class'UIUtilities_Tactical'.const.STANDARD_SHOT_PRIORITY, eCost_SingleConsumeAll, 1, true);
+	Template = Attack('LW2WotC_SnapShot', "img:///UILibrary_LW_PerkPack.LW_AbilitySnapShot", false, none, class'UIUtilities_Tactical'.const.STANDARD_SHOT_PRIORITY, eCost_SingleConsumeAll, 1);
 
 	// Knockback effect on kill
 	KnockbackEffect = new class'X2Effect_Knockback';
@@ -1833,7 +1829,7 @@ static function X2AbilityTemplate Flush()
 	local X2Condition_UnitProperty NotConcealedCondition;
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_Flush', "img:///UILibrary_LW_PerkPack.LW_AbilityFlush", false, none, class'UIUtilities_Tactical'.const.CLASS_CORPORAL_PRIORITY - 1, eCost_WeaponConsumeAll, default.FLUSH_AMMO_COST, true);
+	Template = Attack('LW2WotC_Flush', "img:///UILibrary_LW_PerkPack.LW_AbilityFlush", false, none, class'UIUtilities_Tactical'.const.CLASS_CORPORAL_PRIORITY - 1, eCost_WeaponConsumeAll, default.FLUSH_AMMO_COST);
 
 	// Ammo effects are not applied to Flush
 	Template.bAllowAmmoEffects = false;
@@ -1913,7 +1909,7 @@ static function X2AbilityTemplate ClutchShot()
 	local X2Effect_Knockback				KnockbackEffect;
 
 	// Create the template using a helper function
-	Template = Attack('LW2WotC_ClutchShot', "img:///UILibrary_LW_PerkPack.LW_AbilityClutchShot", false, none, class'UIUtilities_Tactical'.const.CLASS_LIEUTENANT_PRIORITY, eCost_WeaponConsumeAll, 0, true);
+	Template = Attack('LW2WotC_ClutchShot', "img:///UILibrary_LW_PerkPack.LW_AbilityClutchShot", false, none, class'UIUtilities_Tactical'.const.CLASS_LIEUTENANT_PRIORITY, eCost_WeaponConsumeAll, 0);
 
 	// Squadsight should not apply
 	Template.AbilityTargetConditions.Length = 0;
@@ -1954,7 +1950,6 @@ static function X2AbilityTemplate Gunslinger()
 	local X2AbilityMultiTarget_Cone			ConeMultiTarget;
 	local X2Effect_ReserveActionPoints		ReservePointsEffect;
 	local X2Effect_MarkValidActivationTiles MarkTilesEffect;
-	local X2Condition_UnitEffects           SuppressedCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE (Template, 'LW2WotC_Gunslinger');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilityGunslinger";
@@ -1986,10 +1981,7 @@ static function X2AbilityTemplate Gunslinger()
 	ActionPointCost.bFreeCost = true;    
 	Template.AbilityCosts.AddItem(ActionPointCost);
 
-	SuppressedCondition = new class'X2Condition_UnitEffects';
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+	HandleSuppressionRestriction(Template);
 
 	Cooldown = new class'X2AbilityCooldown';
 	Cooldown.iNumTurns = default.GUNSLINGER_COOLDOWN;
@@ -2130,7 +2122,6 @@ static function X2AbilityTemplate SteadyWeapon()
 	local X2AbilityCooldown					Cooldown;
 	local X2AbilityCost_ActionPoints		ActionPointCost;
 	local X2Effect_LW2WotC_SteadyWeapon		ToHitModifier;
-	local X2Condition_UnitEffects			SuppressedCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_SteadyWeapon');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilitySteadyWeapon";
@@ -2153,10 +2144,8 @@ static function X2AbilityTemplate SteadyWeapon()
 	ActionPointCost.bConsumeAllPoints = true;    
 	Template.AbilityCosts.AddItem(ActionPointCost);
 	
-	SuppressedCondition = new class'X2Condition_UnitEffects';
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+	// Cannot use while suppressed, if configured
+	HandleSuppressionRestriction(Template);
 
 	Template.AddShooterEffectExclusions();
 	Template.CinescriptCameraType = "Overwatch";

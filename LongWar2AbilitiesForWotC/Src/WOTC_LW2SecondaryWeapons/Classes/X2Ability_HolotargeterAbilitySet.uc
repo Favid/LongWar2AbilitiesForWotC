@@ -64,7 +64,6 @@ static function X2AbilityTemplate AddHolotarget()
 	local X2Effect_Persistent				DurationIconEffect;
 	local X2Condition_AbilityProperty		DurationEffectCondition;
 	local X2Condition_Visibility			TargetVisibilityCondition;
-	local X2Condition_UnitEffects			SuppressedCondition;
 	local X2Condition_ValidWeaponType		WeaponCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'Holotarget');
@@ -114,10 +113,8 @@ static function X2AbilityTemplate AddHolotarget()
 	// Only at single targets that are in range.
 	Template.AbilityTargetStyle = default.SimpleSingleTarget;
 		
-	SuppressedCondition = new class'X2Condition_UnitEffects';
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	//SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    // Adds Suppression restrictions to the ability, depending on config values
+	class'X2DownloadableContentInfo_WOTC_LW2SecondaryWeapons'.static.HandleSuppressionRestriction(Template);
 
 	// Holotarget Effect
 	Effect = new class'X2Effect_LWHoloTarget';
@@ -163,7 +160,6 @@ static function X2AbilityTemplate AddRapidTargeting()
 	local X2Effect_Persistent				DurationIconEffect;
 	local X2Condition_AbilityProperty		DurationEffectCondition;
 	local X2Condition_Visibility			TargetVisibilityCondition;
-	local X2Condition_UnitEffects			SuppressedCondition;
 	local X2Condition_ValidWeaponType		WeaponCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'Rapidtargeting');
@@ -204,13 +200,9 @@ static function X2AbilityTemplate AddRapidTargeting()
     TargetVisibilityCondition.bRequireGameplayVisible = true;
     TargetVisibilityCondition.bAllowSquadsight = true;
 	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
-
 	
-	SuppressedCondition = new class'X2Condition_UnitEffects';
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	//SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
-
+    // Adds Suppression restrictions to the ability, depending on config values
+	class'X2DownloadableContentInfo_WOTC_LW2SecondaryWeapons'.static.HandleSuppressionRestriction(Template);
 
 	// Can't target dead; Can't target friendlies, can't target inanimate objects
 	Template.AbilityTargetConditions.AddItem(default.LivingHostileUnitOnlyProperty);
@@ -302,7 +294,6 @@ static function X2AbilityTemplate AddMultiTargeting()
 	local X2Condition_AbilityProperty		DurationEffectCondition;
 	local X2Condition_Visibility			TargetVisibilityCondition;
 	local X2AbilityCooldown                 Cooldown;
-	local X2Condition_UnitEffects			SuppressedCondition;
 	local X2Condition_ValidWeaponType		WeaponCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'Multitargeting');
@@ -340,11 +331,9 @@ static function X2AbilityTemplate AddMultiTargeting()
 	WeaponCondition = new class'X2Condition_ValidWeaponType';
 	WeaponCondition.AllowedWeaponCategories = default.VALID_WEAPON_CATEGORIES_FOR_SKILLS;
 	Template.AbilityShooterConditions.AddItem(WeaponCondition);
-
-	SuppressedCondition = new class'X2Condition_UnitEffects';
-	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	//SuppressedCondition.AddExcludeEffect(class'X2Effect_LW2WotC_AreaSuppression'.default.EffectName, 'AA_UnitIsSuppressed');
-	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
+    
+    // Adds Suppression restrictions to the ability, depending on config values
+	class'X2DownloadableContentInfo_WOTC_LW2SecondaryWeapons'.static.HandleSuppressionRestriction(Template);
 
 	// Can only shoot visible enemies
 	TargetVisibilityCondition = new class'X2Condition_Visibility';

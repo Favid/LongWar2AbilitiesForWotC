@@ -111,6 +111,9 @@ static function X2AbilityTemplate AddPointBlank()
 	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
 	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
 
+    // Adds Suppression restrictions to the ability, depending on config values
+	class'X2DownloadableContentInfo_WOTC_LW2SecondaryWeapons'.static.HandleSuppressionRestriction(Template);
+
 	return Template;	
 }
 
@@ -210,6 +213,9 @@ static function X2AbilityTemplate AddBothBarrels()
 	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
 	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
 	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
+    
+    // Adds Suppression restrictions to the ability, depending on config values
+	class'X2DownloadableContentInfo_WOTC_LW2SecondaryWeapons'.static.HandleSuppressionRestriction(Template);
 
 	return Template;	
 }

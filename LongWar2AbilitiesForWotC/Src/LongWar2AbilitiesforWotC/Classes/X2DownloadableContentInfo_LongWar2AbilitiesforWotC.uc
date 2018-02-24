@@ -8,7 +8,10 @@
 //  Copyright (c) 2016 Firaxis Games, Inc. All rights reserved.
 //---------------------------------------------------------------------------------------
 
-class X2DownloadableContentInfo_LongWar2AbilitiesforWotC extends X2DownloadableContentInfo;
+class X2DownloadableContentInfo_LongWar2AbilitiesforWotC extends X2DownloadableContentInfo config (LW_SoldierSkills);
+
+var config bool SUPPRESSION_PREVENTS_ABILITIES;
+var config array<name> SUPPRESSION_EFFECTS;
 
 /// <summary>
 /// This method is run if the player loads a saved game that was created prior to this DLC / Mod being installed, and allows the 
