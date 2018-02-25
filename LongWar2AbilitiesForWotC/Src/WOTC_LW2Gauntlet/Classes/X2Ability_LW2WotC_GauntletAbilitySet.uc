@@ -758,7 +758,7 @@ static function X2AbilityTemplate Flamethrower()
     ConeMultiTarget.bIgnoreBlockingCover = true;
 
     // Allow the Incinerator ability to increase the cone length/radius
-    IncineratorBonusCone.RequiredAbility = 'Incinerator';
+    IncineratorBonusCone.RequiredAbility = 'LW2WotC_Incinerator';
     IncineratorBonusCone.fBonusDiameter = default.INCINERATOR_CONEEND_DIAMETER_MODIFIER;
     IncineratorBonusCone.fBonusLength = default.INCINERATOR_CONELENGTH_MODIFIER;
     ConeMultiTarget.AbilityBonusCones.AddItem(IncineratorBonusCone);

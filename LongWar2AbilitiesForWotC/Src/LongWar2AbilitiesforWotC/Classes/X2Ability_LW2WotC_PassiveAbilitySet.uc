@@ -56,6 +56,7 @@ var config int BLUESCREENBOMB_HACK_DEFENSE_CHANGE;
 var config int COMMISSAR_HIT_BONUS;
 var config int BOMBARDIER_BONUS_RANGE_TILES;
 var config int FAILSAFE_PCT_CHANCE;
+var config int SAPPER_BONUS_ENVIRONMENT_DAMAGE;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -135,6 +136,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(Bastion());
 	Templates.AddItem(BastionPassive());
 	Templates.AddItem(BastionCleanse());
+	Templates.AddItem(Sapper());
 
 	//Templates.AddItem(AddSoulStealTriggered2());
 	//Templates.AddItem(AddBastion());
@@ -1840,6 +1842,20 @@ static function X2AbilityTemplate BastionCleanse()
 	Template.bSkipFireAction = true;
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	return Template;
+}
+
+// Perk name:		Sapper
+// Perk effect:		Your explosives can destroy many cover objects.
+// Localized text:	"Your explosives can destroy many cover objects."
+// Config:			(AbilityName="LW2WotC_Sapper")
+static function X2AbilityTemplate Sapper()
+{
+	local X2AbilityTemplate			Template;
+
+	// The standard shot ability will check if the shooter has this ability. If they do, the shot won't end the shooter's turn
+	Template = PurePassive('LW2WotC_Sapper', "img:///UILibrary_LW_PerkPack.LW_AbilitySapper");
 
 	return Template;
 }
