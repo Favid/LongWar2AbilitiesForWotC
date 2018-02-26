@@ -1689,6 +1689,9 @@ static function X2AbilityTemplate GhostGrenade()
 	ItemEffect = new class'XMBEffect_AddUtilityItem';
 	ItemEffect.DataName = 'LW2WotC_GhostGrenade';
 
+    // Prevents issue where a dummy launched version of the Ghost Grenade was being added
+    ItemEffect.SkipAbilities.AddItem('LaunchGrenade');
+
 	// Create the template using a helper function
 	Template = Passive('LW2WotC_GhostGrenade', "img:///UILibrary_PerkIcons.UIPerk_ghost", false, ItemEffect);
 
