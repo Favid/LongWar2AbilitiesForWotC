@@ -137,6 +137,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(BastionPassive());
 	Templates.AddItem(BastionCleanse());
 	Templates.AddItem(Sapper());
+	Templates.AddItem(NeedleGrenades());
 
 	//Templates.AddItem(AddSoulStealTriggered2());
 	//Templates.AddItem(AddBastion());
@@ -1854,8 +1855,22 @@ static function X2AbilityTemplate Sapper()
 {
 	local X2AbilityTemplate			Template;
 
-	// The standard shot ability will check if the shooter has this ability. If they do, the shot won't end the shooter's turn
+	// Event listener defined in X2EventListener_Sapper will check for this ability before applying bonus environment damage
 	Template = PurePassive('LW2WotC_Sapper', "img:///UILibrary_LW_PerkPack.LW_AbilitySapper");
+
+	return Template;
+}
+
+// Perk name:		Needle Grenades
+// Perk effect:		Your explosives do not destroy loot when they kill enemies.
+// Localized text:	"Your explosives do not destroy loot when they kill enemies."
+// Config:			(AbilityName="LW2WotC_NeedleGrenades")
+static function X2AbilityTemplate NeedleGrenades()
+{
+	local X2AbilityTemplate			Template;
+    
+	// Event listener defined in X2EventListener_Sapper will check for this ability to override the boolean denoting that an enemy was killed by an explosion
+	Template = PurePassive('LW2WotC_NeedleGrenades', "img:///UILibrary_LW_PerkPack.LW_AbilityNeedleGrenades");
 
 	return Template;
 }
