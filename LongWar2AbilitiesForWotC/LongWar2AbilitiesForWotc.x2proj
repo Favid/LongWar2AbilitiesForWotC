@@ -7,6 +7,7 @@
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>LongWar2AbilitiesForWotc</AssemblyName>
     <RootNamespace>LongWar2AbilitiesForWotc</RootNamespace>
+    <ProjectGuid>{d55d98e1-56d3-42c0-9c31-8689a91133d9}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Config\" />
@@ -53,7 +54,7 @@
     <Content Include="Config\XComGameData.ini">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Config\XComGameData_CharacterStatus.ini">
+    <Content Include="Config\XComGameData_CharacterStats.ini">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComGameData_SoldierSkills.ini">
