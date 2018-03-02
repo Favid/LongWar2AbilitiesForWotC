@@ -7,6 +7,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(CreateListenerTemplateModifyEnvironmentDamage());
 	Templates.AddItem(CreateListenerTemplateOnKilledByExplosion());
 	Templates.AddItem(CreateListenerTemplateOnSerialKill());
+	Templates.AddItem(CreateListenerTemplateOnGetPCSImage());
 
 	return Templates;
 }
@@ -52,6 +53,21 @@ static function CHEventListenerTemplate CreateListenerTemplateOnSerialKill()
 
 	Template.AddCHEvent('SerialKiller', OnSerialKill, ELD_OnStateSubmitted);
 	`LOG("=== Register Event OnSerialKill");
+
+	return Template;
+}
+
+static function CHEventListenerTemplate CreateListenerTemplateOnGetPCSImage()
+{
+	local CHEventListenerTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'CHEventListenerTemplate', Template, 'OnGetPCSImage');
+
+	Template.RegisterInTactical = true;
+	Template.RegisterInStrategy = true;
+
+	Template.AddCHEvent('OnGetPCSImage', OnGetPCSImage, ELD_Immediate);
+	`LOG("=== Register Event OnGetPCSImage");
 
 	return Template;
 }
@@ -179,6 +195,43 @@ static function EventListenerReturn OnSerialKill(Object EventData, Object EventS
 	}
 	ShooterState.GetUnitValue ('SerialKills', UnitVal);
 	ShooterState.SetUnitFloatValue ('SerialKills', UnitVal.fValue + 1.0, eCleanup_BeginTurn);
+
+	return ELR_NoInterrupt;
+}
+
+static function EventListenerReturn OnGetPCSImage(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
+{
+	local XComLWTuple			OverridePCSImageTuple;
+	local XComGameState_Item	ItemState;
+
+	OverridePCSImageTuple = XComLWTuple(EventData);
+	if(OverridePCSImageTuple == none)
+	{
+		`REDSCREEN("OverrideGetPCSImage event triggered with invalid event data.");
+		return ELR_NoInterrupt;
+	}
+	if(OverridePCSImageTuple.Id != 'GetPCSImageTuple')
+		return ELR_NoInterrupt;
+
+    ItemState = XComGameState_Item(OverridePCSImageTuple.Data[0].o);
+	if(ItemState == none)
+		return ELR_NoInterrupt;
+
+	switch (ItemState.GetMyTemplateName())
+	{
+		case 'DepthPerceptionPCS':          OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityDepthPerception"; break;
+		case 'HyperReactivePupilsPCS':      OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityHyperReactivePupils"; break;
+		case 'CombatAwarenessPCS':          OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityThreatAssesment"; break;
+		case 'DamageControlPCS':            OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityDamageControl"; break;
+		case 'ImpactFieldsPCS':             OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityAbsorptionFields"; break;
+		case 'BodyShieldPCS':               OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityBodyShield"; break;
+		case 'EmergencyLifeSupportPCS':     OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityEmergencyLifeSupport"; break;
+		case 'IronSkinPCS':                 OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityIronSkin"; break;
+		case 'SmartMacrophagesPCS':         OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilitySmartMacrophages"; break;
+		case 'CombatRushPCS':               OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityAdrenalNeurosympathy"; break;
+
+		default:  break;
+	}
 
 	return ELR_NoInterrupt;
 }
