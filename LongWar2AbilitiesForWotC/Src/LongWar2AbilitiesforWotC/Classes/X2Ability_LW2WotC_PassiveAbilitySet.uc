@@ -1153,18 +1153,18 @@ static function X2AbilityTemplate BoostedCores()
 	DamageEffect.BonusDamage = default.BOOSTED_CORES_DAMAGE;
 
 	// Create the template using a helper function
-	return Passive('LW2WotC_BoostedCores', "img:///UILibrary_LW_PerkPack.LW_AbilityHeavyFrags", false, DamageEffect);
+	return Passive('LW2WotC_BoostedCores', "img:///UILibrary_LW_PerkPack.LW_AbilityHeavyFrags", true, DamageEffect);
 }
 
 // Perk name:		Volatile Mix
-// Perk effect:		
-// Localized text:	
+// Perk effect:		Your grenades' area of effect is increased by one tile.
+// Localized text:	"Your grenades' area of effect is increased by one tile."
 // Config:			(AbilityName="LW2WotC_VolatileMix")
 static function X2AbilityTemplate VolatileMix()
 {
 	// Create the template using a helper function
 	// The range bonus is actually granted by X2DownloadableContentInfo_LongWar2AbilitiesforWotC.PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix()
-	return Passive('LW2WotC_VolatileMix', "img:///UILibrary_PerkIcons.UIPerk_volatilemix", false, none);
+	return Passive('LW2WotC_VolatileMix', "img:///UILibrary_PerkIcons.UIPerk_volatilemix", true, none);
 }
 
 // Perk name:		Flashbanger
