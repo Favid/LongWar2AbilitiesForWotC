@@ -67,7 +67,6 @@ var config float MIND_MERGE_CRIT_DIVISOR;
 var config float SOUL_MERGE_CRIT_DIVISOR;
 var config float MIND_MERGE_AMP_MG_CRIT_BONUS;
 var config float SOUL_MERGE_AMP_BM_CRIT_BONUS;
-var config int MAX_ABLATIVE_FROM_SOULSTEAL;
 var config int STREET_SWEEPER_AMMO_COST;
 var config int STREET_SWEEPER_COOLDOWN;
 var config int STREET_SWEEPER_CONE_LENGTH;
@@ -107,6 +106,7 @@ var config int GUNSLINGER_COOLDOWN;
 var config int GUNSLINGER_TILES_RANGE;
 var config int SOLACE_ACTION_POINTS;
 var config int SOLACE_COOLDOWN;
+var config int MAX_ABLATIVE_FROM_SOULSTEAL;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -147,6 +147,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(MindMerge());
 	Templates.AddItem(SoulMerge());
 	Templates.AddItem(Solace());
+	Templates.AddItem(AddSoulStealTriggered2());
 	
 	return Templates;
 }
@@ -2350,6 +2351,64 @@ static function X2AbilityTemplate Solace()
     Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
     Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
     Template.CinescriptCameraType = "Psionic_FireAtUnit";
+
+	return Template;
+}
+
+// This is added to Soul Steal in VanillaTemplateMods to make it grant Shield if the user's health is full
+static function X2AbilityTemplate AddSoulStealTriggered2()
+{
+	local X2AbilityTemplate                 Template;
+	local X2AbilityTrigger_EventListener    EventListener;
+	local X2Condition_UnitProperty          ShooterProperty;
+	local X2Condition_UnitStatCheck			ShooterProperty2, ShooterProperty3;
+	local X2Effect_PersistentStatChange     StealEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'SoulStealTriggered2');
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_soulsteal";
+	Template.Hostility = eHostility_Neutral;
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.AbilitySourceName = 'eAbilitySource_Psionic';
+
+	ShooterProperty = new class'X2Condition_UnitProperty';
+	ShooterProperty.ExcludeAlive = false;
+	ShooterProperty.ExcludeDead = true;
+	ShooterProperty.ExcludeFriendlyToSource = false;
+	ShooterProperty.ExcludeHostileToSource = true;
+	ShooterProperty.ExcludeFullHealth = false;
+	Template.AbilityShooterConditions.AddItem(ShooterProperty);
+
+	ShooterProperty2 = new class'X2Condition_UnitStatCheck';
+	ShooterProperty2.AddCheckStat(eStat_HP, 100, eCheck_Exact,,, true);
+	Template.AbilityShooterConditions.AddItem(ShooterProperty2);
+
+	ShooterProperty3 = new class'X2Condition_UnitStatCheck';
+	ShooterProperty3.AddCheckStat(eStat_ShieldHP, default.MAX_ABLATIVE_FROM_SOULSTEAL, eCheck_LessThan);
+	Template.AbilityShooterConditions.AddItem(ShooterProperty3);
+
+	EventListener = new class'X2AbilityTrigger_EventListener';
+	EventListener.ListenerData.Deferral = ELD_OnStateSubmitted;
+	EventListener.ListenerData.EventFn = class'XComGameState_Ability'.static.SoulStealListener;
+	EventListener.ListenerData.EventID = class'X2Ability_PsiOperativeAbilitySet'.default.SoulStealEventName;
+	EventListener.ListenerData.Filter = eFilter_Unit;
+	Template.AbilityTriggers.AddItem(EventListener);
+
+	StealEffect = new class'X2Effect_PersistentStatChange';
+	StealEffect.BuildPersistentEffect (1, true, false);
+	StealEffect.AddPersistentStatChange (eStat_ShieldHP, 1);
+	Template.AddShooterEffect(StealEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.FrameAbilityCameraType = eCameraFraming_Never;
+	Template.bShowActivation = true;
+	Template.bSkipExitCoverWhenFiring = true;
+	Template.CustomFireAnim = 'ADD_NO_Psi_CastAdditive';
+	Template.ActionFireClass = class'X2Action_Fire_AdditiveAnim';
 
 	return Template;
 }

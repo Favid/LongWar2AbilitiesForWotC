@@ -26,6 +26,40 @@ static event OnLoadedSavedGame()
 /// </summary>
 static event OnPostTemplatesCreated()
 {
+    local X2AbilityTemplateManager AbilityTemplateMgr;
+    local name TemplateName;
+    local array<name> TemplateNames;
+    local X2AbilityTemplate AbilityTemplate;
+    local array<X2AbilityTemplate> AbilityTemplates;
+    local X2StrategyElementTemplate TemplateMod;
+    local X2StrategyElementTemplateManager		StrategyTemplateMgr;
+    local array<X2StrategyElementTemplate>		TemplateMods;
+    local X2LWTemplateModTemplate				ModTemplate;
+    local int idx;
+    local int Difficulty;
+    
+    StrategyTemplateMgr	= class'X2StrategyElementTemplateManager'.static.GetStrategyElementTemplateManager();
+    AbilityTemplateMgr = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager();
+
+    TemplateMods = StrategyTemplateMgr.GetAllTemplatesOfClass(class'X2LWTemplateModTemplate');
+    for (idx = 0; idx < TemplateMods.Length; ++idx)
+    {
+        ModTemplate = X2LWTemplateModTemplate(TemplateMods[idx]);
+        if (ModTemplate.AbilityTemplateModFn != none)
+        {
+            AbilityTemplateMgr.GetTemplateNames(TemplateNames);
+            foreach TemplateNames(TemplateName)
+            {
+	            AbilityTemplateMgr.FindAbilityTemplateAllDifficulties(TemplateName, AbilityTemplates);
+	            foreach AbilityTemplates(AbilityTemplate)
+	            {
+		            Difficulty = GetDifficultyFromTemplateName(TemplateName);
+		            ModTemplate.AbilityTemplateModFn(AbilityTemplate, Difficulty);
+	            }
+            }
+        }
+    }
+
 	PatchAbilitiesForLightEmUp();
 	PatchSmokeGrenades();
 	PatchFlashbang();
@@ -38,6 +72,11 @@ static event OnPostTemplatesCreated()
 	}
 
 	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.7");
+}
+
+static function int GetDifficultyFromTemplateName(name TemplateName)
+{
+	return int(GetRightMost(string(TemplateName)));
 }
 
 /// <summary>

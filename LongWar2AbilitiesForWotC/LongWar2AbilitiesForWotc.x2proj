@@ -165,6 +165,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\Examples.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\VanillaTemplateMods.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2AbilityCharges_LW2WotC_GremlinTierBased.uc">
       <SubType>Content</SubType>
     </Content>
@@ -223,6 +226,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_BringEmOn.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_CancelLongRangePenalty.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_CloseandPersonal.uc">
       <SubType>Content</SubType>
     </Content>
@@ -239,6 +245,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_DamnGoodGround.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_DeathFromAbove.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_DenseSmokeGrenade.uc">
@@ -263,6 +272,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_GrazingFire.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Guardian.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_HardTarget.uc">
@@ -299,6 +311,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_LowProfile.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_MaybeApplyDirectionalWorldDamage.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Mayhem.uc">
@@ -340,6 +355,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_Sentinel.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_SerialKillStatReductions.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_SmartMacrophages.uc">
       <SubType>Content</SubType>
     </Content>
@@ -371,6 +389,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Item_LW2WotC_UtilityItems.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2LWTemplateModTemplate.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2TargetingMethod_LW2WotC_AreaSuppression.uc">

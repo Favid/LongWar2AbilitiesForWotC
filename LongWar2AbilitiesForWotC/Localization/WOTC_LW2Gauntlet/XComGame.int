@@ -131,3 +131,10 @@ LocFlyOverText="Concussion Rocket"
 LocLongDescription="Fire a special rocket that does limited damage but has a chance to stun or disorient organic enemies within its area of effect and leaves a cloud of smoke."
 LocHelpText="Rocket that stuns or disorients targets and leaves a smoke cloud. <Ability:ROCKETSCATTER/>"
 LocPromotionPopupText="<Bullet/> One use per mission.<br/><Bullet/> Stun and disorientation chances based on target's will score.<br/><Bullet/> Requires one action and ends the soldier's turn."
+
+[Salvo X2AbilityTemplate]
+LocFriendlyName="Salvo"
+LocLongDescription="Launching or throwing grenades, using heavy weapons or using the Gauntlet's Rocket Launcher with your first action will not end your turn."
+LocHelpText="Grenades can be launched or thrown and heavy weapons and the Gauntlet's Rocket Launcher can be fired without ending the turn."
+LocFlyOverText="Salvo"
+LocPromotionPopupText="<Bullet/> Soldiers with the Salvo ability are prime candidates for heavy armor.<br/>"

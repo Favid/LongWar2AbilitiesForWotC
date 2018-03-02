@@ -3,9 +3,10 @@ class X2EventListener_Sapper extends X2EventListener;
 static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;
-
+    
 	Templates.AddItem(CreateListenerTemplateModifyEnvironmentDamage());
 	Templates.AddItem(CreateListenerTemplateOnKilledByExplosion());
+	Templates.AddItem(CreateListenerTemplateOnSerialKill());
 
 	return Templates;
 }
@@ -40,6 +41,21 @@ static function CHEventListenerTemplate CreateListenerTemplateOnKilledByExplosio
 	return Template;
 }
 
+static function CHEventListenerTemplate CreateListenerTemplateOnSerialKill()
+{
+	local CHEventListenerTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'CHEventListenerTemplate', Template, 'SerialKiller');
+
+	Template.RegisterInTactical = true;
+	Template.RegisterInStrategy = false;
+
+	Template.AddCHEvent('SerialKiller', OnSerialKill, ELD_OnStateSubmitted);
+	`LOG("=== Register Event OnSerialKill");
+
+	return Template;
+}
+
 // EventData is XComLWTuple with expected format:
 //      Id        : 'ModifyEnvironmentDamage'
 //      Data[0].b : override? (true) or add? (false)
@@ -48,7 +64,6 @@ static function CHEventListenerTemplate CreateListenerTemplateOnKilledByExplosio
 static function EventListenerReturn OnModifyEnvironmentDamageSapper(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
 {
 	local XComLWTuple				ModifyEnvironmentDamageTuple;
-	local XComGameState_Item		Item;
 	local XComGameState_Unit		Unit;
     local XComGameState_Ability     AbilityState;
     local XComGameState_Item        SourceAmmo;
@@ -145,6 +160,25 @@ static function EventListenerReturn OnKilledByExplosion(Object EventData, Object
 	{
 		OverrideTuple.Data[0].b = false;
 	}
+
+	return ELR_NoInterrupt;
+}
+
+static function EventListenerReturn OnSerialKill(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
+{
+	local XComGameState_Unit ShooterState;
+    local UnitValue UnitVal;
+
+	`LOG("=== OnSerialKill Triggered");
+
+	ShooterState = XComGameState_Unit (EventSource);
+	If (ShooterState == none)
+	{   
+        `LOG("=== No Shooter");
+		return ELR_NoInterrupt;
+	}
+	ShooterState.GetUnitValue ('SerialKills', UnitVal);
+	ShooterState.SetUnitFloatValue ('SerialKills', UnitVal.fValue + 1.0, eCleanup_BeginTurn);
 
 	return ELR_NoInterrupt;
 }

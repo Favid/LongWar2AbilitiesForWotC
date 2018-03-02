@@ -32,7 +32,6 @@ var config int CUTTHROAT_BONUS_CRIT_DAMAGE;
 var config int CUTTHROAT_BONUS_ARMOR_PIERCE;
 var config int CCS_AMMO_PER_SHOT;
 var config int DENSE_SMOKE_HITMOD;
-var config int COVERING_FIRE_OFFENSE_MALUS;
 var config int COMBAT_FITNESS_HP;
 var config int COMBAT_FITNESS_OFFENSE;
 var config int COMBAT_FITNESS_MOBILITY;
@@ -58,8 +57,6 @@ var config int BOMBARDIER_BONUS_RANGE_TILES;
 var config int FAILSAFE_PCT_CHANCE;
 var config int SAPPER_BONUS_ENVIRONMENT_DAMAGE;
 
-var localized string LocCoveringFire;
-var localized string LocCoveringFireMalus;
 var localized string LocDenseSmokeEffect;
 var localized string LocDenseSmokeEffectDescription;
 var localized string LocTrojanVirus;
@@ -138,11 +135,6 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(BastionCleanse());
 	Templates.AddItem(Sapper());
 	Templates.AddItem(NeedleGrenades());
-
-	//Templates.AddItem(AddSoulStealTriggered2());
-	//Templates.AddItem(AddBastion());
-	//Templates.AddItem(AddBastionPassive());
-	//Templates.AddItem(AddBastionCleanse());
 
 	return Templates;
 }
@@ -776,7 +768,7 @@ static function X2AbilityTemplate Cutthroat()
 	Effect.AbilityTargetConditions.AddItem(OrganicCondition);
 
 	// Create the template using a helper function
-	return Passive('LW2WotC_Cutthroat', "img:///UILibrary_LW_PerkPack.LW_AbilityCutthroat", true, Effect);
+	return Passive('LW2WotC_Cutthroat', "img:///UILibrary_LW_PerkPack.LW_AbilityCutthroat", false, Effect);
 }
 
 // Perk name:		Covert
