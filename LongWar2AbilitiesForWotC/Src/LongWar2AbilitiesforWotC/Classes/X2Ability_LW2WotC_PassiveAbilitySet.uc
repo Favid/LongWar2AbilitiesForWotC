@@ -88,7 +88,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(LoneWolf());
 	Templates.AddItem(LowProfile());
 	Templates.AddItem(HyperReactivePupils());
-	Templates.AddItem(LockOn());
+	Templates.AddItem(LockedOn());
 	Templates.AddItem(Sentinel());
 	Templates.AddItem(RapidReaction());
     Templates.AddItem(TraverseFire());
@@ -638,7 +638,7 @@ static function X2AbilityTemplate HyperReactivePupils()
 // Perk effect:		Gain bonus aim and crit for successive shots with your primary weapon at the same enemy unit.
 // Localized text:	"Gain +<Ability:LOCKEDON_AIM_BONUS/> aim and +<Ability:LOCKEDON_CRIT_BONUS/> crit for successive shots with your primary weapon at the same enemy unit."
 // Config:			(AbilityName="LW2WotC_LockedOn", ApplyToWeaponSlot=eInvSlot_PrimaryWeapon)
-static function X2AbilityTemplate LockOn()
+static function X2AbilityTemplate LockedOn()
 {
 	local X2AbilityTemplate                 Template;	
 	local X2Effect_LW2WotC_LockedOn			LockedOnEffect;
