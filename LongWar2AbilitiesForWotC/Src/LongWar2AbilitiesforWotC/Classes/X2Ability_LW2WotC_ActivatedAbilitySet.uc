@@ -2114,6 +2114,8 @@ static function X2AbilityTemplate SteadyWeapon()
 	local X2AbilityCooldown					Cooldown;
 	local X2AbilityCost_ActionPoints		ActionPointCost;
 	local X2Effect_LW2WotC_SteadyWeapon		ToHitModifier;
+	local X2Condition_UnitEffects           SuppressedCondition;
+    local name                              SuppressionEffect;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'LW2WotC_SteadyWeapon');
 	Template.IconImage = "img:///UILibrary_LW_PerkPack.LW_AbilitySteadyWeapon";
@@ -2136,8 +2138,13 @@ static function X2AbilityTemplate SteadyWeapon()
 	ActionPointCost.bConsumeAllPoints = true;    
 	Template.AbilityCosts.AddItem(ActionPointCost);
 	
-	// Cannot use while suppressed, if configured
-	HandleSuppressionRestriction(Template);
+	// Cannot be used while suppressed
+    SuppressedCondition = new class'X2Condition_UnitEffects';
+    foreach class'X2DownloadableContentInfo_LongWar2AbilitiesforWotC'.default.SUPPRESSION_EFFECTS(SuppressionEffect)
+	{
+		SuppressedCondition.AddExcludeEffect(SuppressionEffect, 'AA_UnitIsSuppressed');
+	}
+	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 
 	Template.AddShooterEffectExclusions();
 	Template.CinescriptCameraType = "Overwatch";
