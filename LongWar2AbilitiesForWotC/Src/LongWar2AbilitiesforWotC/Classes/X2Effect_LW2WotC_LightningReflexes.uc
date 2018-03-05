@@ -33,6 +33,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
     EventMgr.RegisterForEvent(ListenerObj, 'AbilityActivated', LightningReflexesEffectState.IncomingReactionFireCheck, ELD_OnStateSubmitted);
     EventMgr.RegisterForEvent(ListenerObj, 'LightningReflexesLWTriggered2', LightningReflexesEffectState.IncrementUses, ELD_OnStateSubmitted,, UnitState);
     EventMgr.RegisterForEvent(ListenerObj, 'LightningReflexesLWTriggered', LightningReflexesEffectState.TriggerLRFlyover, ELD_OnStateSubmitted,, UnitState);
+	EventMgr.RegisterForEvent(ListenerObj, 'TacticalGameEnd', LightningReflexesEffectState.OnTacticalGameEnd, ELD_OnStateSubmitted);
 }
 
 simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParameters, XComGameState NewGameState, bool bCleansed, XComGameState_Effect RemovedEffectState)

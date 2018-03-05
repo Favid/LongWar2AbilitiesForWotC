@@ -80,7 +80,7 @@ simulated function EventListenerReturn ResetFlyover(Object EventData, Object Eve
 {
     local XComGameState                             NewGameState;
     local XComGameState_Effect_LW2WotC_IncomingReactionFire ThisEffect;
-    
+
     if(FlyoverTriggered)
     {
         NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Update: Reset Flyover");
@@ -89,5 +89,33 @@ simulated function EventListenerReturn ResetFlyover(Object EventData, Object Eve
         NewGameState.AddStateObject(ThisEffect);
         `TACTICALRULES.SubmitGameState(NewGameState);    
     }
+
     return ELR_NoInterrupt;
+}
+
+function EventListenerReturn OnTacticalGameEnd(Object EventData, Object EventSource, XComGameState GameState, Name EventID, Object CallbackData)
+{
+	local X2EventManager EventManager;
+	local Object ListenerObj;
+    local XComGameState NewGameState;
+	
+	EventManager = `XEVENTMGR;
+
+	// Unregister our callbacks
+	ListenerObj = self;
+	
+	EventManager.UnRegisterFromEvent(ListenerObj, 'PlayerTurnBegun');
+	EventManager.UnRegisterFromEvent(ListenerObj, 'UnitMoveFinished');
+	EventManager.UnRegisterFromEvent(ListenerObj, 'AbilityActivated');
+	EventManager.UnRegisterFromEvent(ListenerObj, 'LightningReflexesLWTriggered2');
+	EventManager.UnRegisterFromEvent(ListenerObj, 'LightningReflexesLWTriggered');
+	EventManager.UnRegisterFromEvent(ListenerObj, 'TacticalGameEnd');
+	
+    NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Lightning Reflexes states cleanup");
+	NewGameState.RemoveStateObject(ObjectID);
+	`GAMERULES.SubmitGameState(NewGameState);
+	
+	`LOG("=== Lightning Reflexes: Unregistering listeners");
+
+	return ELR_NoInterrupt;
 }
