@@ -62,9 +62,6 @@ var localized string LocDenseSmokeEffectDescription;
 var localized string LocTrojanVirus;
 var localized string LocTrojanVirusTriggered;
 
-var config bool NO_STANDARD_ATTACKS_WHEN_ON_FIRE;
-var config bool NO_MELEE_ATTACKS_WHEN_ON_FIRE;
-
 static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Templates;

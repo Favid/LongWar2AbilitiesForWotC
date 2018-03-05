@@ -76,7 +76,6 @@ var config int STREET_SWEEPER_UNARMORED_DAMAGE_BONUS;
 var config int NUM_AIRDROP_CHARGES;
 var config int RAPID_DEPLOYMENT_COOLDOWN;
 var config float FLECHE_BONUS_DAMAGE_PER_TILES;
-var config bool NO_MELEE_ATTACKS_WHEN_ON_FIRE;
 var config int FORTIFY_DEFENSE;
 var config int FORTIFY_COOLDOWN;
 var config int RUN_AND_GUN_COOLDOWN;
@@ -410,12 +409,6 @@ static function X2AbilityTemplate Fleche()
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName);
 
-	// NOTE: Mimicing LW2 functionality where Fleche is disabling while burning. Uncomment code below if you want it to follow the same logic as other melee attacks
-	// if (!default.NO_MELEE_ATTACKS_WHEN_ON_FIRE)
-	// {
-	// 	SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
-	// }
-
 	Template.AddShooterEffectExclusions(SkipExclusions);
 
 	return Template;
@@ -493,11 +486,6 @@ static function X2AbilityTemplate Slash()
 
 	// Shooter Conditions
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-	
-	if (!default.NO_MELEE_ATTACKS_WHEN_ON_FIRE)
-	{
-		SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
-	}
 
 	SkipExclusions.AddItem(class'X2AbilityTemplateManager'.default.DisorientedName); //okay when disoriented
 	Template.AddShooterEffectExclusions(SkipExclusions);

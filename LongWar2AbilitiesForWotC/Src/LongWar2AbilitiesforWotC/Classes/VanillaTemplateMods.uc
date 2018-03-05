@@ -5,6 +5,9 @@
 
 class VanillaTemplateMods extends X2StrategyElement config (LW_SoldierSkills);
 
+var config bool NO_MELEE_ATTACKS_WHEN_ON_FIRE;
+var config bool NO_STANDARD_ATTACKS_WHEN_ON_FIRE;
+var config array<name> STANDARD_ATTACKS;
 var config int HAIL_OF_BULLETS_AMMO_COST;
 var config int DEMOLITION_AMMO_COST;
 var config int SERIAL_CRIT_MALUS_PER_KILL;
@@ -57,7 +60,7 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
     local X2AbilityCharges_LW2WotC_GremlinTierBased             RPCharges;
     local X2Effect_LW2WotC_MaybeApplyDirectionalWorldDamage     WorldDamage;
     local X2Effect_Persistent                                   Effect;
-    local X2Condition_UnitEffects                               SuppressedCondition, UnitEffectsCondition;
+    local X2Condition_UnitEffects                               SuppressedCondition, UnitEffectsCondition, BurningUnitEffects;
     local X2Effect_LW2WotC_Guardian                             GuardianEffect;
     local X2Effect_Persistent                                   HaywiredEffect;
     local X2Condition_UnitEffects                               NotHaywiredCondition;
@@ -245,33 +248,6 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
         `LOG("LongWar2AbilitiesForWotc: Modifying Saturation Fire");
 	}
 
-    //if (class'X2Ability_PerkPackAbilitySet'.default.NO_STANDARD_ATTACKS_WHEN_ON_FIRE)
-	//{
-		//switch (Template.DataName)
-		//{
-			//case 'StandardShot':
-			//case 'PistolStandardShot':
-			//case 'SniperStandardFire':
-			//case 'Shadowfall':
-			//// Light Em Up and Snap Shot are handled in the template
-				//UnitEffects = new class'X2Condition_UnitEffects';
-				//UnitEffects.AddExcludeEffect(class'X2StatusEffects'.default.BurningName, 'AA_UnitIsBurning');
-				//Template.AbilityShooterConditions.AddItem(UnitEffects);
-				//break;
-			//default:
-				//break;
-		//}	
-	//}
-	//if (class'X2Ability_PerkPackAbilitySet'.default.NO_MELEE_ATTACKS_WHEN_ON_FIRE)
-	//{
-		//if (Template.IsMelee())
-		//{			
-			//UnitEffects = new class'X2Condition_UnitEffects';
-			//UnitEffects.AddExcludeEffect(class'X2StatusEffects'.default.BurningName, 'AA_UnitIsBurning');
-			//Template.AbilityShooterConditions.AddItem(UnitEffects);
-		//}
-	//}
-
     // Full Override - Gives names to failed enemy hack buffs with unnamed effects so they can later be referenced
 	switch (Template.DataName)
 	{
@@ -410,6 +386,25 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
             break;
         
         `LOG("LongWar2AbilitiesForWotc: Modifying Covering Fire");
+	}
+
+    // Prevents standard attacks from being used while burning, based on configuration
+    if (default.NO_STANDARD_ATTACKS_WHEN_ON_FIRE && default.STANDARD_ATTACKS.Find(Template.DataName) != INDEX_NONE)
+	{
+		BurningUnitEffects = new class'X2Condition_UnitEffects';
+		BurningUnitEffects.AddExcludeEffect(class'X2StatusEffects'.default.BurningName, 'AA_UnitIsBurning');
+		Template.AbilityShooterConditions.AddItem(BurningUnitEffects);
+	}
+
+    // Prevents melee attacks from being used while burning, based on configuration
+	if (default.NO_MELEE_ATTACKS_WHEN_ON_FIRE)
+	{
+		if (Template.IsMelee())
+		{
+			BurningUnitEffects = new class'X2Condition_UnitEffects';
+			BurningUnitEffects.AddExcludeEffect(class'X2StatusEffects'.default.BurningName, 'AA_UnitIsBurning');
+			Template.AbilityShooterConditions.AddItem(BurningUnitEffects);
+		}
 	}
 
 }
