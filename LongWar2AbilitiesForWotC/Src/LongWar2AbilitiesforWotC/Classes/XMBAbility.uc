@@ -259,7 +259,6 @@ static function X2AbilityTemplate Attack(name DataName, string IconImage, option
 {
 	local X2AbilityTemplate                 Template;	
 	local X2Condition_Visibility            VisibilityCondition;
-	local X2Condition_UnitEffects 			SuppressedCondition;
 
 	// Macro to do localisation and stuffs
 	`CREATE_X2ABILITY_TEMPLATE(Template, DataName);

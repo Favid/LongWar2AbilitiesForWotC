@@ -31,7 +31,6 @@ static event OnPostTemplatesCreated()
     local array<name> TemplateNames;
     local X2AbilityTemplate AbilityTemplate;
     local array<X2AbilityTemplate> AbilityTemplates;
-    local X2StrategyElementTemplate TemplateMod;
     local X2StrategyElementTemplateManager		StrategyTemplateMgr;
     local array<X2StrategyElementTemplate>		TemplateMods;
     local X2LWTemplateModTemplate				ModTemplate;
