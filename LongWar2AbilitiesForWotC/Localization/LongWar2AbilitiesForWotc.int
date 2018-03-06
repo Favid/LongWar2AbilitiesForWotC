@@ -4,9 +4,6 @@ LocDenseSmokeEffectDescription="This smoke effect was created by a unit with Den
 LocTrojanVirus="Trojan Virus"
 LocTrojanVirusTriggered="<XGParam:StrValue0/!UnitName/> triggered Trojan Virus."
 
-[X2Effect_LW2WotC_Savior]
-strSavior_WorldMessage="Savior: Healed extra <XGParam:IntValue0/> Health."
-
 [VanillaTemplateMods]
 LocCoveringFire="Covering Fire"
 LocCoveringFireMalus="This unit has been targeted by an overwatching unit with the Covering Fire ability, conferring -10 to aim for the rest of the turn."

@@ -6,63 +6,61 @@
 //---------------------------------------------------------------------------------------
 class X2Effect_LW2WotC_Savior extends X2Effect_Persistent config(LW_SoldierSkills);
 
-var localized string strSavior_WorldMessage;
 var config int SAVIOR_BONUS_HEAL_AMMOUNT;
 
-//add a component to XComGameState_Effect to listen for medikit heal being applied
-simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffectParameters, XComGameState_BaseObject kNewTargetState, XComGameState NewGameState, XComGameState_Effect NewEffectState)
+function RegisterForEvents(XComGameState_Effect EffectGameState)
 {
-    local XComGameState_Effect_LW2WotC_Savior SaviorEffectState;
-    local X2EventManager EventMgr;
-    local Object ListenerObj;
+	local X2EventManager EventMgr;
+	local XComGameState_Unit UnitState;
+	local Object EffectObj;
+
+	EventMgr = `XEVENTMGR;
+
+	EffectObj = EffectGameState;
+	UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(EffectGameState.ApplyEffectParameters.SourceStateObjectRef.ObjectID));
+
+	EventMgr.RegisterForEvent(EffectObj, 'LW2WotC_Savior_Triggered', EffectGameState.TriggerAbilityFlyover, ELD_OnStateSubmitted, , UnitState);
+	EventMgr.RegisterForEvent(EffectObj, 'XpHealDamage', ModifyMedikitHeal, ELD_OnStateSubmitted, 75,,, EffectObj);
+}
+
+static function EventListenerReturn ModifyMedikitHeal(Object EventData, Object EventSource, XComGameState NewGameState, Name InEventID, Object CallbackData)
+{
+	local XComGameState_Unit					TargetUnit, SourceUnit, ExpectedSourceUnit;
+	local XComGameState_Effect					EffectState;
+	local XComGameStateContext_Ability			AbilityContext;
+	local X2Effect_LW2WotC_Savior	            Effect;
+    local XComGameState_Ability					AbilityState;
+	local X2EventManager						EventMgr;
+
+	// Get the Expected SourceUnit
+	EffectState = XComGameState_Effect(CallbackData);
+	ExpectedSourceUnit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(EffectState.ApplyEffectParameters.TargetStateObjectRef.ObjectID));
+    AbilityState = XComGameState_Ability(`XCOMHISTORY.GetGameStateForObjectID(EffectState.ApplyEffectParameters.AbilityStateObjectRef.ObjectID));
+
+	// Get the Source and Target Units for the Heal Event
+	AbilityContext = XComGameStateContext_Ability(NewGameState.GetContext());
+
+	SourceUnit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(AbilityContext.InputContext.SourceObject.ObjectID));
+	TargetUnit = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(AbilityContext.InputContext.PrimaryTarget.ObjectID));
+
+	// Check that the SourceUnit is the Expected SourceUnit
+	if (ExpectedSourceUnit.ObjectID != SourceUnit.ObjectID)
+	{
+		return ELR_NoInterrupt;
+	}
+	
+	// Activating extra healing on Target Unit
+	Effect = X2Effect_LW2WotC_Savior(EffectState.GetX2Effect());
+	TargetUnit.ModifyCurrentStat(eStat_HP, Effect.default.SAVIOR_BONUS_HEAL_AMMOUNT);
 
     EventMgr = `XEVENTMGR;
+	EventMgr.TriggerEvent('LW2WotC_Savior_Triggered', AbilityState, SourceUnit, NewGameState);
 
-    if (GetEffectComponent(NewEffectState) == none)
-    {
-        //create component and attach it to GameState_Effect, adding the new state object to the NewGameState container
-        SaviorEffectState = XComGameState_Effect_LW2WotC_Savior(NewGameState.CreateStateObject(class'XComGameState_Effect_LW2WotC_Savior'));
-        SaviorEffectState.InitComponent();
-        NewEffectState.AddComponentObject(SaviorEffectState);
-        NewGameState.AddStateObject(SaviorEffectState);
-    }
-
-    //add listener to new component effect -- do it here because the RegisterForEvents call happens before OnEffectAdded, so component doesn't yet exist
-    ListenerObj = SaviorEffectState;
-    if (ListenerObj == none)
-    {
-        return;
-    }
-    EventMgr.RegisterForEvent(ListenerObj, 'XpHealDamage', SaviorEffectState.OnMedikitHeal, ELD_OnStateSubmitted,,,true);
-}
-
-simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParameters, XComGameState NewGameState, bool bCleansed, XComGameState_Effect RemovedEffectState)
-{
-    local XComGameState_BaseObject EffectComponent;
-    local Object EffectComponentObj;
-    
-    super.OnEffectRemoved(ApplyEffectParameters, NewGameState, bCleansed, RemovedEffectState);
-
-    EffectComponent = GetEffectComponent(RemovedEffectState);
-    if (EffectComponent == none)
-        return;
-
-    EffectComponentObj = EffectComponent;
-    `XEVENTMGR.UnRegisterFromAllEvents(EffectComponentObj);
-
-    NewGameState.RemoveStateObject(EffectComponent.ObjectID);
-}
-
-static function XComGameState_Effect_LW2WotC_Savior GetEffectComponent(XComGameState_Effect Effect)
-{
-    if (Effect != none) 
-        return XComGameState_Effect_LW2WotC_Savior(Effect.FindComponentObject(class'XComGameState_Effect_LW2WotC_Savior'));
-    return none;
+	return ELR_NoInterrupt;
 }
 
 defaultproperties
 {
     DuplicateResponse=eDupe_Ignore
     EffectName="LW2WotC_Savior";
-    bRemoveWhenSourceDies=true;
 }
