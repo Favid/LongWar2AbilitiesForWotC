@@ -322,9 +322,6 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_LW2WotC_SteadyWeaponListener.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_LW2WotC_Trojan.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XMBAbility.uc">
       <SubType>Content</SubType>
     </Content>
