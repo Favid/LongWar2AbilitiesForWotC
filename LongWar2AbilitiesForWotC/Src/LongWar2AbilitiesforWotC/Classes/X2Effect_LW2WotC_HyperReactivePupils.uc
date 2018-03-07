@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------- 
-//  FILE:    X2Effect_HyperReactivePupils
+//  FILE:    X2Effect_LW2WotC_HyperReactivePupils
 //  AUTHOR:  John Lumpkin (Pavonis Interactive)
 //  PURPOSE: Sets up HRP perk effect
 //--------------------------------------------------------------------------------------- 
@@ -8,76 +8,81 @@ class X2Effect_LW2WotC_HyperReactivePupils extends X2Effect_Persistent config (L
 
 var config int HYPERREACTIVE_PUPILS_AIM_BONUS;
 
-
-simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffectParameters, XComGameState_BaseObject kNewTargetState, XComGameState NewGameState, XComGameState_Effect NewEffectState)
+function RegisterForEvents(XComGameState_Effect EffectGameState)
 {
-	local XComGameState_Effect_LastShotDetails	LastShotDetails;
-	local X2EventManager						EventMgr;
-	local Object								ListenerObj;
-	local XComGameState_Unit					UnitState;
+	local X2EventManager EventMgr;
+	local Object EffectObj;
 
 	EventMgr = `XEVENTMGR;
-	UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(NewEffectState.ApplyEffectParameters.SourceStateObjectRef.ObjectID));
 
-	if (GetLastShotDetails(NewEffectState) == none)
-	{
-		LastShotDetails = XComGameState_Effect_LastShotDetails(NewGameState.CreateStateObject(class'XComGameState_Effect_LastShotDetails'));
-		LastShotDetails.InitComponent();
-		NewEffectState.AddComponentObject(LastShotDetails);
-		NewGameState.AddStateObject(LastShotDetails);
-	}
-	ListenerObj = LastShotDetails;
-	if (ListenerObj == none)
-	{
-		`Redscreen("LSD: Failed to find LSD Component when registering listener");
-		return;
-	}
-    EventMgr.RegisterForEvent(ListenerObj, 'AbilityActivated', LastShotDetails.RecordShot, ELD_OnStateSubmitted, 50, UnitState);
+	EffectObj = EffectGameState;
+
+	EventMgr.RegisterForEvent(EffectObj, 'AbilityActivated', HyperReactivePupilsListener, ELD_OnStateSubmitted,,,, EffectObj);
 }
 
-simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParameters, XComGameState NewGameState, bool bCleansed, XComGameState_Effect RemovedEffectState)
+static function EventListenerReturn HyperReactivePupilsListener(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
 {
-	local XComGameState_BaseObject EffectComponent;
-	local Object EffectComponentObj;
+	local XComGameStateContext_Ability AbilityContext;
+	local XComGameState_Ability AbilityState;
+	local XComGameState_Unit UnitState;
+	local XComGameState_Item SourceWeapon;
+
+    //`LOG("HyperReactivePupils: Triggered");
+
+	AbilityContext = XComGameStateContext_Ability(GameState.GetContext());
+	`assert(AbilityContext != none);
+	if (AbilityContext.InterruptionStatus == eInterruptionStatus_Interrupt)
+		return ELR_NoInterrupt;
+
+	AbilityState = XComGameState_Ability(EventData);
+	`assert(AbilityState != none);
+	UnitState = XComGameState_Unit(EventSource);
+	`assert(UnitState != none);
 	
-	super.OnEffectRemoved(ApplyEffectParameters, NewGameState, bCleansed, RemovedEffectState);
+    //`LOG("HyperReactivePupils: Past asserts");
 
-	EffectComponent = GetLastShotDetails(RemovedEffectState);
-	if (EffectComponent == none)
-		return;
-
-	EffectComponentObj = EffectComponent;
-	`XEVENTMGR.UnRegisterFromAllEvents(EffectComponentObj);
-
-	NewGameState.RemoveStateObject(EffectComponent.ObjectID);
-}
-
-static function XComGameState_Effect_LastShotDetails GetLastShotDetails(XComGameState_Effect Effect)
-{
-	if (Effect != none) 
-		return XComGameState_Effect_LastShotDetails (Effect.FindComponentObject(class'XComGameState_Effect_LastShotDetails'));
-	return none;
+	if (AbilityState.IsAbilityInputTriggered())
+	{
+        //`LOG("HyperReactivePupils: Triggered ability");
+		SourceWeapon = AbilityState.GetSourceWeapon();
+		if (AbilityState.GetMyTemplate().Hostility == eHostility_Offensive && SourceWeapon != none && SourceWeapon.InventorySlot == eInvSlot_PrimaryWeapon)
+		{
+            //`LOG("HyperReactivePupils: Valid ability");
+            
+            if (AbilityContext.IsResultContextMiss())
+            {
+                //`LOG("HyperReactivePupils: Miss");
+			    UnitState.SetUnitFloatValue('HyperReactivePupilsMiss', 1, eCleanup_BeginTactical);
+            }
+            else
+            {
+                //`LOG("HyperReactivePupils: Hit");
+			    UnitState.SetUnitFloatValue('HyperReactivePupilsMiss', 0, eCleanup_BeginTactical);
+            }
+		}
+	}
+	return ELR_NoInterrupt;
 }
 
 function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit Attacker, XComGameState_Unit Target, XComGameState_Ability AbilityState, class<X2AbilityToHitCalc> ToHitType, bool bMelee, bool bFlanking, bool bIndirectFire, out array<ShotModifierInfo> ShotModifiers)
 {
     local XComGameState_Item						SourceWeapon;
     local ShotModifierInfo							ShotInfo;
-	local XComGameState_Effect_LastShotDetails		LastShot;
+	local UnitValue                                 MissValue;
 
 	if (XComGameState_Ability(`XCOMHISTORY.GetGameStateForObjectID(EffectState.ApplyEffectParameters.AbilityStateObjectRef.ObjectID)) == none)
 		return;
 	if (AbilityState == none)
 		return;
-	LastShot = GetLastShotDetails(EffectState);
-	if (!LastShot.b_AnyShotTaken)
-		return;
+
     SourceWeapon = AbilityState.GetSourceWeapon();    
 	if (SourceWeapon == Attacker.GetItemInSlot(eInvSlot_PrimaryWeapon))
 	{
 		if ((SourceWeapon != none) && (Target != none))
 		{
-			if (!LastShot.b_LastShotHit)
+		    Attacker.GetUnitValue('HyperReactivePupilsMiss', MissValue);
+            
+			if (MissValue.fValue > 0)
 			{
 				ShotInfo.ModType = eHit_Success;
 				ShotInfo.Reason = FriendlyName;

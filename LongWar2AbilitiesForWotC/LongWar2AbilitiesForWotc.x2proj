@@ -316,9 +316,6 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_EffectCounter.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_LastShotDetails.uc">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\XComGameState_Effect_LW2WotC_IncomingReactionFire.uc">
       <SubType>Content</SubType>
     </Content>
