@@ -1,4 +1,4 @@
-class X2EventListener_Sapper extends X2EventListener;
+class X2EventListener_LW2WotC extends X2EventListener;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
