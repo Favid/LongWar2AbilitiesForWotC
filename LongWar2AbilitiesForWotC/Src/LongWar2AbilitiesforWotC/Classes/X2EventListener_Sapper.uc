@@ -8,6 +8,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Templates.AddItem(CreateListenerTemplateOnKilledByExplosion());
 	Templates.AddItem(CreateListenerTemplateOnSerialKill());
 	Templates.AddItem(CreateListenerTemplateOnGetPCSImage());
+	Templates.AddItem(CreateListenerTemplateOnCleanupTacticalMission());
 
 	return Templates;
 }
@@ -52,7 +53,7 @@ static function CHEventListenerTemplate CreateListenerTemplateOnSerialKill()
 	Template.RegisterInStrategy = false;
 
 	Template.AddCHEvent('SerialKiller', OnSerialKill, ELD_OnStateSubmitted);
-	`LOG("=== Register Event OnSerialKill");
+	//`LOG("=== Register Event OnSerialKill");
 
 	return Template;
 }
@@ -67,7 +68,22 @@ static function CHEventListenerTemplate CreateListenerTemplateOnGetPCSImage()
 	Template.RegisterInStrategy = true;
 
 	Template.AddCHEvent('OnGetPCSImage', OnGetPCSImage, ELD_Immediate);
-	`LOG("=== Register Event OnGetPCSImage");
+	//`LOG("=== Register Event OnGetPCSImage");
+
+	return Template;
+}
+
+static function CHEventListenerTemplate CreateListenerTemplateOnCleanupTacticalMission()
+{
+	local CHEventListenerTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'CHEventListenerTemplate', Template, 'OnCleanupTacticalMission');
+
+	Template.RegisterInTactical = true;
+	Template.RegisterInStrategy = false;
+
+	Template.AddCHEvent('CleanupTacticalMission', OnCleanupTacticalMission, ELD_OnStateSubmitted);
+	//`LOG("=== Register Event CleanupTacticalMission");
 
 	return Template;
 }
@@ -231,6 +247,36 @@ static function EventListenerReturn OnGetPCSImage(Object EventData, Object Event
 		case 'CombatRushPCS':               OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityAdrenalNeurosympathy"; break;
 
 		default:  break;
+	}
+
+	return ELR_NoInterrupt;
+}
+
+static function EventListenerReturn OnCleanupTacticalMission(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
+{
+	local XComGameState_BattleData BattleData;
+	local XComGameState_Unit Unit;
+	local XComGameStateHistory History;
+	local XComGameState_Effect EffectState;
+	local StateObjectReference EffectRef;
+
+    History = `XCOMHISTORY;
+    BattleData = XComGameState_BattleData(EventData);
+    BattleData = XComGameState_BattleData(GameState.GetGameStateForObjectID(BattleData.ObjectID));
+
+	foreach History.IterateByClassType(class'XComGameState_Unit', Unit)
+	{
+		if(Unit.IsAlive() && !Unit.bCaptured)
+		{
+			foreach Unit.AffectedByEffects(EffectRef)
+			{
+				EffectState = XComGameState_Effect(History.GetGameStateForObjectID(EffectRef.ObjectID));
+				if (EffectState.GetX2Effect().EffectName == class'X2Effect_LW2WotC_FieldSurgeon'.default.EffectName)
+				{
+					X2Effect_LW2WotC_FieldSurgeon(EffectState.GetX2Effect()).ApplyFieldSurgeon(EffectState, Unit, GameState);
+				}
+			}
+		}
 	}
 
 	return ELR_NoInterrupt;
