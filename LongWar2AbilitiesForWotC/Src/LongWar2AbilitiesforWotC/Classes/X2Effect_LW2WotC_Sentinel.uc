@@ -39,7 +39,7 @@ function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStat
 		AbilityState = XComGameState_Ability(`XCOMHISTORY.GetGameStateForObjectID(EffectState.ApplyEffectParameters.AbilityStateObjectRef.ObjectID));		
 		if (AbilityState != none)
 		{
-            // To make sure we don't shoot the same target twice - pending implementation
+            // To make sure we don't shoot the same target twice
 			TargetUnit = XComGameState_Unit(NewGameState.GetGameStateForObjectID(AbilityContext.InputContext.PrimaryTarget.ObjectID));
 			ValueName = name("OverwatchShot" $ TargetUnit.ObjectID);
 			SourceUnit.SetUnitFloatValue (ValueName, 1.0, eCleanup_BeginTurn);

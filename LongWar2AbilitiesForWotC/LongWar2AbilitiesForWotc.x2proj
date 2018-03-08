@@ -114,6 +114,9 @@
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Condition_LW2WotC_SupportGrenade.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Condition_OverwatchLimit.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2DownloadableContentInfo_LongWar2AbilitiesforWotC.uc" />
     <Content Include="Src\LongWar2AbilitiesforWotC\Classes\X2Effect_LW2WotC_AddGrenadeSlotCharges.uc">
       <SubType>Content</SubType>

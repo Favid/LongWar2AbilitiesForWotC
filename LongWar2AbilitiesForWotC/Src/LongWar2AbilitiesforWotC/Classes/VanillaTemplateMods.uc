@@ -68,6 +68,7 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
     local X2Condition_AbilityProperty                           CoveringFireAbilityCondition;
     local X2Effect_LW2WotC_CancelLongRangePenalty               CancelLongRangePenaltyEffect;
     local X2Effect_LW2WotC_DeathFromAbove                       DeathEffect;
+	local X2Condition_OverwatchLimit		                    OWLimitCondition;
 
     // Hail of Bullets - Unusable with shotguns, snipers, and vektor rifles and make its ammo cost configurable
     if (Template.DataName == 'HailofBullets')
@@ -394,6 +395,8 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
 		BurningUnitEffects = new class'X2Condition_UnitEffects';
 		BurningUnitEffects.AddExcludeEffect(class'X2StatusEffects'.default.BurningName, 'AA_UnitIsBurning');
 		Template.AbilityShooterConditions.AddItem(BurningUnitEffects);
+
+        `LOG("LongWar2AbilitiesForWotc: Modifying " $ Template.DataName $ " to prevent its use while burning");
 	}
 
     // Prevents melee attacks from being used while burning, based on configuration
@@ -404,7 +407,21 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
 			BurningUnitEffects = new class'X2Condition_UnitEffects';
 			BurningUnitEffects.AddExcludeEffect(class'X2StatusEffects'.default.BurningName, 'AA_UnitIsBurning');
 			Template.AbilityShooterConditions.AddItem(BurningUnitEffects);
+
+            `LOG("LongWar2AbilitiesForWotc: Modifying " $ Template.DataName $ " to prevent its use while burning");
 		}
 	}
+
+    // Prevent multiple overwatch shots from triggering on the same target on the same turn
+    // Only applies to Guardian, Sentinel, and Rapid Reaction
+    if (Template.DataName == 'OverwatchShot'
+        || Template.DataName == 'LongWatchShot'
+        || Template.DataName == 'PistolOverwatchShot') 
+    {
+	    OWLimitCondition = new class 'X2Condition_OverwatchLimit';
+        Template.AbilityTargetConditions.AddItem(OWLimitCondition);
+
+       `LOG("LongWar2AbilitiesForWotc: Modifying " $ Template.DataName $ " to add a per-target overwatch limit");
+    }
 
 }
