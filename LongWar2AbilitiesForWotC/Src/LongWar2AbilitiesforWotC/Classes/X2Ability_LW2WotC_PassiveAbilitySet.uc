@@ -869,8 +869,8 @@ static function X2AbilityTemplate Formidable()
 }
 
 // Perk name:		Lightning Reflexes
-// Perk effect:		Your gear includes an extra layer of protection, granting bonus ablative hit points and reduced damage from explosive attacks.
-// Localized text:	"Your gear includes an extra layer of protection, granting <Ability:FORMIDABLE_ABLATIVE_HP/> bonus ablative hit points and <Ability:BlastPadding/>% less damage from explosive attacks."
+// Perk effect:		Reaction fire shots against you have a significantly decreased chance to hit. The bonus goes down with each additional reaction shot you face.
+// Localized text:	"Reaction fire shots against you have a significantly decreased chance to hit. The bonus goes down with each additional reaction shot you face."
 // Config:			(AbilityName="LW2WotC_LightningReflexes")
 static function X2AbilityTemplate LightningReflexes()
 {
