@@ -15,22 +15,22 @@ function UnitEndedTacticalPlay(XComGameState_Effect EffectState, XComGameState_U
     History = `XCOMHISTORY;
     SourceUnitState = XComGameState_Unit(History.GetGameStateForObjectID(EffectState.ApplyEffectParameters.SourceStateObjectRef.ObjectID));
 
-    `LOG("Smart Macrophages: TargetUnit=" $ UnitState.GetFullName() $ ", SourceUnit=" $ SourceUnitState.GetFullName());
+    //`LOG("Smart Macrophages: TargetUnit=" $ UnitState.GetFullName() $ ", SourceUnit=" $ SourceUnitState.GetFullName());
 
     if(!SmartMacrophagesEffectIsValidForSource(SourceUnitState)) { return; }
 
-    `LOG("Smart Macrophages: Source Unit Valid.");
+    //`LOG("Smart Macrophages: Source Unit Valid.");
 
     if(UnitState == none) { return; }
     if(UnitState.IsDead()) { return; }
     if(UnitState.IsBleedingOut()) { return; }
     if(!CanBeHealed(UnitState)) { return; }
 
-    `LOG("Smart Macrophages: Target Unit Can Be Healed.");
+    //`LOG("Smart Macrophages: Target Unit Can Be Healed.");
 
-    `LOG("Smart Macrophages : Pre update LowestHP=" $ UnitState.LowestHP);
+    //`LOG("Smart Macrophages : Pre update LowestHP=" $ UnitState.LowestHP);
     UnitState.LowestHP += 1;
-    `LOG("Smart Macrophages : Post update LowestHP=" $ UnitState.LowestHP);
+    //`LOG("Smart Macrophages : Post update LowestHP=" $ UnitState.LowestHP);
     UnitState.ModifyCurrentStat(eStat_HP, 1);
 
     super.UnitEndedTacticalPlay(EffectState, UnitState);

@@ -19,7 +19,7 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
                 {
                     if (Attacker.HasSoldierAbility('LW2WotC_Mayhem'))
                     {
-                        `LOG("Mayhem: Applying bonus damage");
+                        //`LOG("Mayhem: Applying bonus damage");
                         return int (CurrentDamage * (default.MAYHEM_DAMAGE_BONUS_PCT / 100));
                     }
                 }

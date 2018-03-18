@@ -11,12 +11,12 @@ event name CallAbilityMeetsCondition(XComGameState_Ability kAbility, XComGameSta
 
 	if (AttackingUnit == none)
 	{
-		`LOG (" X2Condition_OverwatchLimit: No Attacking Unit Found");
+		//`LOG (" X2Condition_OverwatchLimit: No Attacking Unit Found");
 	}
 
 	if (TargetUnit == none)
 	{
-		`LOG (" X2Condition_OverwatchLimit: No Target Unit Found");
+		//`LOG (" X2Condition_OverwatchLimit: No Target Unit Found");
 	}
 	TestValueName = name("OverwatchShot" $ TargetUnit.ObjectID);
 	AttackingUnit.GetUnitValue(TestValueName, OWShotValue);

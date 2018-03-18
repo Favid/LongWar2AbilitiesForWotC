@@ -8,10 +8,10 @@
 //---------------------------------------------------------------------------------------
 class Examples extends XMBAbility;
 
-static function array<X2DataTemplate> CreateTemplates()
-{
-	local array<X2DataTemplate> Templates;
-
+//static function array<X2DataTemplate> CreateTemplates()
+//{
+	//local array<X2DataTemplate> Templates;
+//
 	//Templates.AddItem(AbsolutelyCritical());
 	//Templates.AddItem(AdrenalineSurge());
 	//Templates.AddItem(AgainstTheOdds());
@@ -51,9 +51,9 @@ static function array<X2DataTemplate> CreateTemplates()
 	//Templates.AddItem(TacticalSense());
 	//Templates.AddItem(Weaponmaster());
 	//Templates.AddItem(ZeroIn());
-
-	return Templates;
-}
+//
+	//return Templates;
+//}
 
 // Perk name:		Absolutely Critical
 // Perk effect:		You get an additional +50 Crit chance against flanked targets.

@@ -69,7 +69,7 @@ simulated function XComGameState_Unit FindNewAreaSuppressionTarget(XComGameState
 					{
 						TargetState = XComGameState_Unit(History.GetGameStateForObjectID(EffectState.ApplyEffectParameters.TargetStateObjectRef.ObjectID));
 					}
-					`LOG("X2Effect_AreaSuppression: Found EffectGameState affecting " $ TargetState.GetFullName() $ ", Alive=" $ TargetState.IsAlive());
+					//`LOG("X2Effect_AreaSuppression: Found EffectGameState affecting " $ TargetState.GetFullName() $ ", Alive=" $ TargetState.IsAlive());
 					if(TargetState != none && TargetState.IsAlive())
 					{
 						return TargetState;

@@ -12,10 +12,10 @@ var config int COMBAT_AWARENESS_BONUS_DEFENSE;
 
 function int GetArmorChance(XComGameState_Effect EffectState, XComGameState_Unit UnitState)
 {
-    `LOG("=== UnitState.ReserveActionPoints.Length: " $ string(UnitState.ReserveActionPoints.Length));
+    //`LOG("=== UnitState.ReserveActionPoints.Length: " $ string(UnitState.ReserveActionPoints.Length));
     if (UnitState.ReserveActionPoints.Length > 0)
     {
-        `LOG("=== Bonus armor chance: " $ string(default.COMBAT_AWARENESS_BONUS_ARMOR_CHANCE));
+        //`LOG("=== Bonus armor chance: " $ string(default.COMBAT_AWARENESS_BONUS_ARMOR_CHANCE));
         return default.COMBAT_AWARENESS_BONUS_ARMOR_CHANCE;
     }
     return 0;
@@ -23,10 +23,10 @@ function int GetArmorChance(XComGameState_Effect EffectState, XComGameState_Unit
 
 function int GetArmorMitigation(XComGameState_Effect EffectState, XComGameState_Unit UnitState)
 {
-    `LOG("=== UnitState.ReserveActionPoints.Length: " $ string(UnitState.ReserveActionPoints.Length));
+    //`LOG("=== UnitState.ReserveActionPoints.Length: " $ string(UnitState.ReserveActionPoints.Length));
     if (UnitState.ReserveActionPoints.Length > 0)
     {
-        `LOG("=== Applying bonus armor: " $ string(default.COMBAT_AWARENESS_BONUS_ARMOR));
+        //`LOG("=== Applying bonus armor: " $ string(default.COMBAT_AWARENESS_BONUS_ARMOR));
         return default.COMBAT_AWARENESS_BONUS_ARMOR;        
     }
     return 0;

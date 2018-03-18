@@ -22,7 +22,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
     if (UnitState.isStunned())
         return;
 
-    `LOG ("FALLBACK APPLIED!");
+    //`LOG ("FALLBACK APPLIED!");
     // Add one standard action point for fallback actions.  
     for( Point = 0; Point < 1; ++Point )
     {

@@ -100,6 +100,8 @@ static function EventListenerReturn OnModifyEnvironmentDamageSapper(Object Event
     local XComGameState_Ability     AbilityState;
     local XComGameState_Item        SourceAmmo;
     local X2GrenadeTemplate         SourceGrenade;
+
+    //`LOG("Sapper: Triggered");
     
     // handle unexpected EventData type
 	ModifyEnvironmentDamageTuple = XComLWTuple(EventData);
@@ -156,6 +158,8 @@ static function EventListenerReturn OnModifyEnvironmentDamageSapper(Object Event
 		return ELR_NoInterrupt;
     }
 
+    //`LOG("Sapper: Applying bonus env damage: " $ class'X2Ability_LW2WotC_PassiveAbilitySet'.default.SAPPER_BONUS_ENVIRONMENT_DAMAGE);
+
     // now we add our environment damage bonus
     ModifyEnvironmentDamageTuple.Data[0].b = false;
     ModifyEnvironmentDamageTuple.Data[1].i += class'X2Ability_LW2WotC_PassiveAbilitySet'.default.SAPPER_BONUS_ENVIRONMENT_DAMAGE;
@@ -171,6 +175,8 @@ static function EventListenerReturn OnKilledByExplosion(Object EventData, Object
 {
     local XComLWTuple				OverrideTuple;
 	local XComGameState_Unit		Killer, Target;
+
+    //`LOG("Needle Grenades: Triggered");
 
 	OverrideTuple = XComLWTuple(EventData);
 	if(OverrideTuple == none)
@@ -201,12 +207,12 @@ static function EventListenerReturn OnSerialKill(Object EventData, Object EventS
 	local XComGameState_Unit ShooterState;
     local UnitValue UnitVal;
 
-	`LOG("=== OnSerialKill Triggered");
+	//`LOG("=== OnSerialKill Triggered");
 
 	ShooterState = XComGameState_Unit (EventSource);
 	If (ShooterState == none)
 	{   
-        `LOG("=== No Shooter");
+        //`LOG("=== No Shooter");
 		return ELR_NoInterrupt;
 	}
 	ShooterState.GetUnitValue ('SerialKills', UnitVal);

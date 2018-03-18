@@ -19,7 +19,7 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
         {
             if (Attacker.HasSoldierAbility('LW2WotC_Lockdown'))
             {
-                `LOG("Lockdown: Applying bonus aim");
+                //`LOG("Lockdown: Applying bonus aim");
                 ShotInfo.ModType = eHit_Success;
                 ShotInfo.Reason = FriendlyName;
                 ShotInfo.Value = default.LOCKDOWN_TOHIT_BONUS / (1-class'X2AbilityToHitCalc_StandardAim'.default.REACTION_FINALMOD);
