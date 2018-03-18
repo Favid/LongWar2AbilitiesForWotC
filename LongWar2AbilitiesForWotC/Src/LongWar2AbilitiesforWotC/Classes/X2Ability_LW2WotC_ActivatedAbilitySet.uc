@@ -1453,6 +1453,11 @@ static function X2AbilityTemplate IronCurtain()
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
 	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
 
+	// Standard interactions with Shadow, Chosen, and the Lost
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
+
 	// Add a secondary ability to provide bonuses on the shot
 	AddSecondaryAbility(Template, IronCurtainBonuses());
 
