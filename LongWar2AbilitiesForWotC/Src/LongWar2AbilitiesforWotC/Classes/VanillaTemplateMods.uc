@@ -182,7 +182,7 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
 			}
 		}
 
-        `LOG("LongWar2AbilitiesForWotc: Modifying Stealth");
+        `LOG("LongWar2AbilitiesForWotc: Modifying Conceal");
 	}
     
     // Rupture - Replace guarenteed crits with a configurable crit bonus
@@ -361,7 +361,6 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
 		case 'GunslingerShot':
 		case 'KillZoneShot':
 		case 'PistolOverwatchShot':
-		case 'LW2WotC_SuppressionShot':
 		case 'SuppressionShot':
 		case 'LW2WotC_AreaSuppressionShot':
 		case 'LW2WotC_CloseCombatSpecialistAttack':
@@ -388,6 +387,15 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
         
         `LOG("LongWar2AbilitiesForWotc: Modifying Covering Fire");
 	}
+
+    // Suppression - Add the effects to check for and apply Lockdown and Mayhem bonuses
+    if(Template.DataName == 'Suppression')
+    {
+        Template.AdditionalAbilities.AddItem('LW2WotC_Lockdown_Bonuses');
+        Template.AdditionalAbilities.AddItem('LW2WotC_Mayhem_Bonuses');
+
+        `LOG("LongWar2AbilitiesForWotc: Modifying Suppression");
+    }
 
     // Prevents standard attacks from being used while burning, based on configuration
     if (default.NO_STANDARD_ATTACKS_WHEN_ON_FIRE && default.STANDARD_ATTACKS.Find(Template.DataName) != INDEX_NONE)

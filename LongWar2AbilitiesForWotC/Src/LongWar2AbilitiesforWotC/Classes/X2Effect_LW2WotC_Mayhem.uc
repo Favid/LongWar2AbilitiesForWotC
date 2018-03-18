@@ -7,7 +7,7 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
     local XComGameState_Item SourceWeapon;
     local XComGameState_Unit TargetUnit;
 
-    if(AbilityState.GetMyTemplateName() == 'LW2WotC_SuppressionShot' || AbilityState.GetMyTemplateName() == 'LW2WotC_AreaSuppressionShot')
+    if(AbilityState.GetMyTemplateName() == 'SuppressionShot' || AbilityState.GetMyTemplateName() == 'LW2WotC_AreaSuppressionShot')
     {
         if(AppliedData.AbilityResultContext.HitResult == eHit_Success)
         {
@@ -19,6 +19,7 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
                 {
                     if (Attacker.HasSoldierAbility('LW2WotC_Mayhem'))
                     {
+                        `LOG("Mayhem: Applying bonus damage");
                         return int (CurrentDamage * (default.MAYHEM_DAMAGE_BONUS_PCT / 100));
                     }
                 }

@@ -12,13 +12,14 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
     local XComGameState_Item SourceWeapon;
     local ShotModifierInfo ShotInfo;
 
-    if(AbilityState.GetMyTemplateName() == 'LW2WotC_SuppressionShot' || AbilityState.GetMyTemplateName() == 'LW2WotC_AreaSuppressionShot')
+    if(AbilityState.GetMyTemplateName() == 'SuppressionShot' || AbilityState.GetMyTemplateName() == 'LW2WotC_AreaSuppressionShot')
     {
         SourceWeapon = AbilityState.GetSourceWeapon();    
         if (SourceWeapon != none && Target != none)
         {
             if (Attacker.HasSoldierAbility('LW2WotC_Lockdown'))
             {
+                `LOG("Lockdown: Applying bonus aim");
                 ShotInfo.ModType = eHit_Success;
                 ShotInfo.Reason = FriendlyName;
                 ShotInfo.Value = default.LOCKDOWN_TOHIT_BONUS / (1-class'X2AbilityToHitCalc_StandardAim'.default.REACTION_FINALMOD);
