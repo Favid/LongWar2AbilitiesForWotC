@@ -45,9 +45,6 @@
     <Content Include="Config\XComGameData_SoldierSkills.ini">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Config\XComGameData_WeaponData.ini">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Config\XComGameData_XpData.ini">
       <SubType>Content</SubType>
     </Content>
