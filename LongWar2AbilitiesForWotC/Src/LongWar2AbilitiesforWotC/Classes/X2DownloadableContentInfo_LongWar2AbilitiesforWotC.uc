@@ -70,7 +70,7 @@ static event OnPostTemplatesCreated()
 		PatchAbilitiesForSnapshot();
 	}
 
-	`REDSCREEN("Long War 2 Abilities For WotC : Version 0.0.7");
+	`LOG("Long War 2 Abilities For WotC : Version 1.1");
 }
 
 static function int GetDifficultyFromTemplateName(name TemplateName)

@@ -8,6 +8,7 @@ class VanillaTemplateMods extends X2StrategyElement config (LW_SoldierSkills);
 var config bool NO_MELEE_ATTACKS_WHEN_ON_FIRE;
 var config bool NO_STANDARD_ATTACKS_WHEN_ON_FIRE;
 var config array<name> STANDARD_ATTACKS;
+var config bool HAIL_OF_BULLETS_WEAPON_RESTRICTIONS;
 var config int HAIL_OF_BULLETS_AMMO_COST;
 var config int DEMOLITION_AMMO_COST;
 var config int SERIAL_CRIT_MALUS_PER_KILL;
@@ -21,6 +22,7 @@ var config int RUPTURE_CRIT_BONUS;
 var config int AID_PROTOCOL_COOLDOWN;
 var config int SATURATION_FIRE_AMMO_COST;
 var config int FUSE_COOLDOWN;
+var config bool HAYWIRE_PROTOCOL_ONCE_PER_TARGET;
 var config int COVERING_FIRE_OFFENSE_MALUS;
 var config int REVIVAL_PROTOCOL_CHARGES_CV;
 var config int REVIVAL_PROTOCOL_CHARGES_MG;
@@ -73,21 +75,24 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
     // Hail of Bullets - Unusable with shotguns, snipers, and vektor rifles and make its ammo cost configurable
     if (Template.DataName == 'HailofBullets')
 	{
-		NoShotgunsCondition = new class'X2Condition_UnitInventory';
-		NoShotgunsCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
-		NoShotgunsCondition.ExcludeWeaponCategory = 'shotgun';
-		Template.AbilityShooterConditions.AddItem(NoShotgunsCondition);
+        if(default.HAIL_OF_BULLETS_WEAPON_RESTRICTIONS)
+        {
+            NoShotgunsCondition = new class'X2Condition_UnitInventory';
+	        NoShotgunsCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	        NoShotgunsCondition.ExcludeWeaponCategory = 'shotgun';
+	        Template.AbilityShooterConditions.AddItem(NoShotgunsCondition);
 	
-		NoSnipersCondition = new class'X2Condition_UnitInventory';
-		NoSnipersCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
-		NoSnipersCondition.ExcludeWeaponCategory = 'sniper_rifle';
-		Template.AbilityShooterConditions.AddItem(NoSnipersCondition);
+	        NoSnipersCondition = new class'X2Condition_UnitInventory';
+	        NoSnipersCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	        NoSnipersCondition.ExcludeWeaponCategory = 'sniper_rifle';
+	        Template.AbilityShooterConditions.AddItem(NoSnipersCondition);
 
-		NoVektorCondition = new class'X2Condition_UnitInventory';
-		NoVektorCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
-		NoVektorCondition.ExcludeWeaponCategory = 'vektor_rifle';
-		Template.AbilityShooterConditions.AddItem(NoVektorCondition);
-
+	        NoVektorCondition = new class'X2Condition_UnitInventory';
+	        NoVektorCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	        NoVektorCondition.ExcludeWeaponCategory = 'vektor_rifle';
+	        Template.AbilityShooterConditions.AddItem(NoVektorCondition);
+        }
+		
 		for (k = 0; k < Template.AbilityCosts.length; k++)
 		{
 			AmmoCost = X2AbilityCost_Ammo(Template.AbilityCosts[k]);
@@ -333,25 +338,28 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
 	}
 
     // Haywire Protocol - Changes so that individual enemies can only be hacked once per mission
-    if (Template.DataName == 'FinalizeHaywire')
-	{
-		HaywiredEffect = new class'X2Effect_Persistent';
-		HaywiredEffect.EffectName = 'Haywired';
-		HaywiredEffect.BuildPersistentEffect(1, true, false);
-		HaywiredEffect.bDisplayInUI = false;
-		HaywiredEffect.bApplyOnMiss = true;
-		Template.AddTargetEffect(HaywiredEffect);
+    if(default.HAYWIRE_PROTOCOL_ONCE_PER_TARGET)
+    {
+        if (Template.DataName == 'FinalizeHaywire')
+	    {
+		    HaywiredEffect = new class'X2Effect_Persistent';
+		    HaywiredEffect.EffectName = 'Haywired';
+		    HaywiredEffect.BuildPersistentEffect(1, true, false);
+		    HaywiredEffect.bDisplayInUI = false;
+		    HaywiredEffect.bApplyOnMiss = true;
+		    Template.AddTargetEffect(HaywiredEffect);
         
-        `LOG("LongWar2AbilitiesForWotc: Modifying Finalize Haywire");
-	}
-	if (Template.DataName == 'HaywireProtocol') 
-	{
-		NotHaywiredCondition = new class 'X2Condition_UnitEffects';
-		NotHaywiredCondition.AddExcludeEffect ('Haywired', 'AA_NoTargets'); 
-		Template.AbilityTargetConditions.AddItem(NotHaywiredCondition);
+            `LOG("LongWar2AbilitiesForWotc: Modifying Finalize Haywire");
+	    }
+	    if (Template.DataName == 'HaywireProtocol') 
+	    {
+		    NotHaywiredCondition = new class 'X2Condition_UnitEffects';
+		    NotHaywiredCondition.AddExcludeEffect ('Haywired', 'AA_NoTargets'); 
+		    Template.AbilityTargetConditions.AddItem(NotHaywiredCondition);
         
-        `LOG("LongWar2AbilitiesForWotc: Modifying Haywire Protocol");
-	}
+            `LOG("LongWar2AbilitiesForWotc: Modifying Haywire Protocol");
+	    }
+    }
 
     // Covering Fire - This makes overwatch shots apply malus if the user has Covering Fire
     switch (Template.DataName)

@@ -54,6 +54,9 @@
     <Content Include="Config\XComPromotionUIMod.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComStealthOverhaul.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Content\LW_Perk_CloseEncounters.upk">
       <SubType>Content</SubType>
     </Content>
