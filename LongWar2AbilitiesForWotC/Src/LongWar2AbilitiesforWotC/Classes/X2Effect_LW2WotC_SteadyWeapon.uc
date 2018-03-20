@@ -3,47 +3,21 @@ class X2Effect_LW2WotC_SteadyWeapon extends X2Effect_Persistent;
 var int Aim_Bonus;
 var int Crit_Bonus;
 
-simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffectParameters, XComGameState_BaseObject kNewTargetState, XComGameState NewGameState, XComGameState_Effect NewEffectState)
+function RegisterForEvents(XComGameState_Effect EffectGameState)
 {
-    local X2EventManager                                EventMgr;
-    local XComGameState_Unit                            UnitState;
-    local Object                                        ListenerObj;
-    local XComGameState_Effect_LW2WotC_SteadyWeaponListener     SteadyWeaponListenerComponent;
-    local UnitValue AttacksThisTurn;
+	local X2EventManager EventMgr;
+	local XComGameState_Unit UnitState;
+	local Object EffectObj;
 
-    EventMgr = `XEVENTMGR;
-    UnitState = XComGameState_Unit(kNewTargetState);
-    if (SteadyWeaponEffectComponent(NewEffectState) == none)
-    {
-        SteadyWeaponListenerComponent = XComGameState_Effect_LW2WotC_SteadyWeaponListener(NewGameState.CreateStateObject(class'XComGameState_Effect_LW2WotC_SteadyWeaponListener'));
-        SteadyWeaponListenerComponent.InitComponent();
-        NewEffectState.AddComponentObject(SteadyWeaponListenerComponent);
-        NewGameState.AddStateObject(SteadyWeaponListenerComponent);
-    }
-    ListenerObj = SteadyWeaponListenerComponent;
-    if (ListenerObj == none)
-    {
-        `Redscreen("SWLC: Failed to find Component when registering listener");
-        return;
-    }
+	EventMgr = `XEVENTMGR;
 
-    // This is a fix for Deep Cover triggering when you Steady Weapon
-    UnitState.GetUnitValue('AttacksThisTurn', AttacksThisTurn);
-    AttacksThisTurn.fValue += float(1);
-    UnitState.SetUnitFloatValue('AttacksThisTurn', AttacksThisTurn.fValue, eCleanup_BeginTurn);
+	EffectObj = EffectGameState;
+	UnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(EffectGameState.ApplyEffectParameters.SourceStateObjectRef.ObjectID));
 
-    EventMgr.RegisterForEvent(ListenerObj, 'AbilityActivated', SteadyWeaponListenerComponent.SteadyWeaponActionListener, ELD_OnStateSubmitted, 50, UnitState);
-    EventMgr.RegisterForEvent(ListenerObj, 'UnitTakeEffectDamage', SteadyWeaponListenerComponent.SteadyWeaponWoundListener, ELD_OnStateSubmitted, 51, UnitState);
-    EventMgr.RegisterForEvent(ListenerObj, 'ImpairingEffect', SteadyWeaponListenerComponent.SteadyWeaponWoundListener, ELD_OnStateSubmitted, 52, UnitState);
+	EventMgr.RegisterForEvent(EffectObj, 'UnitTakeEffectDamage', SteadyWeaponWoundListener, ELD_OnStateSubmitted, 75, UnitState,, EffectObj);
+	EventMgr.RegisterForEvent(EffectObj, 'ImpairingEffect', SteadyWeaponWoundListener, ELD_OnStateSubmitted, 75, UnitState,, EffectObj);
+	EventMgr.RegisterForEvent(EffectObj, 'AbilityActivated', SteadyWeaponActionListener, ELD_OnStateSubmitted, 75, UnitState,, EffectObj);
 }
-
-static function XComGameState_Effect_LW2WotC_SteadyWeaponListener SteadyWeaponEffectComponent(XComGameState_Effect Effect)
-{
-    if (Effect != none)
-        return XComGameState_Effect_LW2WotC_SteadyWeaponListener (Effect.FindComponentObject(class'XComGameState_Effect_LW2WotC_SteadyWeaponListener'));
-    return none;
-}
-
 
 function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit Attacker, XComGameState_Unit Target, XComGameState_Ability AbilityState, class<X2AbilityToHitCalc> ToHitType, bool bMelee, bool bFlanking, bool bIndirectFire, out array<ShotModifierInfo> ShotModifiers)
 {
@@ -61,32 +35,79 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
         ShotInfo.Value = Crit_Bonus;
         ShotModifiers.AddItem(ShotInfo);
     }
-
 }
 
-static function XComGameState_Effect_LW2WotC_SteadyWeaponListener GetEffectComponent(XComGameState_Effect Effect)
+static function EventListenerReturn SteadyWeaponWoundListener(Object EventData, Object EventSource, XComGameState GameState, Name InEventID, Object CallbackData)
 {
-    if (Effect != none)
-        return XComGameState_Effect_LW2WotC_SteadyWeaponListener(Effect.FindComponentObject(class'XComGameState_Effect_LW2WotC_SteadyWeaponListener'));
-    return none;
+    local XComGameStateContext_EffectRemoved RemoveContext;
+    local XComGameState NewGameState;
+	local XComGameState_Effect EffectState;
+
+    //`LOG("SteadyWeapon SteadyWeaponWoundListener triggered...");
+
+    EffectState = XComGameState_Effect(CallbackData);
+    if (EffectState != none && !EffectState.bRemoved)
+    {
+        RemoveContext = class'XComGameStateContext_EffectRemoved'.static.CreateEffectRemovedContext(EffectState);
+        NewGameState = `XCOMHISTORY.CreateNewGameState(true, RemoveContext);
+        EffectState.RemoveEffect(NewGameState, NewGameState);
+        `TACTICALRULES.SubmitGameState(NewGameState);
+        //`LOG("SteadyWeapon removing...");
+    }
+    return ELR_NoInterrupt;
 }
 
-
-simulated function OnEffectRemoved(const out EffectAppliedData ApplyEffectParameters, XComGameState NewGameState, bool bCleansed, XComGameState_Effect RemovedEffectState)
+static function EventListenerReturn SteadyWeaponActionListener(Object EventData, Object EventSource, XComGameState GameState, Name InEventID, Object CallbackData)
 {
-    local XComGameState_BaseObject EffectComponent;
-    local Object EffectComponentObj;
+    local XComGameState_Ability AbilityState;
+    local XComGameStateContext_EffectRemoved RemoveContext;
+    local XComGameState NewGameState;
+    local X2AbilityCost Cost;
+    local bool CostlyAction;
+	local XComGameState_Effect EffectState;
 
-    super.OnEffectRemoved(ApplyEffectParameters, NewGameState, bCleansed, RemovedEffectState);
+    //`LOG("SteadyWeapon SteadyWeaponActionListener triggered...");
 
-    EffectComponent = GetEffectComponent(RemovedEffectState);
-    if (EffectComponent == none)
-        return;
+    AbilityState = XComGameState_Ability(EventData);
+    if (AbilityState != none)
+    {
+        //`LOG("SteadyWeapon AbilityState valid...");
+        foreach AbilityState.GetMyTemplate().AbilityCosts(Cost)
+        {
+            CostlyAction = false;
+            if (Cost.IsA('X2AbilityCost_ActionPoints') && !X2AbilityCost_ActionPoints(Cost).bFreeCost)
+                CostlyAction = true;
+            if (Cost.IsA('X2AbilityCost_ReserveActionPoints') && !X2AbilityCost_ReserveActionPoints(Cost).bFreeCost)
+                CostlyAction = true;
+            if (Cost.IsA('X2AbilityCost_HeavyWeaponActionPoints') && !X2AbilityCost_HeavyWeaponActionPoints(Cost).bFreeCost)
+                CostlyAction = true;
+            if (Cost.IsA('X2AbilityCost_QuickdrawActionPoints') && !X2AbilityCost_QuickdrawActionPoints(Cost).bFreeCost)
+                CostlyAction = true;
+            if (AbilityState.GetMyTemplateName() == 'LW2WotC_CloseCombatSpecialistAttack')
+                CostlyAction = true;
+            if (AbilityState.GetMyTemplateName() == 'BladestormAttack')
+                CostlyAction = true;
+            if (AbilityState.GetMyTemplateName() == 'LightningHands')
+                CostlyAction = true;
+            if(CostlyAction) 
+            {
+                if (AbilityState.GetMyTemplateName() == 'LW2WotC_SteadyWeapon' || AbilityState.GetMyTemplateName() == 'Stock_LW_Bsc_Ability' ||  AbilityState.GetMyTemplateName() == 'Stock_LW_Adv_Ability' ||  AbilityState.GetMyTemplateName() == 'Stock_LW_Sup_Ability')
+                    return ELR_NoInterrupt;
 
-    EffectComponentObj = EffectComponent;
-    `XEVENTMGR.UnRegisterFromAllEvents(EffectComponentObj);
-
-    NewGameState.RemoveStateObject(EffectComponent.ObjectID);
+                //`LOG("SteadyWeapon action is costly...");
+                EffectState = XComGameState_Effect(CallbackData);
+                if (EffectState != none && !EffectState.bRemoved)
+                {
+                    RemoveContext = class'XComGameStateContext_EffectRemoved'.static.CreateEffectRemovedContext(EffectState);
+                    NewGameState = `XCOMHISTORY.CreateNewGameState(true, RemoveContext);
+                    EffectState.RemoveEffect(NewGameState, NewGameState);
+                    `TACTICALRULES.SubmitGameState(NewGameState);
+                    //`LOG("SteadyWeapon removing...");
+                }
+            }
+        }
+    }
+    return ELR_NoInterrupt;
 }
 
 defaultproperties
