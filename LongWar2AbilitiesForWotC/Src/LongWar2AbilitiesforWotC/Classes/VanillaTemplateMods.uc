@@ -27,6 +27,7 @@ var config int COVERING_FIRE_OFFENSE_MALUS;
 var config int REVIVAL_PROTOCOL_CHARGES_CV;
 var config int REVIVAL_PROTOCOL_CHARGES_MG;
 var config int REVIVAL_PROTOCOL_CHARGES_BM;
+var config bool OVERWATCH_SHOTS_LIMIT;
 
 var localized string LocCoveringFire;
 var localized string LocCoveringFireMalus;
@@ -430,14 +431,16 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
 
     // Prevent multiple overwatch shots from triggering on the same target on the same turn
     // Only applies to Guardian, Sentinel, and Rapid Reaction
-    if (Template.DataName == 'OverwatchShot'
-        || Template.DataName == 'LongWatchShot'
-        || Template.DataName == 'PistolOverwatchShot') 
+    if(default.OVERWATCH_SHOTS_LIMIT)
     {
-	    OWLimitCondition = new class 'X2Condition_OverwatchLimit';
-        Template.AbilityTargetConditions.AddItem(OWLimitCondition);
+        if (Template.DataName == 'OverwatchShot'
+            || Template.DataName == 'LongWatchShot'
+            || Template.DataName == 'PistolOverwatchShot') 
+        {
+	        OWLimitCondition = new class 'X2Condition_OverwatchLimit';
+            Template.AbilityTargetConditions.AddItem(OWLimitCondition);
 
-       `LOG("LongWar2AbilitiesForWotc: Modifying " $ Template.DataName $ " to add a per-target overwatch limit");
+           `LOG("LongWar2AbilitiesForWotc: Modifying " $ Template.DataName $ " to add a per-target overwatch limit");
+        }
     }
-
 }
