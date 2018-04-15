@@ -64,6 +64,7 @@ static event OnPostTemplatesCreated()
 	PatchFlashbang();
 	PatchBaseGameThrowGrenadeForLW2WotC_VolatileMix();
 	PatchAbilitiesForDoubleTapActionPoint();
+    AddFullOverrideToRoboticCharacterTemplates();
 
 	if(class'X2Ability_LW2WotC_ActivatedAbilitySet'.default.SNAPSHOT_REDUCES_AP_COST_FOR_SPECIAL_SHOTS)
 	{
@@ -243,6 +244,31 @@ static function PatchAbilitiesForSnapshot()
 			}
 		}
 	}
+}
+
+// Add the hack rewards for Full Override to all Robotic, non-soldier character templates
+static function AddFullOverrideToRoboticCharacterTemplates()
+{
+    local X2CharacterTemplateManager    CharacterTemplateManager;
+    local X2CharacterTemplate            CharTemplate;
+    local array<X2DataTemplate>            DataTemplates;
+    local X2DataTemplate                Template, DiffTemplate;
+
+    CharacterTemplateManager = class'X2CharacterTemplateManager'.static.GetCharacterTemplateManager();
+
+    foreach CharacterTemplateManager.IterateTemplates(Template, None)
+    {
+        CharacterTemplateManager.FindDataTemplateAllDifficulties(Template.DataName, DataTemplates);
+        foreach DataTemplates(DiffTemplate)
+        {
+            CharTemplate = X2CharacterTemplate(DiffTemplate);
+            if (CharTemplate.bIsRobotic && !CharTemplate.bIsSoldier)
+            {
+                CharTemplate.HackRewards.AddItem('BuffEnemy_FullOverride');
+                CharTemplate.HackRewards.AddItem('ControlRobot_Mission');
+            }
+        }
+    }
 }
 
 /// <summary>
