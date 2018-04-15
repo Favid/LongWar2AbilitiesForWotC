@@ -66,6 +66,12 @@
     <Content Include="Localization\LongWar2AbilitiesForWotc.int">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Localization\LongWar2AbilitiesForWotc.jpn">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\XComGame.jpn">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ReadMe.txt" />
     <Content Include="ModPreview.jpg" />
     <Content Include="Config\XComEditor.ini" />
