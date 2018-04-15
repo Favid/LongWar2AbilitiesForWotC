@@ -10,6 +10,7 @@ var config int WALK_FIRE_CRIT_MALUS;
 var config int WALK_FIRE_COOLDOWN;
 var config int WALK_FIRE_AMMO_COST;
 var config int WALK_FIRE_DAMAGE_PERCENT_MALUS;
+var config bool WALK_FIRE_WEAPON_RESTRICTIONS;
 var config int PRECISION_SHOT_COOLDOWN;
 var config int PRECISION_SHOT_AMMO_COST;
 var config int PRECISION_SHOT_CRIT_BONUS;
@@ -184,6 +185,7 @@ static function X2AbilityTemplate WalkFire()
 	local X2AbilityTemplate Template;
 	local X2Condition_UnitInventory	NoShotgunsCondition;
     local X2Condition_UnitInventory NoSniperRiflesCondition;
+    local X2Condition_UnitInventory NoVektorCondition;
 
 	// Create the template using a helper function
 	Template = Attack('LW2WotC_WalkFire', "img:///UILibrary_LW_PerkPack.LW_Ability_WalkingFire", false, none, class'UIUtilities_Tactical'.const.CLASS_CAPTAIN_PRIORITY, eCost_WeaponConsumeAll, default.WALK_FIRE_AMMO_COST);
@@ -193,18 +195,28 @@ static function X2AbilityTemplate WalkFire()
 
 	// Add a secondary ability to provide bonuses on the shot
 	AddSecondaryAbility(Template, WalkFireBonuses());
+	//Template.AdditionalAbilities.AddItem('LW2WotC_WalkFire_Bonuses');
 
-    // Do not allow this ability to be used with Shotguns
-    NoShotgunsCondition = new class'X2Condition_UnitInventory';
-	NoShotgunsCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
-	NoShotgunsCondition.ExcludeWeaponCategory = 'shotgun';
-	Template.AbilityShooterConditions.AddItem(NoShotgunsCondition);
+    if(default.WALK_FIRE_WEAPON_RESTRICTIONS)
+    {
+        // Do not allow this ability to be used with Shotguns
+        NoShotgunsCondition = new class'X2Condition_UnitInventory';
+	    NoShotgunsCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	    NoShotgunsCondition.ExcludeWeaponCategory = 'shotgun';
+	    Template.AbilityShooterConditions.AddItem(NoShotgunsCondition);
 
-    // Do not allow this ability to be used with Sniper Rifles
-	NoSniperRiflesCondition = new class'X2Condition_UnitInventory';
-	NoSniperRiflesCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
-	NoSniperRiflesCondition.ExcludeWeaponCategory = 'sniper_rifle';
-	Template.AbilityShooterConditions.AddItem(NoSniperRiflesCondition);
+        // Do not allow this ability to be used with Sniper Rifles
+	    NoSniperRiflesCondition = new class'X2Condition_UnitInventory';
+	    NoSniperRiflesCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	    NoSniperRiflesCondition.ExcludeWeaponCategory = 'sniper_rifle';
+	    Template.AbilityShooterConditions.AddItem(NoSniperRiflesCondition);
+        
+        // Do not allow this ability to be used with Vektor Rifles
+	    NoVektorCondition = new class'X2Condition_UnitInventory';
+	    NoVektorCondition.RelevantSlot=eInvSlot_PrimaryWeapon;
+	    NoVektorCondition.ExcludeWeaponCategory = 'vektor_rifle';
+	    Template.AbilityShooterConditions.AddItem(NoVektorCondition);
+    }
 
 	return Template;
 }
