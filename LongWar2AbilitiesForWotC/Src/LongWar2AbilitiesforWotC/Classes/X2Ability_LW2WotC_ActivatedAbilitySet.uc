@@ -1285,7 +1285,7 @@ static function X2AbilityTemplate KubikuriShotBonuses()
 }
 
 // Perk name:		Ghostwalker
-// Perk effect:		Activate this ability to reduce enemy detection range against you by almost 25% for the rest of your turn as well as the following turn. Cooldown-based."
+// Perk effect:		Activate this ability to reduce enemy detection range against you by almost 25% for the rest of your turn as well as the following turn. Cooldown-based.
 // Localized text:	"Activate this ability to reduce enemy detection range against you by almost 25% for the rest of your turn as well as the following turn. <Ability:GHOSTWALKER_COOLDOWN> turn cooldown."
 // Config:			(AbilityName="LW2WotC_Ghostwalker")
 static function X2AbilityTemplate Ghostwalker()

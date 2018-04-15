@@ -914,7 +914,7 @@ static function X2AbilityTemplate Smoker()
 	return Template;
 }
 
-// Perk name:		Smoker
+// Perk name:		Dense Smoke
 // Perk effect:		Your smoke grenades confer additional bonus defense.
 // Localized text:	"Your smoke grenades confer an additional <Ability:DENSE_SMOKE_INVERSE/> defense."
 // Config:			(AbilityName="LW2WotC_DenseSmoke")
@@ -1684,8 +1684,8 @@ static function X2AbilityTemplate Whirlwind()
 }
 
 // Perk name:		Commissar
-// Perk effect:		If you hit with a melee attack during your turn, gain a bonus move.
-// Localized text:	"If you hit with a melee attack during your turn, gain a bonus move."
+// Perk effect:		Pistol shots against allies who have been mind-controlled by enemies have a bonus to hit, cannot be dodged, and automatically kill the target if a hit occurs.
+// Localized text:	"Pistol shots against allies who have been mind-controlled by enemies have +<Ability:COMMISSAR_HIT_BONUS> to hit, cannot be dodged, and automatically kill the target if a hit occurs."
 // Config:			(AbilityName="LW2WotC_Commissar", ApplyToWeaponSlot=eInvSlot_SecondaryWeapon)
 static function X2AbilityTemplate Commissar()
 {

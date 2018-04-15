@@ -69,7 +69,7 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
     local X2Condition_UnitEffects                               NotHaywiredCondition;
     local X2Effect_PersistentStatChange                         CoveringFireMalusEffect;
     local X2Condition_AbilityProperty                           CoveringFireAbilityCondition;
-    local X2Effect_LW2WotC_CancelLongRangePenalty               CancelLongRangePenaltyEffect;
+    local X2Effect_WOTC_APA_Class_NegateRangePenalty            APA_CancelLongRangePenaltyEffect;
     local X2Effect_LW2WotC_DeathFromAbove                       DeathEffect;
 	local X2Condition_OverwatchLimit		                    OWLimitCondition;
 
@@ -139,10 +139,13 @@ function ModifyAbilitiesGeneral(X2AbilityTemplate Template, int Difficulty)
 	if (Template.DataName == 'DeathFromAbove')
 	{
 		Template.AbilityTargetEffects.Length = 0;
-		CancelLongRangePenaltyEffect = New class'X2Effect_LW2WotC_CancelLongRangePenalty';
-		CancelLongRangePenaltyEffect.BuildPersistentEffect (1, true, false);
-		CancelLongRangePenaltyEffect.SetDisplayInfo (0, Template.LocFriendlyName, Template.LocLongDescription, Template.IconImage, false,, Template.AbilitySourceName);
-		Template.AddTargetEffect(CancelLongRangePenaltyEffect);
+
+        APA_CancelLongRangePenaltyEffect = new class'X2Effect_WOTC_APA_Class_NegateRangePenalty';
+		APA_CancelLongRangePenaltyEffect.BuildPersistentEffect (1, true, false);
+		APA_CancelLongRangePenaltyEffect.SetDisplayInfo (0, Template.LocFriendlyName, Template.LocLongDescription, Template.IconImage, false,, Template.AbilitySourceName);
+        APA_CancelLongRangePenaltyEffect.RangePenaltyPercentNegated = class'X2Effect_LW2WotC_DeathFromAbove'.default.DFA_SQUADSIGHT_AIM_MODIFIER;
+        APA_CancelLongRangePenaltyEffect.bLimitToSquadSightRange = true;
+		Template.AddTargetEffect(APA_CancelLongRangePenaltyEffect);
 
 		DeathEffect = new class'X2Effect_LW2WotC_DeathFromAbove';
 		DeathEffect.BuildPersistentEffect(1, true, false, false);
