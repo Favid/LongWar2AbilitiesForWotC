@@ -241,16 +241,22 @@ static function EventListenerReturn OnGetPCSImage(Object EventData, Object Event
 
 	switch (ItemState.GetMyTemplateName())
 	{
-		case 'DepthPerceptionPCS':          OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityDepthPerception"; break;
-		case 'HyperReactivePupilsPCS':      OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityHyperReactivePupils"; break;
-		case 'CombatAwarenessPCS':          OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityThreatAssesment"; break;
-		case 'DamageControlPCS':            OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityDamageControl"; break;
-		case 'ImpactFieldsPCS':             OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityAbsorptionFields"; break;
-		case 'BodyShieldPCS':               OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityBodyShield"; break;
-		case 'EmergencyLifeSupportPCS':     OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityEmergencyLifeSupport"; break;
-		case 'IronSkinPCS':                 OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityIronSkin"; break;
-		case 'SmartMacrophagesPCS':         OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilitySmartMacrophages"; break;
-		case 'CombatRushPCS':               OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_PerkPack.LW_AbilityAdrenalNeurosympathy"; break;
+		case 'DepthPerceptionPCS': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_depthperception"; break;
+		case 'HyperReactivePupilsPCS': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_hyperreactivepupils"; break;
+		case 'CombatAwarenessPCS': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_threatassessment"; break;
+		case 'DamageControlPCS': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_damagecontrol"; break;
+		case 'ImpactFieldsPCS': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_impactfield"; break;
+		case 'BodyShieldPCS': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_bodyshield"; break;
+		case 'EmergencyLifeSupportPCS': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_emergencylifesupport"; break;
+		case 'IronSkinPCS': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_ironskin"; break;
+		case 'SmartMacrophagesPCS': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_smartmacrophages"; break;
+		case 'CombatRushPCS': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_combatrush"; break;
+		case 'CommonPCSAgility': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_dodge"; break;
+		case 'RarePCSAgility': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_dodge"; break;
+		case 'EpicPCSAgility': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_dodge"; break;
+		case 'CommonPCSHacking': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_hacking"; break;
+		case 'RarePCSHacking': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_hacking"; break;
+		case 'EpicPCSHacking': OverridePCSImageTuple.Data[0].b = true; OverridePCSImageTuple.Data[1].s = "img:///UILibrary_LW_Overhaul.implants_hacking"; break;
 
 		default:  break;
 	}

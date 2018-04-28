@@ -14,6 +14,14 @@ static function array<X2DataTemplate> CreateTemplates()
     Resources.AddItem(CreateEmergencyLifeSupportPCS());
     Resources.AddItem(CreateIronSkinPCS());
     Resources.AddItem(CreateSmartMacrophagesPCS());
+    
+	Resources.AddItem(CreateCommonPCSPsi());
+	Resources.AddItem(CreateRarePCSPsi());
+	Resources.AddItem(CreateEpicPCSPsi());
+
+	Resources.AddItem(CreateCommonPCSHacking());
+	Resources.AddItem(CreateRarePCSHacking());
+	Resources.AddItem(CreateEpicPCSHacking());
 
     Return Resources;
 }
@@ -216,5 +224,120 @@ static function X2DataTemplate CreateSmartMacrophagesPCS()
     Template.InventorySlot = eInvSlot_CombatSim;
     Template.BlackMarketTexts = default.PCSBlackMarketTexts;
 
+    return Template;
+}
+
+static function X2DataTemplate CreateCommonPCSPsi()
+{
+    local X2EquipmentTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'X2EquipmentTemplate', Template, 'CommonPCSPsi');
+    Template.LootStaticMesh = staticmesh'AdventPCS';
+    Template.strImage = "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_CombatSim_Psi";
+    Template.ItemCat = 'CombatSim';
+    Template.TradingPostValue = 15;
+    Template.bAlwaysUnique = false;
+    Template.Tier = 0;
+    Template.StatBoostPowerLevel = 1;
+    Template.StatsToBoost.AddItem(eStat_PsiOffense);
+    Template.bUseBoostIncrement = false;
+	Template.InventorySlot = eInvSlot_CombatSim;
+    Template.BlackMarketTexts = default.PCSBlackMarketTexts;
+    return Template;
+}
+
+static function X2DataTemplate CreateRarePCSPsi()
+{
+    local X2EquipmentTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'X2EquipmentTemplate', Template, 'RarePCSPsi');
+    Template.LootStaticMesh = staticmesh'AdventPCS';
+    Template.strImage = "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_CombatSim_Psi";
+    Template.ItemCat = 'CombatSim';
+    Template.TradingPostValue = 15;
+    Template.bAlwaysUnique = false;
+    Template.Tier = 1;
+    Template.StatBoostPowerLevel = 2;
+    Template.StatsToBoost.AddItem(eStat_PsiOffense);
+    Template.bUseBoostIncrement = false;
+	Template.InventorySlot = eInvSlot_CombatSim;
+    Template.BlackMarketTexts = default.PCSBlackMarketTexts;
+    return Template;
+}
+
+static function X2DataTemplate CreateEpicPCSPsi()
+{
+    local X2EquipmentTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'X2EquipmentTemplate', Template, 'EpicPCSPsi');
+    Template.LootStaticMesh = staticmesh'AdventPCS';
+    Template.strImage = "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_CombatSim_Psi";
+    Template.ItemCat = 'CombatSim';
+    Template.TradingPostValue = 15;
+    Template.bAlwaysUnique = false;
+    Template.Tier = 2;
+    Template.StatBoostPowerLevel = 3;
+    Template.StatsToBoost.AddItem(eStat_PsiOffense);
+    Template.bUseBoostIncrement = false;
+	Template.InventorySlot = eInvSlot_CombatSim;
+    Template.BlackMarketTexts = default.PCSBlackMarketTexts;
+    return Template;
+}
+
+
+static function X2DataTemplate CreateCommonPCSHacking()
+{
+    local X2EquipmentTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'X2EquipmentTemplate', Template, 'CommonPCSHacking');
+    Template.LootStaticMesh = staticmesh'AdventPCS';
+    Template.strImage = "img:///UILibrary_LW_PerkPack.LW_Inv_CombatSim_Hacking";
+    Template.ItemCat = 'CombatSim';
+    Template.TradingPostValue = 15;
+    Template.bAlwaysUnique = false;
+    Template.Tier = 0;
+    Template.StatBoostPowerLevel = 1;
+    Template.StatsToBoost.AddItem(eStat_Hacking);
+    Template.bUseBoostIncrement = false;
+	Template.InventorySlot = eInvSlot_CombatSim;
+    Template.BlackMarketTexts = default.PCSBlackMarketTexts;
+    return Template;
+}
+
+static function X2DataTemplate CreateRarePCSHacking()
+{
+    local X2EquipmentTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'X2EquipmentTemplate', Template, 'RarePCSHacking');
+    Template.LootStaticMesh = staticmesh'AdventPCS';
+    Template.strImage = "img:///UILibrary_LW_PerkPack.LW_Inv_CombatSim_Hacking";
+    Template.ItemCat = 'CombatSim';
+    Template.TradingPostValue = 15;
+    Template.bAlwaysUnique = false;
+    Template.Tier = 1;
+    Template.StatBoostPowerLevel = 2;
+    Template.StatsToBoost.AddItem(eStat_Hacking);
+    Template.bUseBoostIncrement = false;
+	Template.InventorySlot = eInvSlot_CombatSim;
+    Template.BlackMarketTexts = default.PCSBlackMarketTexts;
+    return Template;
+}
+
+static function X2DataTemplate CreateEpicPCSHacking()
+{
+    local X2EquipmentTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'X2EquipmentTemplate', Template, 'EpicPCSHacking');
+    Template.LootStaticMesh = staticmesh'AdventPCS';
+    Template.strImage = "img:///UILibrary_LW_PerkPack.LW_Inv_CombatSim_Hacking";
+    Template.ItemCat = 'CombatSim';
+    Template.TradingPostValue = 15;
+    Template.bAlwaysUnique = false;
+    Template.Tier = 2;
+    Template.StatBoostPowerLevel = 3;
+    Template.StatsToBoost.AddItem(eStat_Hacking);
+    Template.bUseBoostIncrement = false;
+	Template.InventorySlot = eInvSlot_CombatSim;
+    Template.BlackMarketTexts = default.PCSBlackMarketTexts;
     return Template;
 }
