@@ -37,39 +37,39 @@ function ApplyFieldSurgeon(XComGameState_Effect EffectState, XComGameState_Unit 
     }
 
     SourceUnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(EffectState.ApplyEffectParameters.SourceStateObjectRef.ObjectID));
-    //`LOG("Field Surgeon: TargetUnit=" $ UnitState.GetFullName() $ ", SourceUnit=" $ SourceUnitState.GetFullName());
+    `LOG("Field Surgeon: TargetUnit=" $ UnitState.GetFullName() $ ", SourceUnit=" $ SourceUnitState.GetFullName());
 
     if(!FieldSurgeonEffectIsValidForSource(SourceUnitState)) { return; }
 
-    //`LOG("Field Surgeon: Source Unit Valid.");
+    `LOG("Field Surgeon: Source Unit Valid.");
 
     if(UnitState == none) { return; }
     if(UnitState.IsDead()) { return; }
     if(UnitState.IsBleedingOut()) { return; }
     if(!CanBeHealed(UnitState)) { return; }
 
-    //`LOG("Field Surgeon: Target Unit Can Be Healed.");
+    `LOG("Field Surgeon: Target Unit Can Be Healed.");
 
     bApplyFieldSurgeon = false;
     NumEffects = 0;
     if(UnitState.GetUnitValue(default.FieldSurgeonAppliedUnitValue, AppliedFSValue))
     {
-        //`LOG("Field Surgeon: FSValue Found, Value=" $ int(AppliedFSValue.fValue));
+        `LOG("Field Surgeon: FSValue Found, Value=" $ int(AppliedFSValue.fValue));
         NumEffects = int(AppliedFSValue.fValue);
         if(NumEffects >= default.FIELD_SURGEON_CHANCE_FOR_NUM_EFFECTS.Length)
             NumEffects = default.FIELD_SURGEON_CHANCE_FOR_NUM_EFFECTS.Length-1;
     }
-    //`LOG("Field Surgeon: NumEffects=" $ NumEffects $ ", Chance=" $ default.FIELD_SURGEON_CHANCE_FOR_NUM_EFFECTS[NumEffects]);
+    `LOG("Field Surgeon: NumEffects=" $ NumEffects $ ", Chance=" $ default.FIELD_SURGEON_CHANCE_FOR_NUM_EFFECTS[NumEffects]);
     if(`SYNC_RAND(100) < default.FIELD_SURGEON_CHANCE_FOR_NUM_EFFECTS[NumEffects])
         bApplyFieldSurgeon = true;
 
-    //`LOG("Field Surgeon: ApplyFieldSurgeon=" $ bApplyFieldSurgeon);
+    `LOG("Field Surgeon: ApplyFieldSurgeon=" $ bApplyFieldSurgeon);
 
     if(bApplyFieldSurgeon)
     {
-        //`LOG("Field Surgeon : Pre update LowestHP=" $ UnitState.LowestHP);
+        `LOG("Field Surgeon : Pre update LowestHP=" $ UnitState.LowestHP);
         UnitState.LowestHP += 1;
-        //`LOG("Field Surgeon : Post update LowestHP=" $ UnitState.LowestHP);
+        `LOG("Field Surgeon : Post update LowestHP=" $ UnitState.LowestHP);
 
         // Armor HP may have already been removed, apparently healing the unit since we have not yet
         // executed EndTacticalHealthMod. We may only appear injured here for large injuries (or little

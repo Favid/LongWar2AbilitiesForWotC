@@ -77,7 +77,7 @@ static function CHEventListenerTemplate CreateListenerTemplateOnCleanupTacticalM
 {
 	local CHEventListenerTemplate Template;
 
-	`CREATE_X2TEMPLATE(class'CHEventListenerTemplate', Template, 'OnCleanupTacticalMission');
+	`CREATE_X2TEMPLATE(class'CHEventListenerTemplate', Template, 'CleanupTacticalMission');
 
 	Template.RegisterInTactical = true;
 	Template.RegisterInStrategy = false;

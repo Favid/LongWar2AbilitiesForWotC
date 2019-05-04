@@ -1496,13 +1496,19 @@ static function X2AbilityTemplate SmartMacrophages()
 // Config:			(AbilityName="LW2WotC_FieldSurgeon")
 static function X2AbilityTemplate FieldSurgeon()
 {
+	local X2AbilityTemplate			Template;
 	local X2Effect_LW2WotC_FieldSurgeon		FieldSurgeonEffect;
 
 	// Effect to reduce wound time
 	FieldSurgeonEffect = new class'X2Effect_LW2WotC_FieldSurgeon';
 
 	// Create the template using a helper function
-	return Passive('LW2WotC_FieldSurgeon', "img:///UILibrary_LW_PerkPack.LW_AbilityFieldSurgeon", true, FieldSurgeonEffect);
+	Template = Passive('LW2WotC_FieldSurgeon', "img:///UILibrary_LW_PerkPack.LW_AbilityFieldSurgeon", true, none);
+	
+	Template.AbilityMultiTargetStyle = new class'X2AbilityMultiTarget_AllAllies';
+	Template.AddMultiTargetEffect(FieldSurgeonEffect);
+
+	return Template;
 }
 
 // Perk name:		Trojan
