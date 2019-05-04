@@ -24,12 +24,21 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
     if(SourceWeapon != none && SourceWeapon.ObjectID == EffectState.ApplyEffectParameters.ItemStateObjectRef.ObjectID)
     {
         Target = XComGameState_Unit(TargetDamageable);
-        if (Target.IsStunned() || Target.IsDisoriented() || Target.IsPanicked() || Target.IsUnconscious())
+        if (Target.IsStunned() || Target.IsPanicked() || Target.IsUnconscious())
         {
-            if (Target.IsDisoriented() && Half_For_Disoriented)
-                return Max (Damage_Bonus / 2, 1);
             return Damage_Bonus;
         }
+		else if (Target.IsDisoriented())
+		{
+			if (Half_For_Disoriented)
+			{
+				return Max (Damage_Bonus / 2, 1);
+			}
+			else
+			{
+				return Damage_Bonus;
+			}
+		}
     }
     return 0;
 }
@@ -39,16 +48,20 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
     local XComGameState_Item                SourceWeapon;
     local ShotModifierInfo                  ShotInfo;
     local X2AbilityToHitCalc_StandardAim    StandardToHit;
+	local bool								bTargetOnlyDisoriented;
 
     SourceWeapon = AbilityState.GetSourceWeapon();
     if(SourceWeapon != none && SourceWeapon.ObjectID == EffectState.ApplyEffectParameters.ItemStateObjectRef.ObjectID)
     {
         StandardToHit = X2AbilityToHitCalc_StandardAim(AbilityState.GetMyTemplate().AbilityToHitCalc);
+
         if (StandardToHit != none && (Target.IsStunned() || Target.IsDisoriented() || Target.IsPanicked() || Target.IsUnconscious()))
         {
+			bTargetOnlyDisoriented = Target.IsDisoriented() && !(Target.IsStunned() || Target.IsPanicked() || Target.IsUnconscious());
+
             ShotInfo.ModType = eHit_Success;
             ShotInfo.Reason = FriendlyName;
-            if (Target.IsDisoriented() && Half_For_Disoriented)
+            if (bTargetOnlyDisoriented && Half_For_Disoriented)
             {
                 ShotInfo.Value = To_Hit_Modifier / 2;
             }
@@ -59,7 +72,7 @@ function GetToHitModifiers(XComGameState_Effect EffectState, XComGameState_Unit 
             ShotModifiers.AddItem(ShotInfo);
             ShotInfo.ModType = eHit_Crit;
             ShotInfo.Reason = FriendlyName;
-            if (Target.IsDisoriented() && Half_For_Disoriented)
+            if (bTargetOnlyDisoriented && Half_For_Disoriented)
             {
                 ShotInfo.Value = Crit_Modifier / 2;
             }
